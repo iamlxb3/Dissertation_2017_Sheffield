@@ -36,14 +36,14 @@ from mlp_classifier import MlpClassifier
 # ==========================================================================================================
 # (1.) build classifer
 mlp1 = MlpClassifier()
-hidden_layer_sizes = (10, 1)
-learning_rate_init = 0.001
+hidden_layer_sizes = (30, 1)
+learning_rate_init = 0.0001
 mlp1.set_mlp(hidden_layer_sizes, learning_rate_init = learning_rate_init)
 
 # (2.) feed data
 data_per = 1.0  # the percentage of data using for training and testing
 dev_per = 0.2 # the percentage of data using for developing
-a_share_folder = os.path.join('a_share','a_share_processed_data')
+a_share_folder = os.path.join('a_share','a_share_labeled_data')
 a_share_folder = os.path.join(parent_folder, 'data', a_share_folder)
 mlp1.feed_and_seperate_data(a_share_folder, dev_per = dev_per, data_per = data_per)
 

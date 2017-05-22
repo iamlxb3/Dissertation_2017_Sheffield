@@ -224,30 +224,28 @@ class Ashare:
                 for attribitor, feature_value in save_zip:
                     f.write(str(attribitor) + ',' + str(feature_value) + '\n')
 
-    def label_raw_data(self, is_prediction = False):
-        if is_prediction:
-            folder = 'pred_raw_data'
-        else:
-            folder = 'raw_data'
+    def label_data(self, input_folder, save_folder):
+
         samples_list = []
-        raw_data_file_name_list = os.listdir(folder)
+        raw_data_file_name_list = os.listdir(input_folder)
         for raw_data_file_name in raw_data_file_name_list:
+
             sample_id = raw_data_file_name[0:-4]
-            sample_feature_list = []
-            sample_price_change = 0.0
-            raw_data_file_path = os.path.join(folder, raw_data_file_name)
-            with open(raw_data_file_path, 'r') as f:
-                for line in f:
-                    if line == '\n':
-                        continue
-                    line_list = line.split(',')
-                    feature_name = line_list[0]
-                    feature = float(line_list[1])
-                    if feature_name == 'priceChange':
-                        sample_price_change = float(feature)
-                        continue
-                    sample_feature_list.append(feature_name)
-                    sample_feature_list.append(feature)
+
+            raw_data_file_path = os.path.join(input_folder, raw_data_file_name)
+            with open(raw_data_file_path, 'r', encoding = 'utf-8') as f:
+                sample_feature_list = f.readlines()[0].split(',')
+
+                price_change_index = sample_feature_list.index('priceChange')
+                sample_price_change = float(sample_feature_list[price_change_index + 1])
+
+                del sample_feature_list[price_change_index: price_change_index+2]
+                # feature_name_list = feature_name_tuple_list[::2]
+                # price_change_index = feature_name_list.index('priceChange')
+                # sample_feature_list = feature_name_tuple_list[1::2]
+                # sample_price_change = float(sample_feature_list[price_change_index])
+                # del sample_feature_list[price_change_index]
+
             samples_list.append([sample_id, sample_feature_list, sample_price_change])
 
         # sort by pricechange
@@ -272,17 +270,15 @@ class Ashare:
             for pos_sample in small_neg_samples_list:
                 pos_sample[2] = label
 
-        print (neg_samples_list)
+        #print (neg_samples_list)
 
         # save labeled data to local
         samples_list = pos_samples_list + neg_samples_list
-        if is_prediction == True:
-            folder = 'pred_labeled_data'
-        else:
-            folder = 'labeled_data'
+
+        # save the file
         for sample_list in samples_list:
             file_name = sample_list[0] + '_' +sample_list[2] + '.txt'
-            file_path = os.path.join(folder, file_name)
+            file_path = os.path.join(save_folder, file_name)
             feature_list = sample_list[1]
             feature_list = [str(x) for x in feature_list]
             feature_str = ','.join(feature_list)
@@ -355,27 +351,27 @@ class Ashare:
             # (1.) open change
             pre_f = previous_f_feature_pair_dict['open']
             f = feature_pair_dict['open']
-            feature_pair_dict['openChange'] = "{:5f}".format((f - pre_f) / pre_f)
+            feature_pair_dict['openChange'] = "{:.5f}".format((f - pre_f) / pre_f)
             # -----------------------------------------------------------------------------------
             # (2.) close change
             pre_f = previous_f_feature_pair_dict['close']
             f = feature_pair_dict['close']
-            feature_pair_dict['closeChange'] = "{:5f}".format((f - pre_f) / pre_f)
+            feature_pair_dict['closeChange'] = "{:.5f}".format((f - pre_f) / pre_f)
             # -----------------------------------------------------------------------------------
             # (3.) high change
             pre_f = previous_f_feature_pair_dict['high']
             f = feature_pair_dict['high']
-            feature_pair_dict['highChange'] = "{:5f}".format((f - pre_f) / pre_f)
+            feature_pair_dict['highChange'] = "{:.5f}".format((f - pre_f) / pre_f)
             # -----------------------------------------------------------------------------------
             # (4.) low change
             pre_f = previous_f_feature_pair_dict['low']
             f = feature_pair_dict['low']
-            feature_pair_dict['lowChange'] = "{:5f}".format((f - pre_f) / pre_f)
+            feature_pair_dict['lowChange'] = "{:.5f}".format((f - pre_f) / pre_f)
             # -----------------------------------------------------------------------------------
             # (5.) volume change
             pre_f = previous_f_feature_pair_dict['volume']
             f = feature_pair_dict['volume']
-            feature_pair_dict['volumeChange'] = "{:5f}".format((f - pre_f) / pre_f)
+            feature_pair_dict['volumeChange'] = "{:.5f}".format((f - pre_f) / pre_f)
             # ===================================================================================
 
             # ===================================================================================
@@ -387,6 +383,7 @@ class Ashare:
             # ===================================================================================
 
             # write the feature engineered file to folder
+            file_name = file_name.replace('csv','txt')
             save_file_path = os.path.join(save_folder, file_name)
             with open(save_file_path, 'w', encoding = 'utf-8') as f:
                 feature_pair_list = []

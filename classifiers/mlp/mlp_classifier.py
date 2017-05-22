@@ -21,8 +21,9 @@ class MlpClassifier:
 
     def set_mlp(self, hidden_layer_sizes, tol = 1e-6, learning_rate_init = 0.001):
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
-        self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes, random_state=1,
-                                     tol = tol, learning_rate_init = learning_rate_init, verbose = True)
+        self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
+                                     tol = tol, learning_rate_init = learning_rate_init, verbose = True,
+                                     solver = 'sgd', momentum = 0.3,  max_iter = 10000)
 
 
     def _feed_data(self, folder, data_per):
@@ -39,7 +40,7 @@ class MlpClassifier:
             label = re.findall(r'[A-Za-z]+', f_name)[0]
             with open (f_path, 'r') as f:
                 features_list  = f.readlines()[0].split(',')
-                features_list = [x for i, x in enumerate(features_list) if i%2 != 0]
+                features_list = features_list[1::2]
                 features_list = [float(x) for x in features_list]
                 features_array = np.array(features_list)
                 samples_feature_list.append(features_array)
@@ -83,7 +84,11 @@ class MlpClassifier:
             if pred_label == self.dev_label[i]:
                 correct += 1
         accuracy = correct/len(self.dev_label)
-        print ("pred_label_list: ", pred_label_list)
+
+        pred_label_dict = collections.defaultdict(lambda :0)
+        for pred_label in pred_label_list:
+            pred_label_dict[pred_label] +=1
+        print ("pred_label_dict: {}".format(list(pred_label_dict.items())))
         print ("accuracy: ", accuracy)
 
 
