@@ -19,12 +19,26 @@ class MlpClassifier:
         self.test_set = []
         self.test_label = []
 
+    def count_label(self, folder):
+        file_name_list = os.listdir(folder)
+        label_dict = collections.defaultdict(lambda: 0)
+        for file_name in file_name_list:
+            try:
+                label = re.findall(r'_([0-9A-Za-z]+)\.', file_name)[0]
+            except IndexError:
+                print ("Check folder path!")
+                break
+            label_dict[label] += 1
+        print ("label_dict: {}".format(list(label_dict.items())))
+
     def set_mlp(self, hidden_layer_sizes, tol = 1e-6, learning_rate_init = 0.001):
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
+        # self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
+        #                              tol = tol, learning_rate_init = learning_rate_init, verbose = True,
+        #                              solver = 'sgd', momentum = 0.3,  max_iter = 10000)
         self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
                                      tol = tol, learning_rate_init = learning_rate_init, verbose = True,
-                                     solver = 'sgd', momentum = 0.3,  max_iter = 10000)
-
+                                     max_iter = 500)
 
     def _feed_data(self, folder, data_per):
         # TODO test the folder exists
@@ -37,7 +51,7 @@ class MlpClassifier:
         samples_label_list = []
         for f_path in file_path_list:
             f_name = os.path.basename(f_path)
-            label = re.findall(r'[A-Za-z]+', f_name)[0]
+            label = re.findall(r'_([A-Za-z0-9]+)\.', f_name)[0]
             with open (f_path, 'r') as f:
                 features_list  = f.readlines()[0].split(',')
                 features_list = features_list[1::2]

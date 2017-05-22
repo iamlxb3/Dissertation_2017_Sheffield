@@ -63,6 +63,7 @@ from a_share import Ashare
 #
 # # ==========================================================================================================
 
+
 # # # ==========================================================================================================
 # # # [4.] Label the data without PCA, etc.
 # # # ==========================================================================================================
@@ -76,7 +77,7 @@ from a_share import Ashare
 # # ==========================================================================================================
 # # [4.1] PCA
 # # ==========================================================================================================
-stock_pca1 = StockPca(n_components = 20)
+stock_pca1 = StockPca(n_components = 10)
 input_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_labeled_data')
 save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_labeled_data_[PCA]')
 stock_pca1.transfrom_data_by_pca(input_folder, save_folder)
