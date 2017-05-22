@@ -5,10 +5,9 @@ class DataPp():
     def __init__(self):
         pass
 
-    def examine_data(self, label_folder):
-        label_folder = 'labeled_data'
-        file_name_list = os.listdir(label_folder)
-        file_path_list = [os.path.join(label_folder, x) for x in file_name_list]
+    def examine_data(self, input_folder):
+        file_name_list = os.listdir(input_folder)
+        file_path_list = [os.path.join(input_folder, x) for x in file_name_list]
         for f_path in file_path_list:
             with open (f_path, 'r') as f:
                 features_list  = f.readlines()[0].split(',')
@@ -21,9 +20,9 @@ class DataPp():
                         print ("f_path: {}".format(f_path))
                         print ("feature: {}".format(feature))
 
-    def correct_non_float_feature(self, label_folder, objective_folder = 'processed_data'):
-        file_name_list = os.listdir(label_folder)
-        file_path_list = [os.path.join(label_folder, x) for x in file_name_list]
+    def correct_non_float_feature(self, input_folder, save_folder):
+        file_name_list = os.listdir(input_folder)
+        file_path_list = [os.path.join(input_folder, x) for x in file_name_list]
         total_f_c = len(file_path_list)
         for f_path in file_path_list:
             f_name = os.path.basename(f_path)
@@ -37,8 +36,7 @@ class DataPp():
                         features_list_raw[2*i+1] = '0.0'
                         print ("{} found nan value for {} feature".format(f_name, feature_name))
 
-            obj_f_path = os.path.join(objective_folder, f_name)
+            obj_f_path = os.path.join(save_folder, f_name)
             with open(obj_f_path, 'w', encoding = 'utf-8') as f:
                 f.write(','.join(features_list_raw))
-
         print ("process all data succesful! Total: {}".format(total_f_c))

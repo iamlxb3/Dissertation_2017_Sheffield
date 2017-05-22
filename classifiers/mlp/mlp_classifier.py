@@ -64,14 +64,14 @@ class MlpClassifier:
         self.dev_label = samples_label_list[dev_sample_num:]
 
 
-    def train(self, clsfy_path = "mlp_classifier"):
+    def train(self, save_clsfy_path ="mlp_classifier"):
         print ("self.training_set_size: ", len(self.training_set))
         print ("self.training_label_size: ", len(self.training_label))
         self.mlp_clf.fit(self.training_set, self.training_label)
-        pickle.dump(self.mlp_clf, open(clsfy_path, "wb"))
+        pickle.dump(self.mlp_clf, open(save_clsfy_path, "wb"))
 
-    def dev(self, clsfy_path = "mlp_classifier"):
-        mlp = pickle.load(open(clsfy_path, "rb"))
+    def dev(self, save_clsfy_path ="mlp_classifier"):
+        mlp = pickle.load(open(save_clsfy_path, "rb"))
         pred_label_list = []
         for feature_array in self.dev_set:
             feature_array = feature_array.reshape(1, -1)

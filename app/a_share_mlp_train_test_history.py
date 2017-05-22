@@ -26,15 +26,14 @@ sys.path.append(mlp_path)
 from mlp_classifier import MlpClassifier
 # ==========================================================================================================
 
-
-
-
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 # ==========================================================================================================
-# Training and developing
+# Build MLP classifier for a-share data, save the mlp to local
 # ==========================================================================================================
-
 # (1.) build classifer
 mlp1 = MlpClassifier()
 hidden_layer_sizes = (10, 1)
@@ -51,6 +50,6 @@ mlp1.feed_and_seperate_data(a_share_folder, dev_per = dev_per, data_per = data_p
 # (3.) train and test
 clsfy_name = 'a_share_mlp'
 mlp_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
-mlp1.train(clsfy_path = mlp_path)
-mlp1.dev(clsfy_path = mlp_path)
+mlp1.train(save_clsfy_path= mlp_path)
+mlp1.dev(save_clsfy_path= mlp_path)
 # ==========================================================================================================
