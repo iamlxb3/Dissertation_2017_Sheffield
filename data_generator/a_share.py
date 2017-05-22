@@ -1,17 +1,37 @@
+# ==========================================================================================================
+# general package import
+# ==========================================================================================================
 import sys
-import io
-#sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf8')
+import os
 import os
 import datetime
 import time
 import tushare as ts
 import collections
-
+import re
 import numpy as np
-from others import daterange, split_list_by_percentage
-import math
-from pjslib.logger import logger1
 import urllib
+import math
+# ==========================================================================================================
+
+# ==========================================================================================================
+# ADD SYS PATH
+# ==========================================================================================================
+parent_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+path1 = os.path.join(parent_folder, 'general_functions')
+sys.path.append(path1)
+# ==========================================================================================================
+
+# ==========================================================================================================
+# local package import
+# ==========================================================================================================
+from general_funcs import daterange, split_list_by_percentage
+from pjslib.logger import logger1
+# ==========================================================================================================
+
+
+
+
 
 class Ashare:
     def __init__(self):
@@ -286,6 +306,99 @@ class Ashare:
         self.read_tech_history_data(start_date = start_date, is_prediction = True)
         self.save_raw_data(is_prediction = True)
 
-    def feature_engineering(self, folder):
-        pass
-        
+    def feature_engineering(self, input_folder , save_folder):
+
+        file_name_list = os.listdir(input_folder)
+        file_path_list = [os.path.join(input_folder, file_name) for file_name in file_name_list]
+
+        successful_save_count = 0
+        original_data_count = len(file_name_list)
+
+        for i, file_path in enumerate(file_path_list):
+            file_name = file_name_list[i]
+            date = re.findall(r'([0-9]+-[0-9]+-[0-9]+)_', file_name)[0]
+            stock_id = re.findall(r'_([0-9]+).csv', file_name)[0]
+            # find the data of the previous friday
+            date_obj_temp = time.strptime(date, '%Y-%m-%d')
+            date_obj = datetime.datetime(*date_obj_temp[:3])
+
+            previous_friday_obj = date_obj - datetime.timedelta(days = 7)
+            previous_friday_str = previous_friday_obj.strftime("%Y-%m-%d")
+            previous_friday_full_path = previous_friday_str + '_' + stock_id + '.csv'
+            previous_friday_full_path = os.path.join(input_folder, previous_friday_full_path)
+
+
+            try:
+                with open (previous_friday_full_path, 'r', encoding = 'utf-8') as f:
+                    previous_f_feature_pair_dict = {}
+                    for line in f:
+                        line_list = line.split(',')
+                        feature_name = line_list[0]
+                        feature_value = float(line_list[1].strip())
+                        previous_f_feature_pair_dict[feature_name] = feature_value
+            except FileNotFoundError:
+                logger1.error("{} cannot find the previous friday data".format(file_name))
+                continue
+
+
+            feature_pair_dict = {}
+            with open(file_path, 'r', encoding = 'utf-8') as f:
+                for line in f:
+                    line_list = line.split(',')
+                    feature_name = line_list[0]
+                    feature_value = float(line_list[1].strip())
+                    feature_pair_dict[feature_name] = feature_value
+
+            # ===================================================================================
+            # add features
+            # ===================================================================================
+            # (1.) open change
+            pre_f = previous_f_feature_pair_dict['open']
+            f = feature_pair_dict['open']
+            feature_pair_dict['openChange'] = "{:5f}".format((f - pre_f) / pre_f)
+            # -----------------------------------------------------------------------------------
+            # (2.) close change
+            pre_f = previous_f_feature_pair_dict['close']
+            f = feature_pair_dict['close']
+            feature_pair_dict['closeChange'] = "{:5f}".format((f - pre_f) / pre_f)
+            # -----------------------------------------------------------------------------------
+            # (3.) high change
+            pre_f = previous_f_feature_pair_dict['high']
+            f = feature_pair_dict['high']
+            feature_pair_dict['highChange'] = "{:5f}".format((f - pre_f) / pre_f)
+            # -----------------------------------------------------------------------------------
+            # (4.) low change
+            pre_f = previous_f_feature_pair_dict['low']
+            f = feature_pair_dict['low']
+            feature_pair_dict['lowChange'] = "{:5f}".format((f - pre_f) / pre_f)
+            # -----------------------------------------------------------------------------------
+            # (5.) volume change
+            pre_f = previous_f_feature_pair_dict['volume']
+            f = feature_pair_dict['volume']
+            feature_pair_dict['volumeChange'] = "{:5f}".format((f - pre_f) / pre_f)
+            # ===================================================================================
+
+            # ===================================================================================
+            # delete features: close, high, low, open
+            # ===================================================================================
+            delete_features_set = {'close', 'high', 'low', 'open'}
+            for feature_name in delete_features_set:
+                feature_pair_dict.pop(feature_name)
+            # ===================================================================================
+
+            # write the feature engineered file to folder
+            save_file_path = os.path.join(save_folder, file_name)
+            with open(save_file_path, 'w', encoding = 'utf-8') as f:
+                feature_pair_list = []
+                feature_pair_tuple_list = sorted(list(feature_pair_dict.items()), key = lambda x:x[0])
+                for feature_pair in feature_pair_tuple_list:
+                    feature_pair_list.append(feature_pair[0])
+                    feature_pair_list.append(feature_pair[1])
+
+                feature_pair_list = [str(x) for x in feature_pair_list]
+                feature_pair_str = ','.join(feature_pair_list)
+
+                f.write(feature_pair_str)
+                successful_save_count += 1
+        print ("Succesfully engineered {} raw data! original count: {}, delete {} files"
+               .format(successful_save_count, original_data_count, original_data_count - successful_save_count))
