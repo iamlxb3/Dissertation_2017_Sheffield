@@ -20,6 +20,7 @@ class MlpClassifier:
         self.test_label = []
         self.hidden_size_list = []
         self.accuracy_list = []
+        self.predicted_label_dict = collections.defaultdict(lambda : [0,0,0]) # tp, fp, fn
 
     def count_label(self, folder):
         file_name_list = os.listdir(folder)
@@ -115,6 +116,33 @@ class MlpClassifier:
         self.mlp_clf.fit(self.training_set, self.training_label)
         pickle.dump(self.mlp_clf, open(save_clsfy_path, "wb"))
 
+    def _compute_average_f1(self, pred_label_list, gold_label_list):
+        label_tp_fp_tn_dict = collections.defaultdict(lambda :[0, 0, 0, 0]) # tp,fp,fn,f1
+        label_set = set(gold_label_list)
+
+        for i, pred_label in enumerate(pred_label_list):
+            gold_label = gold_label_list[i]
+            for label in label_set:
+                if pred_label == label and gold_label == label:
+                    label_tp_fp_tn_dict[label][0] += 1 # true positve
+                elif pred_label == label and gold_label != label:
+                    label_tp_fp_tn_dict[label][1] += 1  # false positve
+                elif pred_label != label and gold_label == label:
+                    label_tp_fp_tn_dict[label][2] += 1  # false nagative
+
+        # compute f1
+        for label, f1_list in label_tp_fp_tn_dict:
+            tp, fp, fn = f1_list[0:3]
+            precision = tp / (tp + fp)
+            recall = tp / (tp + fn)
+            f1 =   (2*precision*recall)/(precision + recall)              # equal weight to precision and recall
+            label_tp_fp_tn_dict[3] = f1
+            # reference:
+            # https://www.quora.com/What-is-meant-by-F-measure-Weighted-F-Measure-and-Average-F-Measure-in-NLP-Evaluation
+
+        return label_tp_fp_tn_dict
+
+
     def dev(self, save_clsfy_path ="mlp_classifier"):
         mlp = pickle.load(open(save_clsfy_path, "rb"))
         pred_label_list = []
@@ -129,12 +157,10 @@ class MlpClassifier:
                 correct += 1
         accuracy = correct/len(self.dev_label)
 
-        pred_label_dict = collections.defaultdict(lambda :0)
-        for pred_label in pred_label_list:
-            pred_label_dict[pred_label] +=1
+
 
         self.accuracy_list.append(accuracy)
-        print ("pred_label_dict: {}".format(list(pred_label_dict.items())))
+        print ("pred_label_dict: {}".format(list(self.pred_label_dict.items())))
         print ("accuracy: ", accuracy)
 
     def save_topology_result(self, path):

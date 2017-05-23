@@ -19,11 +19,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="dow_jones_index_train.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="dow_jones_index_train.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/dow_jones_index_train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="609">
-              <caret line="95" column="26" lean-forward="false" selection-start-line="95" selection-start-column="26" selection-end-line="95" selection-end-column="26" />
+            <state relative-caret-position="1203">
+              <caret line="105" column="5" lean-forward="true" selection-start-line="105" selection-start-column="5" selection-end-line="105" selection-end-column="5" />
               <folding>
                 <element signature="e#682#692#0" expanded="true" />
               </folding>
@@ -31,11 +31,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mlp_classifier.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="mlp_classifier.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="613">
-              <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+            <state relative-caret-position="139">
+              <caret line="118" column="27" lean-forward="false" selection-start-line="118" selection-start-column="8" selection-end-line="118" selection-end-column="27" />
               <folding>
                 <element signature="e#0#48#0" expanded="true" />
               </folding>
@@ -77,8 +77,8 @@
         <option value="$PROJECT_DIR$/app/dow_jones_index_process_data.py" />
         <option value="$PROJECT_DIR$/general_functions/general_funcs.py" />
         <option value="$PROJECT_DIR$/data_generator/dow_jones_index.py" />
-        <option value="$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py" />
         <option value="$PROJECT_DIR$/app/dow_jones_index_train.py" />
+        <option value="$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py" />
       </list>
     </option>
   </component>
@@ -336,7 +336,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#735#745#0" expanded="true" />
+            <element signature="e#735#745#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -364,7 +364,7 @@
         <state relative-caret-position="702">
           <caret line="27" column="32" lean-forward="false" selection-start-line="27" selection-start-column="32" selection-end-line="27" selection-end-column="32" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -394,7 +394,7 @@
         <state relative-caret-position="1404">
           <caret line="53" column="35" lean-forward="false" selection-start-line="53" selection-start-column="35" selection-end-line="53" selection-end-column="35" />
           <folding>
-            <element signature="e#735#745#0" expanded="true" />
+            <element signature="e#735#745#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -412,7 +412,7 @@
         <state relative-caret-position="10233">
           <caret line="389" column="54" lean-forward="true" selection-start-line="389" selection-start-column="54" selection-end-line="389" selection-end-column="54" />
           <folding>
-            <element signature="e#243#253#0" expanded="true" />
+            <element signature="e#243#253#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -458,7 +458,7 @@
         <state relative-caret-position="420">
           <caret line="27" column="32" lean-forward="false" selection-start-line="27" selection-start-column="32" selection-end-line="27" selection-end-column="32" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -504,7 +504,7 @@
         <state relative-caret-position="3816">
           <caret line="411" column="0" lean-forward="false" selection-start-line="411" selection-start-column="0" selection-end-line="412" selection-end-column="112" />
           <folding>
-            <element signature="e#243#253#0" expanded="true" />
+            <element signature="e#243#253#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -514,7 +514,7 @@
         <state relative-caret-position="653">
           <caret line="208" column="0" lean-forward="false" selection-start-line="208" selection-start-column="0" selection-end-line="208" selection-end-column="0" />
           <folding>
-            <element signature="e#0#10#0" expanded="true" />
+            <element signature="e#0#10#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -524,7 +524,7 @@
         <state relative-caret-position="-660">
           <caret line="14" column="57" lean-forward="false" selection-start-line="14" selection-start-column="57" selection-end-line="14" selection-end-column="57" />
           <folding>
-            <element signature="e#735#745#0" expanded="true" />
+            <element signature="e#735#745#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -545,22 +545,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
+    <entry file="file://$PROJECT_DIR$/app/dow_jones_index_train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="613">
-          <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+        <state relative-caret-position="1203">
+          <caret line="105" column="5" lean-forward="true" selection-start-line="105" selection-start-column="5" selection-end-line="105" selection-end-column="5" />
           <folding>
-            <element signature="e#0#48#0" expanded="true" />
+            <element signature="e#682#692#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/dow_jones_index_train.py">
+    <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="609">
-          <caret line="95" column="26" lean-forward="false" selection-start-line="95" selection-start-column="26" selection-end-line="95" selection-end-column="26" />
+        <state relative-caret-position="139">
+          <caret line="118" column="27" lean-forward="false" selection-start-line="118" selection-start-column="8" selection-end-line="118" selection-end-column="27" />
           <folding>
-            <element signature="e#682#692#0" expanded="true" />
+            <element signature="e#0#48#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -93,7 +93,7 @@ mlp1.feed_and_seperate_data(data_folder, dev_per = dev_per, data_per = data_per)
 
 
 # ======================================================================================================================
-hidden_layer_sizes = (27,3)
+hidden_layer_sizes = (93,7)
 learning_rate_init = 0.00001
 # set mlp
 mlp1.set_mlp(hidden_layer_sizes, learning_rate_init = learning_rate_init)
