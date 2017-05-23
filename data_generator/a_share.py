@@ -372,12 +372,24 @@ class Ashare:
             pre_f = previous_f_feature_pair_dict['volume']
             f = feature_pair_dict['volume']
             feature_pair_dict['volumeChange'] = "{:.5f}".format((f - pre_f) / pre_f)
+
+            # (6.) open close change
+            open_price = feature_pair_dict['open']
+            close_price = feature_pair_dict['close']
+            open_close_change = (close_price - open_price) / open_price
+            feature_pair_dict['openCloseChange'] = "{:.5f}".format(open_close_change)
+
+            # (7.) low high change
+            low_price = feature_pair_dict['low']
+            high_price = feature_pair_dict['high']
+            low_high_change = (high_price - low_price) / low_price
+            feature_pair_dict['lowHighChange'] = "{:.5f}".format(low_high_change)
             # ===================================================================================
 
             # ===================================================================================
             # delete features: close, high, low, open
             # ===================================================================================
-            delete_features_set = {'close', 'high', 'low', 'open'}
+            delete_features_set = {'close', 'high', 'low', 'open', 'timeToMarket'}
             for feature_name in delete_features_set:
                 feature_pair_dict.pop(feature_name)
             # ===================================================================================

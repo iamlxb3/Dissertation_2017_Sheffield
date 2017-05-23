@@ -1,9 +1,10 @@
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# [1.] Download the a-share raw data.
-# [2.] Manually add features to a-share data.
-# [3.] Clean data. <a> get rid of nan feature value.
-# [4.1] Data pre-processing and label the data. <a> PCA
-# [4.2] label the data directly
+# [1.] format raw data
+# [2.] handle missing data
+# [3.] feature engineering
+# [4.] clean the data
+# [5.] data transformation eg.PCA
+
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # (c) 2017 PJS, University of Sheffield, iamlxb3@gmail.com
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -30,7 +31,7 @@ sys.path.append(data_generator_path)
 # ==========================================================================================================
 from data_preprocessing import DataPp
 from stock_pca import StockPca
-from a_share import Ashare
+from dow_jones_index import DowJonesIndex
 # ==========================================================================================================
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -38,47 +39,21 @@ from a_share import Ashare
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-
-
 # # ==========================================================================================================
-# # [2.] Manually add features to a-share data.
+# # [1.] format raw data
 # # ==========================================================================================================
-# a_share1 = Ashare()
-# input_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_raw_data')
-# save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_f_engineered_data')
-# a_share1.feature_engineering(input_folder , save_folder)
+# dow_jones_index1 = DowJonesIndex()
+# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_original',
+#                           'dow_jones_index.data')
+# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_raw')
+# dow_jones_index1.format_raw_data(input_file, save_folder)
 # # ==========================================================================================================
-
 
 # ==========================================================================================================
-# [3.] Clean data. <a> get rid of nan feature value.
+# [2.] fill in nan data
 # ==========================================================================================================
-data_cleaner = DataPp()
-input_folder = 'a_share_f_engineered_data'
-input_folder = os.path.join(parent_folder, 'data', 'a_share', input_folder)
-save_folder = 'a_share_processed_data'
-save_folder = os.path.join(parent_folder, 'data', 'a_share', save_folder)
-data_cleaner.correct_non_float_feature(input_folder, save_folder)
-#data_cleaner.examine_data(input_folder)  # examine the feature to see whether it is float
-
+dp1 = DataPp()
+input_file = os.path.join(parent_folder, 'data', 'dow_jones_index','dow_jones_index_raw')
+save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_fill_nan')
+dp1.fill_in_nan_data(input_file, save_folder)
 # ==========================================================================================================
-
-
-# # ==========================================================================================================
-# # [4.] Label the data without PCA, etc.
-# # ==========================================================================================================
-a_share1 = Ashare()
-input_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_processed_data')
-save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_labeled_data')
-a_share1.label_data(input_folder, save_folder)
-# # ==========================================================================================================
-
-#
-# # # ==========================================================================================================
-# # # [4.1] PCA
-# # # ==========================================================================================================
-# stock_pca1 = StockPca(n_components = 10)
-# input_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_labeled_data')
-# save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_labeled_data_[PCA]')
-# stock_pca1.transfrom_data_by_pca(input_folder, save_folder)
-# # # ==========================================================================================================

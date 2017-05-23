@@ -1,6 +1,7 @@
 import re
 import os
 import sys
+import numpy as np
 
 class DataPp():
     def __init__(self):
@@ -55,3 +56,50 @@ class DataPp():
 
         print ("process all data succesful! Total: {} Delete: {}"
                .format(succeful_data_count, original_data_count-succeful_data_count))
+
+    def fill_in_nan_data(self, input_folder, save_folder, mode = 'average'):
+        file_name_list = os.listdir(input_folder)
+        file_path_list = [os.path.join(input_folder, x) for x in file_name_list]
+        features_value_list = []
+
+        # find the sample with nan and accumulate valus for each feature
+        for i, file_path in enumerate(file_path_list):
+            with open(file_path, 'r', encoding = 'utf-8') as f:
+                feature_value_list = f.readlines()[0].split(',')[1::2]
+                feature_value_list = [float(x) if x != "nan" else x for x in feature_value_list]
+                if 'nan' in feature_value_list:
+                    pass
+                else:
+                    features_value_list.append(np.array(feature_value_list))
+
+        # count the average value for each feature
+        if mode == 'average':
+            feature_average_value_list = list(np.average(features_value_list, axis = 0))
+
+        sample_count = 0
+        nan_count = 0
+        # fill in the nan and write to new file
+        for i, file_path in enumerate(file_path_list):
+            with open(file_path, 'r', encoding = 'utf-8') as f:
+                line_list = f.readlines()[0].split(',')
+                feature_value_list = line_list[1::2]
+                if 'nan' in feature_value_list:
+                    sample_count += 1
+                    nan_indices_set_n = set([i for i, x in enumerate(feature_value_list) if x == "nan"])
+                    for nan_index in nan_indices_set_n:
+                        nan_count += 1
+                        feature_value_list[nan_index] = str(feature_average_value_list[nan_index])
+
+                    # write file
+                    feature_name_list = line_list[::2]
+                    feature_value_name_list = [j for i in zip(feature_name_list, feature_value_list) for j in i]
+                    feature_value_name_str = ','.join(feature_value_name_list)
+
+                else:
+                    feature_value_name_str = ','.join(line_list)
+
+                save_path = os.path.join(save_folder, file_name_list[i])
+                with open(save_path, 'w', encoding='utf-8') as f:
+                    f.write(feature_value_name_str)
+
+        print ("Fill in nan succesful! nan sample count: {}, nan count: {}".format(sample_count, nan_count))
