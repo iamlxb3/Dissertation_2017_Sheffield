@@ -73,7 +73,8 @@ for feature_switch_tuple in feature_switch_list_all:
     # ----------------------------------------------------------------------------------------------------------------------
     other_config_dict = {}
     # (1.) learning_rate
-    other_config_dict['learning_rate_init'] = 0.00001
+    other_config_dict['learning_rate_init'] = 0.0001
+    other_config_dict['tol'] = 1e-8
     # (2.) clf_path
     clsfy_name = 'dow_jones_mlp'
     other_config_dict['clf_path'] = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)

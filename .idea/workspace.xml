@@ -19,53 +19,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="dow_jones_index_train.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/dow_jones_index_train.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1296">
-              <caret line="48" column="1" lean-forward="false" selection-start-line="48" selection-start-column="1" selection-end-line="48" selection-end-column="1" />
-              <folding>
-                <element signature="e#682#692#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="dow_jones_index_process_data.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/dow_jones_index_process_data.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="881">
-              <caret line="65" column="99" lean-forward="false" selection-start-line="65" selection-start-column="99" selection-end-line="65" selection-end-column="99" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="dow_jones_index.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/data_generator/dow_jones_index.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="206">
-              <caret line="135" column="119" lean-forward="false" selection-start-line="135" selection-start-column="119" selection-end-line="135" selection-end-column="119" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="a_share.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data_generator/a_share.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-481">
-              <caret line="347" column="0" lean-forward="false" selection-start-line="347" selection-start-column="0" selection-end-line="359" selection-end-column="97" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="dow_jones_index_complete_test.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/dow_jones_index_complete_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="287">
-              <caret line="54" column="120" lean-forward="false" selection-start-line="54" selection-start-column="120" selection-end-line="54" selection-end-column="120" />
+            <state relative-caret-position="1070">
+              <caret line="77" column="19" lean-forward="true" selection-start-line="77" selection-start-column="19" selection-end-line="77" selection-end-column="19" />
               <folding>
                 <element signature="e#682#692#0" expanded="true" />
               </folding>
@@ -73,11 +31,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mlp_classifier.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="dow_jones_index.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/topology_feature_test/dow_jones_index.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="135">
+              <caret line="5" column="120" lean-forward="true" selection-start-line="5" selection-start-column="120" selection-end-line="5" selection-end-column="120" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mlp_classifier.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="601">
-              <caret line="235" column="66" lean-forward="false" selection-start-line="235" selection-start-column="66" selection-end-line="235" selection-end-column="66" />
+            <state relative-caret-position="233">
+              <caret line="387" column="36" lean-forward="false" selection-start-line="387" selection-start-column="8" selection-end-line="387" selection-end-column="36" />
               <folding>
                 <element signature="e#0#48#0" expanded="true" />
               </folding>
@@ -118,11 +86,11 @@
         <option value="$PROJECT_DIR$/data_processor/data_preprocessing.py" />
         <option value="$PROJECT_DIR$/general_functions/general_funcs.py" />
         <option value="$PROJECT_DIR$/app/dow_jones_index_train.py" />
-        <option value="$PROJECT_DIR$/topology_feature_test/dow_jones_index.txt" />
-        <option value="$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py" />
-        <option value="$PROJECT_DIR$/app/dow_jones_index_complete_test.py" />
         <option value="$PROJECT_DIR$/app/dow_jones_index_process_data.py" />
         <option value="$PROJECT_DIR$/data_generator/dow_jones_index.py" />
+        <option value="$PROJECT_DIR$/app/dow_jones_index_complete_test.py" />
+        <option value="$PROJECT_DIR$/topology_feature_test/dow_jones_index.txt" />
+        <option value="$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py" />
       </list>
     </option>
   </component>
@@ -209,7 +177,15 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$/data" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Ignored.Files" />
+    <property name="settings.editor.selected.configurable" value="PyConsoleConfigurable.Python Console" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="Dissertation_2017_Sheffield" sdk-home="d:\Anaconda3\python.exe">
+        <option name="mySdkHome" value="d:\Anaconda3\python.exe" />
+        <option name="myModuleName" value="Dissertation_2017_Sheffield" />
+      </console-settings>
+    </option>
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -370,7 +346,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="1938" height="1050" extended-state="7" />
+    <frame x="-9" y="-9" width="1938" height="1050" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24791667" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -588,31 +564,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/topology_feature_test/dow_jones_index.txt">
+    <entry file="file://$PROJECT_DIR$/data_generator/a_share.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="27">
-          <caret line="1" column="80" lean-forward="true" selection-start-line="1" selection-start-column="80" selection-end-line="1" selection-end-column="80" />
+        <state relative-caret-position="-481">
+          <caret line="347" column="0" lean-forward="false" selection-start-line="347" selection-start-column="0" selection-end-line="359" selection-end-column="97" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
+    <entry file="file://$PROJECT_DIR$/data_generator/dow_jones_index.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="601">
-          <caret line="235" column="66" lean-forward="false" selection-start-line="235" selection-start-column="66" selection-end-line="235" selection-end-column="66" />
-          <folding>
-            <element signature="e#0#48#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/dow_jones_index_complete_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="287">
-          <caret line="54" column="120" lean-forward="false" selection-start-line="54" selection-start-column="120" selection-end-line="54" selection-end-column="120" />
-          <folding>
-            <element signature="e#682#692#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="395">
+          <caret line="139" column="0" lean-forward="true" selection-start-line="139" selection-start-column="0" selection-end-line="139" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -626,27 +590,39 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data_generator/a_share.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-481">
-          <caret line="347" column="0" lean-forward="false" selection-start-line="347" selection-start-column="0" selection-end-line="359" selection-end-column="97" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/dow_jones_index_process_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="881">
+        <state relative-caret-position="962">
           <caret line="65" column="99" lean-forward="false" selection-start-line="65" selection-start-column="99" selection-end-line="65" selection-end-column="99" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data_generator/dow_jones_index.py">
+    <entry file="file://$PROJECT_DIR$/app/dow_jones_index_complete_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="135" column="119" lean-forward="false" selection-start-line="135" selection-start-column="119" selection-end-line="135" selection-end-column="119" />
+        <state relative-caret-position="1070">
+          <caret line="77" column="19" lean-forward="true" selection-start-line="77" selection-start-column="19" selection-end-line="77" selection-end-column="19" />
+          <folding>
+            <element signature="e#682#692#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/topology_feature_test/dow_jones_index.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="5" column="120" lean-forward="true" selection-start-line="5" selection-start-column="120" selection-end-line="5" selection-end-column="120" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="233">
+          <caret line="387" column="36" lean-forward="false" selection-start-line="387" selection-start-column="8" selection-end-line="387" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#48#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

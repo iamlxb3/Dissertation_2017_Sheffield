@@ -25,6 +25,7 @@ class MlpClassifier:
         self.label_tp_fp_tn_dict = {}
         self.feature_switch_list = []
         self.feature_selected_list = []
+        self.iteration_loss_list = []
 
     def count_label(self, folder):
         file_name_list = os.listdir(folder)
@@ -46,7 +47,7 @@ class MlpClassifier:
         #                              solver = 'sgd', momentum = 0.3,  max_iter = 10000)
         self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
                                      tol = tol, learning_rate_init = learning_rate_init,
-                                     max_iter = 500, random_state = 1)
+                                     max_iter = 1000, random_state = 1)
 
     def _feature_degradation(self, features_list, feature_switch_tuple):
         new_feature_list = []
@@ -147,6 +148,7 @@ class MlpClassifier:
         print ("self.training_label_size: ", len(self.training_label))
 
         self.mlp_clf.fit(self.training_set, self.training_label)
+        self.iteration_loss_list.append((self.mlp_clf.n_iter_, self.mlp_clf.loss_))
 
         # try:
         #     self.mlp_clf.fit(self.training_set, self.training_label)
@@ -226,14 +228,6 @@ class MlpClassifier:
         print ("average_f1: ", average_f1)
         print("=================================================================")
 
-    def save_feature_topology_result(self, path):
-        topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
-                                        self.hidden_size_list, self.average_f1_list)),
-                                    key = lambda x:x[3], reverse = True)
-        with open (path, 'w', encoding = 'utf-8') as f:
-            for tuple1 in topology_list:
-                f.write(str(tuple1) + '\n')
-        print ("save feature and topology test result complete!!!!")
 
     def weekly_predict(self):
         mlp = pickle.load(open("mlp_classifier", "rb"))
@@ -294,7 +288,6 @@ class MlpClassifier:
             # =================================================================================================
             feature_array = np.array(feature_tuple_list).reshape(1,-1)
             pred_label = mlp.predict(feature_array)[0]
-            label_proba = mlp.predict_log_proba(feature_array)
             prob = 0.0
             prediction_set.append((stock_id, pred_label, prob))
             # =================================================================================================
@@ -359,12 +352,13 @@ class MlpClassifier:
         hidden_layer_sizes_list = _build_hidden_layer_sizes_list(hidden_layer_config_tuple)
         learning_rate_init = other_config_dict['learning_rate_init']
         clf_path = other_config_dict['clf_path']
+        tol = other_config_dict['tol']
 
         for i, hidden_layer_sizes in enumerate(hidden_layer_sizes_list):
             # _update_feature_switch_list
             self._update_feature_switch_list(i)
 
-            self.set_mlp(hidden_layer_sizes, learning_rate_init=learning_rate_init)
+            self.set_mlp(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol = tol)
             self.train(save_clsfy_path=clf_path)
             self.dev(save_clsfy_path=clf_path)
 
@@ -390,3 +384,24 @@ class MlpClassifier:
         feature_switch_list_all.remove(tuple([0 for x in range(feature_num)]))
         print ("Total feature combination: {}".format(len(feature_switch_list_all)))
         return feature_switch_list_all
+
+    def save_feature_topology_result(self, path):
+        topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
+                                        self.hidden_size_list, self.average_f1_list, self.iteration_loss_list)),
+                                    key = lambda x:x[3], reverse = True)
+        with open (path, 'w', encoding = 'utf-8') as f:
+            for tuple1 in topology_list:
+                feature_switch_list = str(tuple1[0])
+                feature_selected_list = str(tuple1[1])
+                hidden_size_list = str(tuple1[2])
+                average_f1_list = str(tuple1[3])
+                iteration_loss_list = str(tuple1[4])
+                f.write('----------------------------------------------------\n')
+                f.write('feature_switch: {}'.format(feature_switch_list))
+                f.write('feature_selected: {}'.format(feature_selected_list))
+                f.write('hidden_size: {}'.format(hidden_size_list))
+                f.write('average_f1: {}'.format(average_f1_list))
+                f.write('iteration_loss: {}'.format(iteration_loss_list))
+                f.write('----------------------------------------------------\n')
+
+        print ("save feature and topology test result complete!!!!")
