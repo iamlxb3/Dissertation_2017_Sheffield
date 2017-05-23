@@ -18,6 +18,8 @@ class MlpClassifier:
         self.dev_label = []
         self.test_set = []
         self.test_label = []
+        self.hidden_size_list = []
+        self.accuracy_list = []
 
     def count_label(self, folder):
         file_name_list = os.listdir(folder)
@@ -32,6 +34,7 @@ class MlpClassifier:
         print ("label_dict: {}".format(list(label_dict.items())))
 
     def set_mlp(self, hidden_layer_sizes, tol = 1e-6, learning_rate_init = 0.001):
+        self.hidden_size_list.append(hidden_layer_sizes)
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
         # self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
         #                              tol = tol, learning_rate_init = learning_rate_init, verbose = True,
@@ -39,6 +42,7 @@ class MlpClassifier:
         self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
                                      tol = tol, learning_rate_init = learning_rate_init, verbose = True,
                                      max_iter = 500, random_state = 1)
+
 
     def _feed_data(self, folder, data_per):
         # TODO test the folder exists
@@ -128,9 +132,16 @@ class MlpClassifier:
         pred_label_dict = collections.defaultdict(lambda :0)
         for pred_label in pred_label_list:
             pred_label_dict[pred_label] +=1
+
+        self.accuracy_list.append(accuracy)
         print ("pred_label_dict: {}".format(list(pred_label_dict.items())))
         print ("accuracy: ", accuracy)
 
+    def save_topology_result(self, path):
+        topology_list = sorted(list(zip(self.hidden_size_list, self.accuracy_list)), key = lambda x:x[1], reverse = True)
+        with open (path, 'w', encoding = 'utf-8') as f:
+            for tuple1 in topology_list:
+                f.write(str(tuple1) + '\n')
 
     def weekly_predict(self):
         mlp = pickle.load(open("mlp_classifier", "rb"))
