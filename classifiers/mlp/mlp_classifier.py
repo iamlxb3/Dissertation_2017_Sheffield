@@ -22,6 +22,8 @@ class MlpClassifier:
         self.hidden_size_list = []
         self.average_f1_list = []
         self.label_tp_fp_tn_dict = {}
+        self.feature_switch_list = []
+        self.feature_selected_list = []
 
     def count_label(self, folder):
         file_name_list = os.listdir(folder)
@@ -45,8 +47,17 @@ class MlpClassifier:
                                      tol = tol, learning_rate_init = learning_rate_init, verbose = True,
                                      max_iter = 500, random_state = 1)
 
+    def _feature_degradation(self, features_list, feature_switch_tuple):
+        new_feature_list = []
+        for i, switch in enumerate(feature_switch_tuple):
+            if switch == 1:
+                new_feature_list.append(features_list[i])
+        return new_feature_list
 
-    def _feed_data(self, folder, data_per):
+    def _feed_data(self, folder, data_per, feature_switch_tuple = None):
+        if feature_switch_tuple:
+            self.feature_switch_list.append(feature_switch_tuple)
+        # ::: _feed_data :::
         # TODO test the folder exists
         file_name_list = os.listdir(folder)
         file_path_list = [os.path.join(folder, x) for x in file_name_list]
@@ -62,19 +73,30 @@ class MlpClassifier:
                 features_list  = f.readlines()[0].split(',')
                 features_list = features_list[1::2]
                 features_list = [float(x) for x in features_list]
+                if feature_switch_tuple:
+                    features_list = self._feature_degradation(features_list, feature_switch_tuple)
                 features_array = np.array(features_list)
                 samples_feature_list.append(features_array)
                 samples_label_list.append(label)
         print ("read feature list and label list for {} successful!".format(folder))
         return samples_feature_list, samples_label_list
 
+    def read_selected_feature_list(self, folder, feature_switch_list):
+        file_name_list = os.listdir(folder)
+        file_path_0 = [os.path.join(folder, x) for x in file_name_list][0]
+        with open (file_path_0, 'r', encoding = 'utf-8') as f:
+            feature_name_list = f.readlines()[0].split(',')[::2]
+            selected_feature_list = self._feature_degradation(feature_name_list, feature_switch_list)
+        self.feature_selected_list.append(selected_feature_list)
 
-    def feed_and_seperate_data(self, folder, dev_per = 0.2, data_per = 1.0):
+
+    def feed_and_seperate_data(self, folder, dev_per = 0.2, data_per = 1.0, feature_switch_tuple = None):
 
         samples_dict = collections.defaultdict(lambda: [])
 
         # cut the number of training sample
-        samples_feature_list, samples_label_list = self._feed_data(folder, data_per)
+        samples_feature_list, samples_label_list = self._feed_data(folder, data_per,
+                                                                   feature_switch_tuple= feature_switch_tuple)
 
         for i, label in enumerate(samples_label_list):
             samples_dict[label].append(samples_feature_list[i])
@@ -186,8 +208,16 @@ class MlpClassifier:
         print ("average_f1: ", average_f1)
         print("=================================================================")
 
-    def save_topology_result(self, path):
-        topology_list = sorted(list(zip(self.hidden_size_list, self.average_f1_list)), key = lambda x:x[1], reverse = True)
+    def save_feature_topology_result(self, path):
+        topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
+                                        self.hidden_size_list, self.average_f1_list)),
+                                    key = lambda x:x[3], reverse = True)
+        print ("feature_switch_list: ", self.feature_switch_list)
+        print ("hidden_size_list: ", self.hidden_size_list)
+        print("feature_selected_list: ", self.feature_selected_list)
+        print("average_f1_list: ", self.average_f1_list)
+        print("path: ", path)
+        print ("topology_list: ", topology_list)
         with open (path, 'w', encoding = 'utf-8') as f:
             for tuple1 in topology_list:
                 f.write(str(tuple1) + '\n')
@@ -309,14 +339,42 @@ class MlpClassifier:
             return hidden_layer_sizes_list
 
         # :::topology_test:::
+
+
+
+
         hidden_layer_sizes_list = _build_hidden_layer_sizes_list(hidden_layer_config_tuple)
         learning_rate_init = other_config_dict['learning_rate_init']
         clf_path = other_config_dict['clf_path']
         topology_result_path = other_config_dict['topology_result_path']
 
-        for hidden_layer_sizes in hidden_layer_sizes_list:
+        for i, hidden_layer_sizes in enumerate(hidden_layer_sizes_list):
+            # _update_feature_switch_list
+            self._update_feature_switch_list(i)
+
             self.set_mlp(hidden_layer_sizes, learning_rate_init=learning_rate_init)
             self.train(save_clsfy_path=clf_path)
             self.dev(save_clsfy_path=clf_path)
 
-        self.save_topology_result(topology_result_path)
+        self.save_feature_topology_result(topology_result_path)
+
+    def _update_feature_switch_list(self, i):
+        if i != 0:
+            # --------------------------------------------------------------------------
+            # update feature_switch_list and feature_selected list for easy output
+            # --------------------------------------------------------------------------
+            self.feature_switch_list.append(self.feature_switch_list[-1])
+            self.feature_selected_list.append(self.feature_selected_list[-1])
+            # --------------------------------------------------------------------------
+
+    def generate_feature_switch_list(self, folder):
+        # read feature length
+        file_name_list = os.listdir(folder)
+        file_path_0 = [os.path.join(folder, x) for x in file_name_list][0]
+        with open (file_path_0, 'r', encoding = 'utf-8') as f:
+            feature_name_list = f.readlines()[0].split(',')[::2]
+        feature_num = len(feature_name_list)
+        feature_switch_list_all = list(itertools.product([0,1], repeat = feature_num))
+        feature_switch_list_all.remove(tuple([0 for x in range(feature_num)]))
+        print ("Total feature combination: {}".format(len(feature_switch_list_all)))
+        return feature_switch_list_all

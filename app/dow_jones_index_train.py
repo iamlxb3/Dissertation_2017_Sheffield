@@ -49,6 +49,9 @@ data_folder = os.path.join(parent_folder, 'data', data_folder)
 #
 
 mlp1.feed_and_seperate_data(data_folder, dev_per = dev_per, data_per = data_per)
+# ==========================================================================================================
+
+
 
 
 
