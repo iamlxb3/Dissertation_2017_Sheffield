@@ -48,8 +48,11 @@ data_folder = os.path.join('dow_jones_index','dow_jones_index_labeled')
 data_folder = os.path.join(parent_folder, 'data', data_folder)
 #
 
-
-# () save the selected feature list
+# ======================================================================================================================
+# ======================================================================================================================
+# ======================================================================================================================
+# FEATURE AND TOPOLOGY TEST
+# ======================================================================================================================
 feature_switch_list_all = mlp1.generate_feature_switch_list(data_folder)
 feature_switch_list_all = feature_switch_list_all[:5]
 for feature_switch_tuple in feature_switch_list_all:
@@ -75,7 +78,7 @@ for feature_switch_tuple in feature_switch_list_all:
     clsfy_name = 'dow_jones_mlp'
     other_config_dict['clf_path'] = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
     # (3.) topology_result_path
-    other_config_dict['topology_result_path'] = os.path.join(parent_folder, 'topology_feature_test', 'dow_jones_index.txt')
+    f_t_t_save_path = os.path.join(parent_folder, 'topology_feature_test', 'dow_jones_index.txt')
     # ----------------------------------------------------------------------------------------------------------------------
 
     # ----------------------------------------------------------------------------------------------------------------------
@@ -95,5 +98,8 @@ for feature_switch_tuple in feature_switch_list_all:
     mlp1.topology_test(other_config_dict, hidden_layer_config_tuple)
     # ======================================================================================================================
 
-
+mlp1.save_feature_topology_result(f_t_t_save_path)
+# ==========================================================================================================
+# ==========================================================================================================
+# ==========================================================================================================
 

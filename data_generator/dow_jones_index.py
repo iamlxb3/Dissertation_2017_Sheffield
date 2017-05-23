@@ -124,9 +124,24 @@ class DowJonesIndex:
                     feature_pair_dict[f_n] = feature_value_list[i]
 
             # ===================================================================================
+            # add features
+            # ===================================================================================
+            open_value = float(feature_pair_dict['open'])
+            close_value = float(feature_pair_dict['close'])
+            high_value = float(feature_pair_dict['high'])
+            low_value = float(feature_pair_dict['low'])
+            # (1.) candleLength
+            feature_pair_dict['candleLength'] = "{:.5f}".format(abs((close_value - open_value) / (high_value - low_value)))
+            # (2.) candlePos
+            feature_pair_dict['candlePos'] = "{:.5f}".format(abs((high_value - open_value) / (high_value - low_value)))
+            # -----------------------------------------------------------------------------------
+
+
+
+            # ===================================================================================
             # delete features:
             # ===================================================================================
-            delete_features_set = {}
+            delete_features_set = {'next_weeks_open', 'next_weeks_close'}
             for feature_name in delete_features_set:
                 feature_pair_dict.pop(feature_name)
             # ===================================================================================

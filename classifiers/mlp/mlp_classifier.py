@@ -230,15 +230,10 @@ class MlpClassifier:
         topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
                                         self.hidden_size_list, self.average_f1_list)),
                                     key = lambda x:x[3], reverse = True)
-        print ("feature_switch_list: ", self.feature_switch_list)
-        print ("hidden_size_list: ", self.hidden_size_list)
-        print("feature_selected_list: ", self.feature_selected_list)
-        print("average_f1_list: ", self.average_f1_list)
-        print("path: ", path)
-        print ("topology_list: ", topology_list)
         with open (path, 'w', encoding = 'utf-8') as f:
             for tuple1 in topology_list:
                 f.write(str(tuple1) + '\n')
+        print ("save feature and topology test result complete!!!!")
 
     def weekly_predict(self):
         mlp = pickle.load(open("mlp_classifier", "rb"))
@@ -364,7 +359,6 @@ class MlpClassifier:
         hidden_layer_sizes_list = _build_hidden_layer_sizes_list(hidden_layer_config_tuple)
         learning_rate_init = other_config_dict['learning_rate_init']
         clf_path = other_config_dict['clf_path']
-        topology_result_path = other_config_dict['topology_result_path']
 
         for i, hidden_layer_sizes in enumerate(hidden_layer_sizes_list):
             # _update_feature_switch_list
@@ -374,7 +368,7 @@ class MlpClassifier:
             self.train(save_clsfy_path=clf_path)
             self.dev(save_clsfy_path=clf_path)
 
-        self.save_feature_topology_result(topology_result_path)
+        #self.save_feature_topology_result(topology_result_path)
 
     def _update_feature_switch_list(self, i):
         if i != 0:
