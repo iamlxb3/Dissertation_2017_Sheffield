@@ -51,7 +51,7 @@ data_folder = os.path.join(parent_folder, 'data', data_folder)
 
 # () save the selected feature list
 feature_switch_list_all = mlp1.generate_feature_switch_list(data_folder)
-feature_switch_list_all = feature_switch_list_all[:2]
+feature_switch_list_all = feature_switch_list_all[:5]
 for feature_switch_tuple in feature_switch_list_all:
     mlp1.read_selected_feature_list(data_folder, feature_switch_tuple)
     mlp1.feed_and_seperate_data(data_folder, dev_per = dev_per, data_per = data_per,

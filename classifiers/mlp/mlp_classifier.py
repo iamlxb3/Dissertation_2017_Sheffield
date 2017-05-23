@@ -7,6 +7,7 @@ import pickle
 import math
 import datetime
 import itertools
+import sys
 from pjslib.logger import logger2
 
 
@@ -44,7 +45,7 @@ class MlpClassifier:
         #                              tol = tol, learning_rate_init = learning_rate_init, verbose = True,
         #                              solver = 'sgd', momentum = 0.3,  max_iter = 10000)
         self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
-                                     tol = tol, learning_rate_init = learning_rate_init, verbose = True,
+                                     tol = tol, learning_rate_init = learning_rate_init,
                                      max_iter = 500, random_state = 1)
 
     def _feature_degradation(self, features_list, feature_switch_tuple):
@@ -76,6 +77,7 @@ class MlpClassifier:
                 if feature_switch_tuple:
                     features_list = self._feature_degradation(features_list, feature_switch_tuple)
                 features_array = np.array(features_list)
+                #features_array = features_array.reshape(-1,1)
                 samples_feature_list.append(features_array)
                 samples_label_list.append(label)
         print ("read feature list and label list for {} successful!".format(folder))
@@ -91,6 +93,13 @@ class MlpClassifier:
 
 
     def feed_and_seperate_data(self, folder, dev_per = 0.2, data_per = 1.0, feature_switch_tuple = None):
+
+        # clear training_set, dev_set
+        self.training_set = []
+        self.training_label = []
+        self.dev_set = []
+        self.dev_label = []
+        #
 
         samples_dict = collections.defaultdict(lambda: [])
 
@@ -136,7 +145,16 @@ class MlpClassifier:
     def train(self, save_clsfy_path ="mlp_classifier"):
         print ("self.training_set_size: ", len(self.training_set))
         print ("self.training_label_size: ", len(self.training_label))
+
         self.mlp_clf.fit(self.training_set, self.training_label)
+
+        # try:
+        #     self.mlp_clf.fit(self.training_set, self.training_label)
+        # except ValueError:
+        #     print ("feature_switch_list: ", self.feature_switch_list)
+        #     #logger2.error("training_set: {}".format(self.training_set))
+        #     sys.exit()
+
         pickle.dump(self.mlp_clf, open(save_clsfy_path, "wb"))
 
     def _compute_average_f1(self, pred_label_list, gold_label_list):
