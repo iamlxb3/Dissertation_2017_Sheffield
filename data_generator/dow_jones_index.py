@@ -6,6 +6,22 @@ import datetime
 import time
 
 
+# ==========================================================================================================
+# ADD SYS PATH
+# ==========================================================================================================
+parent_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+path1 = os.path.join(parent_folder, 'general_functions')
+sys.path.append(path1)
+# ==========================================================================================================
+
+# ==========================================================================================================
+# local package import
+# ==========================================================================================================
+from general_funcs import daterange, split_list_by_percentage
+from pjslib.logger import logger1
+# ==========================================================================================================
+
+
 
 class DowJonesIndex:
     """
@@ -35,6 +51,7 @@ class DowJonesIndex:
             for i, line in enumerate(f):
                 if i == 0:
                     feature_name_list = line.split(',')
+                    feature_name_list = [x.strip() for x in feature_name_list]
                     continue
                 line_list = line.split(',')
 
@@ -55,7 +72,7 @@ class DowJonesIndex:
                 feature_value_list =  ['nan' if not x else x for x in feature_value_list]
 
                 # get rid of $
-                feature_value_list = [re.findall(r'[0-9\.]+', x)[0] if x != 'nan' else x for x in feature_value_list ]
+                feature_value_list = [re.findall(r'[-0-9\.]+', x)[0] if x != 'nan' else x for x in feature_value_list ]
                 feature_name_value_list = [j for i in zip(feature_name_list[3:], feature_value_list) for j in i]
                 feature_name_value_str = ",".join(feature_name_value_list)
 
@@ -64,4 +81,140 @@ class DowJonesIndex:
                 with open(file_path, 'w', encoding = 'utf-8') as f:
                     f.write(feature_name_value_str)
 
+    def feature_engineering(self, input_folder, save_folder):
+        file_name_list = os.listdir(input_folder)
+        file_path_list = [os.path.join(input_folder, file_name) for file_name in file_name_list]
 
+        successful_save_count = 0
+        original_data_count = len(file_name_list)
+
+        for i, file_path in enumerate(file_path_list):
+            file_name = file_name_list[i]
+            date = re.findall(r'([0-9]+-[0-9]+-[0-9]+)_', file_name)[0]
+            stock_id = re.findall(r'_([0-9A-Za-z]+).txt', file_name)[0]
+            # find the data of the previous friday
+            date_obj_temp = time.strptime(date, '%Y-%m-%d')
+            date_obj = datetime.datetime(*date_obj_temp[:3])
+
+            # previous_friday_obj = date_obj - datetime.timedelta(days = 7)
+            # previous_friday_str = previous_friday_obj.strftime("%Y-%m-%d")
+            # previous_friday_full_path = previous_friday_str + '_' + stock_id + '.csv'
+            # previous_friday_full_path = os.path.join(input_folder, previous_friday_full_path)
+
+
+            # try:
+            #     with open (previous_friday_full_path, 'r', encoding = 'utf-8') as f:
+            #         previous_f_feature_pair_dict = {}
+            #         for line in f:
+            #             line_list = line.split(',')
+            #             feature_name = line_list[0]
+            #             feature_value = float(line_list[1].strip())
+            #             previous_f_feature_pair_dict[feature_name] = feature_value
+            # except FileNotFoundError:
+            #     logger1.error("{} cannot find the previous friday data".format(file_name))
+            #     continue
+
+
+            feature_pair_dict = {}
+            with open(file_path, 'r', encoding = 'utf-8') as f:
+                line_list = f.readlines()[0].split(',')
+                feature_name_list = line_list[::2]
+                feature_value_list = line_list[1::2]
+                for i,f_n in enumerate(feature_name_list):
+                    feature_pair_dict[f_n] = feature_value_list[i]
+
+            # ===================================================================================
+            # delete features:
+            # ===================================================================================
+            delete_features_set = {}
+            for feature_name in delete_features_set:
+                feature_pair_dict.pop(feature_name)
+            # ===================================================================================
+
+            # write the feature engineered file to folder
+            save_file_path = os.path.join(save_folder, file_name)
+            with open(save_file_path, 'w', encoding = 'utf-8') as f:
+                feature_pair_list = []
+                feature_pair_tuple_list = sorted(list(feature_pair_dict.items()), key = lambda x:x[0])
+                for feature_pair in feature_pair_tuple_list:
+                    feature_pair_list.append(feature_pair[0])
+                    feature_pair_list.append(feature_pair[1])
+
+                feature_pair_list = [str(x) for x in feature_pair_list]
+                feature_pair_str = ','.join(feature_pair_list)
+
+                f.write(feature_pair_str)
+                successful_save_count += 1
+        print ("Succesfully engineered {} raw data! original count: {}, delete {} files"
+               .format(successful_save_count, original_data_count, original_data_count - successful_save_count))
+
+
+    def label_data(self, input_folder, save_folder, key = 'percent_change_next_weeks_price'):
+
+        samples_list = []
+        raw_data_file_name_list = os.listdir(input_folder)
+        for raw_data_file_name in raw_data_file_name_list:
+
+            sample_id = raw_data_file_name[0:-4]
+
+            raw_data_file_path = os.path.join(input_folder, raw_data_file_name)
+            with open(raw_data_file_path, 'r', encoding = 'utf-8') as f:
+                sample_feature_list = f.readlines()[0].split(',')
+
+                price_change_index = sample_feature_list.index(key)
+
+
+                sample_price_change = float(sample_feature_list[price_change_index + 1])
+
+                del sample_feature_list[price_change_index: price_change_index+2]
+                # feature_name_list = feature_name_tuple_list[::2]
+                # price_change_index = feature_name_list.index('priceChange')
+                # sample_feature_list = feature_name_tuple_list[1::2]
+                # sample_price_change = float(sample_feature_list[price_change_index])
+                # del sample_feature_list[price_change_index]
+
+            samples_list.append([sample_id, sample_feature_list, sample_price_change])
+
+        # sort by pricechange
+        samples_list = sorted(samples_list, key = lambda x:x[2], reverse = True)
+
+        neg_samples_list = [x for x in samples_list if x[2] < 0]
+
+        pos_samples_list = [x for x in samples_list if x[2] >= 0]
+        per_tuple = (1,)
+        pos_label_tuple = ('pos',)
+        neg_label_tuple = ('neg',)
+        pos_samples_split_list = split_list_by_percentage(per_tuple, pos_samples_list)
+        neg_samples_split_list = split_list_by_percentage(per_tuple, neg_samples_list)
+
+        label_dict = collections.defaultdict(lambda: 0)
+        # label postive the data and output
+        for i, small_pos_samples_list in enumerate(pos_samples_split_list):
+            label = pos_label_tuple[i]
+            for pos_sample in small_pos_samples_list:
+                label_dict[label] += 1 # count the label
+                pos_sample[2] = label
+
+        # label negative the data and output
+        for i, small_neg_samples_list in enumerate(neg_samples_split_list):
+            label = neg_label_tuple[i]
+            for pos_sample in small_neg_samples_list:
+                label_dict[label] += 1 # count the label
+                pos_sample[2] = label
+
+        #print (neg_samples_list)
+
+        # save labeled data to local
+        samples_list = pos_samples_list + neg_samples_list
+
+        # save the file
+        for sample_list in samples_list:
+            file_name = sample_list[0] + '_' +sample_list[2] + '.txt'
+            file_path = os.path.join(save_folder, file_name)
+            feature_list = sample_list[1]
+            feature_list = [str(x) for x in feature_list]
+            feature_str = ','.join(feature_list)
+            with open (file_path, 'w', encoding = 'utf-8') as f:
+                f.write(feature_str)
+
+        print ("label data successfully, label_dict: {}".format(list(label_dict.items())))

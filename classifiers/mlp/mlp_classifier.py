@@ -38,7 +38,7 @@ class MlpClassifier:
         #                              solver = 'sgd', momentum = 0.3,  max_iter = 10000)
         self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
                                      tol = tol, learning_rate_init = learning_rate_init, verbose = True,
-                                     max_iter = 500)
+                                     max_iter = 500, random_state = 1)
 
     def _feed_data(self, folder, data_per):
         # TODO test the folder exists
@@ -65,18 +65,44 @@ class MlpClassifier:
 
     def feed_and_seperate_data(self, folder, dev_per = 0.2, data_per = 1.0):
 
+        samples_dict = collections.defaultdict(lambda: [])
+
         # cut the number of training sample
         samples_feature_list, samples_label_list = self._feed_data(folder, data_per)
 
-        #
-        sample_number = math.floor(len(samples_feature_list))
-        dev_sample_num = math.floor(sample_number*dev_per)
-        print("dev_sample_num: ", dev_sample_num)
-        dev_sample_num = dev_sample_num * -1
-        self.training_set = samples_feature_list[0:dev_sample_num]
-        self.training_label = samples_label_list[0:dev_sample_num]
-        self.dev_set = samples_feature_list[dev_sample_num:]
-        self.dev_label = samples_label_list[dev_sample_num:]
+        for i, label in enumerate(samples_label_list):
+            samples_dict[label].append(samples_feature_list[i])
+
+        for label, feature_list in samples_dict.items():
+            sample_number = len(feature_list)
+            label_list = [label for x in range(sample_number)]
+            dev_sample_num = math.floor(sample_number * dev_per) * -1
+            self.training_set.extend(feature_list[0:dev_sample_num])
+            self.training_label.extend(label_list[0:dev_sample_num])
+            self.dev_set.extend(feature_list[dev_sample_num:])
+            self.dev_label.extend(label_list[dev_sample_num:])
+
+
+        dev_label_dict = collections.defaultdict(lambda :0)
+        for label in self.dev_label:
+            dev_label_dict[label] += 1
+
+        training_label_dict = collections.defaultdict(lambda :0)
+        for label in self.training_label:
+            training_label_dict[label] += 1
+
+        print ("dev_label_dict: ", list(dev_label_dict.items()))
+        print ("training_label_dict: ",  list(training_label_dict.items()))
+
+        # #
+        # sample_number = math.floor(len(samples_feature_list))
+        # dev_sample_num = math.floor(sample_number*dev_per)
+        # print("dev_sample_num: ", dev_sample_num)
+        # dev_sample_num = dev_sample_num * -1
+        # self.training_set = samples_feature_list[0:dev_sample_num]
+        # self.training_label = samples_label_list[0:dev_sample_num]
+        # self.dev_set = samples_feature_list[dev_sample_num:]
+        # self.dev_label = samples_label_list[dev_sample_num:]
 
 
     def train(self, save_clsfy_path ="mlp_classifier"):

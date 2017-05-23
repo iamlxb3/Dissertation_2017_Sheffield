@@ -4,6 +4,7 @@
 # [3.] feature engineering
 # [4.] clean the data
 # [5.] data transformation eg.PCA
+# [6.] data labeling
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # (c) 2017 PJS, University of Sheffield, iamlxb3@gmail.com
@@ -49,11 +50,32 @@ from dow_jones_index import DowJonesIndex
 # dow_jones_index1.format_raw_data(input_file, save_folder)
 # # ==========================================================================================================
 
+
+# # ==========================================================================================================
+# # [2.] fill in nan data
+# # ==========================================================================================================
+# dp1 = DataPp()
+# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index','dow_jones_index_raw')
+# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_fill_nan')
+# dp1.fill_in_nan_data(input_file, save_folder)
+# # ==========================================================================================================
+
+
+# # ==========================================================================================================
+# # [3.] feature engineering
+# # ==========================================================================================================
+# dow_jones_index1 = DowJonesIndex()
+# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_fill_nan')
+# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered')
+# dow_jones_index1.feature_engineering(input_file, save_folder)
+# # ==========================================================================================================
+
+
 # ==========================================================================================================
-# [2.] fill in nan data
+# [6.] data labeling
 # ==========================================================================================================
-dp1 = DataPp()
-input_file = os.path.join(parent_folder, 'data', 'dow_jones_index','dow_jones_index_raw')
-save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_fill_nan')
-dp1.fill_in_nan_data(input_file, save_folder)
+dow_jones_index1 = DowJonesIndex()
+input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered')
+save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_labeled')
+dow_jones_index1.label_data(input_file, save_folder)
 # ==========================================================================================================

@@ -24,7 +24,7 @@ def split_list_by_percentage(per_tuple, list1):
         stop_index_list.append(stop_index_tuple)
         previous_stop_index = stop_index
 
-    print (stop_index_list)
+    #print (stop_index_list)
     for stop_index_tuple in stop_index_list:
         split_list.append(list1[stop_index_tuple[0]:stop_index_tuple[1]])
 
