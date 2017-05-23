@@ -6,6 +6,7 @@ import re
 import pickle
 import math
 import datetime
+import itertools
 from pjslib.logger import logger2
 
 
@@ -19,8 +20,8 @@ class MlpClassifier:
         self.test_set = []
         self.test_label = []
         self.hidden_size_list = []
-        self.accuracy_list = []
-        self.predicted_label_dict = collections.defaultdict(lambda : [0,0,0]) # tp, fp, fn
+        self.average_f1_list = []
+        self.label_tp_fp_tn_dict = {}
 
     def count_label(self, folder):
         file_name_list = os.listdir(folder)
@@ -131,12 +132,19 @@ class MlpClassifier:
                     label_tp_fp_tn_dict[label][2] += 1  # false nagative
 
         # compute f1
-        for label, f1_list in label_tp_fp_tn_dict:
+        for label, f1_list in label_tp_fp_tn_dict.items():
             tp, fp, fn = f1_list[0:3]
-            precision = tp / (tp + fp)
+            if tp + fp == 0:
+                precision = 0.0
+            else:
+                precision = tp / (tp + fp)
+
             recall = tp / (tp + fn)
-            f1 =   (2*precision*recall)/(precision + recall)              # equal weight to precision and recall
-            label_tp_fp_tn_dict[3] = f1
+            if precision + recall == 0:
+                f1 = 0.0
+            else:
+                f1 =   (2*precision*recall)/(precision + recall)              # equal weight to precision and recall
+            f1_list[3] = f1
             # reference:
             # https://www.quora.com/What-is-meant-by-F-measure-Weighted-F-Measure-and-Average-F-Measure-in-NLP-Evaluation
 
@@ -151,20 +159,35 @@ class MlpClassifier:
             pred_label = mlp.predict(feature_array)[0]
             pred_label_list.append(pred_label)
 
-        correct = 0
-        for i, pred_label in enumerate(pred_label_list):
-            if pred_label == self.dev_label[i]:
-                correct += 1
-        accuracy = correct/len(self.dev_label)
+        pred_label_dict = collections.defaultdict(lambda :0)
+        for pred_label in pred_label_list:
+            pred_label_dict[pred_label] += 1
 
 
-
-        self.accuracy_list.append(accuracy)
-        print ("pred_label_dict: {}".format(list(self.pred_label_dict.items())))
-        print ("accuracy: ", accuracy)
+        label_tp_fp_tn_dict = self._compute_average_f1(pred_label_list, self.dev_label)
+        self.label_tp_fp_tn_dict = label_tp_fp_tn_dict
+        label_f1_list = sorted([(key, x[3]) for key, x in label_tp_fp_tn_dict.items()])
+        f1_list = [x[1] for x in label_f1_list]
+        average_f1 = np.average(f1_list)
+        self.average_f1_list.append(average_f1)
+        # delete
+        # correct = 0
+        # for i, pred_label in enumerate(pred_label_list):
+        #     if pred_label == self.dev_label[i]:
+        #         correct += 1
+        # accuracy = correct/len(self.dev_label)
+        # self.accuracy_list.append(accuracy)
+        # delete
+        print ("\n=================================================================")
+        print ("Dev set result!")
+        print("=================================================================")
+        print ("pred_label_dict: {}".format(list(pred_label_dict.items())))
+        print ("label_f1_list: {}".format(label_f1_list))
+        print ("average_f1: ", average_f1)
+        print("=================================================================")
 
     def save_topology_result(self, path):
-        topology_list = sorted(list(zip(self.hidden_size_list, self.accuracy_list)), key = lambda x:x[1], reverse = True)
+        topology_list = sorted(list(zip(self.hidden_size_list, self.average_f1_list)), key = lambda x:x[1], reverse = True)
         with open (path, 'w', encoding = 'utf-8') as f:
             for tuple1 in topology_list:
                 f.write(str(tuple1) + '\n')
@@ -269,3 +292,31 @@ class MlpClassifier:
         with open('prediction.txt', 'w') as f:
             for prediction_tuple in prediction_set:
                 f.write(str(prediction_tuple)+ '\n')
+
+    def topology_test(self, other_config_dict, hidden_layer_config_tuple):
+
+        def _build_hidden_layer_sizes_list(hidden_layer_config_tuple):
+            hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,\
+            hidden_layer_depth_max = hidden_layer_config_tuple
+
+            hidden_layer_unit_list = [x for x in range(hidden_layer_node_min, hidden_layer_node_max + 1)]
+            hidden_layer_unit_list = hidden_layer_unit_list[::hidden_layer_node_step]
+            #
+
+            hidden_layer_layer_list = [x for x in range(hidden_layer_depth_min, hidden_layer_depth_max + 1)]
+            #
+            hidden_layer_sizes_list = list(itertools.product(hidden_layer_unit_list, hidden_layer_layer_list))
+            return hidden_layer_sizes_list
+
+        # :::topology_test:::
+        hidden_layer_sizes_list = _build_hidden_layer_sizes_list(hidden_layer_config_tuple)
+        learning_rate_init = other_config_dict['learning_rate_init']
+        clf_path = other_config_dict['clf_path']
+        topology_result_path = other_config_dict['topology_result_path']
+
+        for hidden_layer_sizes in hidden_layer_sizes_list:
+            self.set_mlp(hidden_layer_sizes, learning_rate_init=learning_rate_init)
+            self.train(save_clsfy_path=clf_path)
+            self.dev(save_clsfy_path=clf_path)
+
+        self.save_topology_result(topology_result_path)

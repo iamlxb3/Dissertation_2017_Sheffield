@@ -54,54 +54,55 @@ mlp1.feed_and_seperate_data(data_folder, dev_per = dev_per, data_per = data_per)
 
 
 
-# # ======================================================================================================================
-# # test different paramters of MLP
-# # ======================================================================================================================
-# hidden_layer_unit_min = 10
-# hidden_layer_unit_max = 200
-# hidden_layer_unit_step = 1
-# hidden_layer_layer_min = 1
-# hidden_layer_layer_max = 10
-# #
-# hidden_layer_unit_list = [x for x in range(hidden_layer_unit_min, hidden_layer_unit_max)]
-# hidden_layer_unit_list = hidden_layer_unit_list[::hidden_layer_unit_step]
-# #
-# hidden_layer_layer_list = [x for x in range(hidden_layer_layer_min, hidden_layer_layer_max + 1)]
-# #
-# hidden_layer_sizes_list = list(itertools.product(hidden_layer_unit_list, hidden_layer_layer_list))
-# print ("hidden_layer_sizes_list: ", hidden_layer_sizes_list)
-# # ======================================================================================================================
-#
-# for hidden_layer_sizes in hidden_layer_sizes_list:
-#     learning_rate_init = 0.00001
-#     mlp1.set_mlp(hidden_layer_sizes, learning_rate_init=learning_rate_init)
-#     clsfy_name = 'dow_jones_mlp'
-#     mlp_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
-#     mlp1.train(save_clsfy_path=mlp_path)
-#     mlp1.dev(save_clsfy_path=mlp_path)
-#
-# topology_result_path = os.path.join(parent_folder, 'topology_feature_test', 'dow_jones_index.txt')
-# mlp1.save_topology_result(topology_result_path)
-# # ======================================================================================================================
-
-
-
-
-
-
-
-
-
 # ======================================================================================================================
-hidden_layer_sizes = (93,7)
-learning_rate_init = 0.00001
-# set mlp
-mlp1.set_mlp(hidden_layer_sizes, learning_rate_init = learning_rate_init)
+# test different paramters of MLP
+# ======================================================================================================================
 
-# (3.) train and test
+# ----------------------------------------------------------------------------------------------------------------------
+# config the other parameters
+# ----------------------------------------------------------------------------------------------------------------------
+other_config_dict = {}
+# (1.) learning_rate
+other_config_dict['learning_rate_init'] = 0.00001
+# (2.) clf_path
 clsfy_name = 'dow_jones_mlp'
-mlp_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
-mlp1.count_label(data_folder)
-mlp1.train(save_clsfy_path= mlp_path)
-mlp1.dev(save_clsfy_path= mlp_path)
-# ==========================================================================================================
+other_config_dict['clf_path'] = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
+# (3.) topology_result_path
+other_config_dict['topology_result_path'] = os.path.join(parent_folder, 'topology_feature_test', 'dow_jones_index.txt')
+# ----------------------------------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------------------------------
+# config hidden layer size
+# ----------------------------------------------------------------------------------------------------------------------
+hidden_layer_node_min = 10
+hidden_layer_node_max = 20
+hidden_layer_node_step = 1
+hidden_layer_depth_min = 1
+hidden_layer_depth_max = 1
+hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,
+                             hidden_layer_depth_max)
+# ----------------------------------------------------------------------------------------------------------------------
+
+# run topology test
+mlp1.topology_test(other_config_dict, hidden_layer_config_tuple)
+# ======================================================================================================================
+
+
+
+
+
+# # ======================================================================================================================
+# # normal run
+# # ======================================================================================================================
+# hidden_layer_sizes = (10,1)
+# learning_rate_init = 0.00001
+# # set mlp
+# mlp1.set_mlp(hidden_layer_sizes, learning_rate_init = learning_rate_init)
+#
+# # (3.) train and test
+# clsfy_name = 'dow_jones_mlp'
+# mlp_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
+# mlp1.count_label(data_folder)
+# mlp1.train(save_clsfy_path= mlp_path)
+# mlp1.dev(save_clsfy_path= mlp_path)
+# # ======================================================================================================================
