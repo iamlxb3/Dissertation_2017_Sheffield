@@ -65,29 +65,32 @@ from a_share import Ashare
 # # ==========================================================================================================
 
 
-# # # ==========================================================================================================
-# # # [4.b] scaling
-# # # ==========================================================================================================
-# data_cleaner = DataPp()
-# input_folder = 'a_share_processed_data'
-# input_folder = os.path.join(parent_folder, 'data', 'a_share', input_folder)
-# save_folder = 'a_share_scaled_data'
-# save_folder = os.path.join(parent_folder, 'data', 'a_share', save_folder)
-# features_scale_list = []
-#
-# # features_scale_list
-# features_scale1 = [('bvps', 'esp', 'fixedAssets', 'gpr',
-#                     'holders', 'liquidAssets', 'npr',
-#                     'outstanding', 'pb', 'pe', 'perundp',
-#                     'profit', 'reserved', 'reservedPerShare'
-#                     ,'rev','totalAssets', 'totals', 'undp',
-#                     'volume'),(0,1)]
-# features_scale_list = [features_scale1]
-#
-# #
-#
-# data_cleaner.scale_data(input_folder, save_folder,  features_scale_list)
-# # # ==========================================================================================================
+
+# # ==========================================================================================================
+# # [4.b] scaling
+# # ==========================================================================================================
+data_cleaner = DataPp()
+input_folder = 'a_share_processed_data'
+input_folder = os.path.join(parent_folder, 'data', 'a_share', input_folder)
+save_folder = 'a_share_scaled_data'
+save_folder = os.path.join(parent_folder, 'data', 'a_share', save_folder)
+features_scale_list = []
+
+# features_scale_list
+features_scale1 = [('bvps', 'esp', 'fixedAssets', 'gpr',
+                    'holders', 'liquidAssets', 'npr',
+                    'outstanding', 'pb', 'pe', 'perundp',
+                    'profit', 'reserved', 'reservedPerShare'
+                    ,'rev','totalAssets', 'totals', 'undp',
+                    'volume'),(0,1)]
+features_scale_list = [features_scale1]
+
+# scale data and save scaler
+trained_classifiers_folder = os.path.join(parent_folder, 'trained_data_processor')
+scaler_name = 'a_share_scaler'
+
+data_cleaner.scale_data(input_folder, save_folder,  features_scale_list, trained_classifiers_folder, scaler_name)
+# # ==========================================================================================================
 
 
 
@@ -101,14 +104,15 @@ from a_share import Ashare
 # # # ==========================================================================================================
 
 
-# # ==========================================================================================================
-# # [4.3] write the regression value of the data
-# # ==========================================================================================================
-a_share1 = Ashare()
-input_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_scaled_data')
-save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_regression_data')
-a_share1.regression(input_folder, save_folder)
-# # ==========================================================================================================
+
+# # # ==========================================================================================================
+# # # [4.3] write the regression value of the data
+# # # ==========================================================================================================
+# a_share1 = Ashare()
+# input_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_scaled_data')
+# save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_regression_data')
+# a_share1.regression(input_folder, save_folder)
+# # # ==========================================================================================================
 
 
 # # # ==========================================================================================================

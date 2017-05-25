@@ -658,7 +658,7 @@ class MlpClassifier:
                 f.write('avg_price_change: {}\n'.format(avg_price_change))
                 f.write('mres: {}\n'.format(mres))
 
-        print("save feature and topology test result for regression complete!!!!")
+        print("save topology test result by {} to {} sucessfully".format(key, path))
 
     def get_full_feature_switch_tuple(self, folder):
         # read feature length
