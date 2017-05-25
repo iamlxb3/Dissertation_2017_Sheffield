@@ -2,6 +2,7 @@ import re
 import os
 import sys
 import numpy as np
+import copy
 
 class DataPp():
     def __init__(self):
@@ -103,3 +104,52 @@ class DataPp():
                     f.write(feature_value_name_str)
 
         print ("Fill in nan succesful! nan sample count: {}, nan count: {}".format(sample_count, nan_count))
+
+    def scale_data(self, input_folder, save_folder, features_scale_list):
+
+        # intialize sk-learn preprocessing
+        from sklearn import preprocessing
+
+
+        file_name_list = os.listdir(input_folder)
+        file_path_list = [os.path.join(input_folder, x) for x in file_name_list]
+        file_save_path_list = [os.path.join(save_folder, x) for x in file_name_list]
+
+        # read the feature name list
+        for i, file_path in enumerate(file_path_list):
+            with open(file_path, 'r', encoding = 'utf-8') as f:
+                feature_name_list = f.readlines()[0].split(',')[::2]
+                break
+        #
+
+        # read X
+        X = []
+        for i, file_path in enumerate(file_path_list):
+            with open(file_path, 'r', encoding = 'utf-8') as f:
+                feature_value_list = f.readlines()[0].split(',')[1::2]
+                feature_value_list = [float(x) for x in feature_value_list]
+                X.append(feature_value_list)
+        X = np.array(X)
+        #
+
+        # scaling
+        for features_scale in features_scale_list:
+            s_feature_name_tuple = features_scale[0]
+            scale_range = features_scale[1]
+            f_name_index_list = [feature_name_list.index(f_name) for f_name in s_feature_name_tuple]
+            scaler = preprocessing.MinMaxScaler(feature_range = scale_range)
+            scaler.fit(X)
+            trans_X = scaler.transform(X)
+            for index in f_name_index_list:
+                X[:, index] = trans_X[:, index]
+        #
+
+        # save file
+        for i, file_save_path in enumerate(file_save_path_list):
+            with open(file_save_path, 'w', encoding = 'utf-8') as f:
+                feature_write_list = [str(j) for i in zip(feature_name_list,X[i]) for j in i]
+                feature_write_str = ','.join(feature_write_list)
+                f.write(feature_write_str)
+
+        print ("Scaling data succesful!")
+        print ("features_scale_list: ", features_scale_list)

@@ -285,10 +285,26 @@ class Ashare:
             with open (file_path, 'w', encoding = 'utf-8') as f:
                 f.write(feature_str)
 
+    def regression(self, input_folder, save_folder):
+
+        file_name_list = os.listdir(input_folder)
+        file_path_list = [os.path.join(input_folder, file_name) for file_name in file_name_list]
+        key = 'priceChange'
+
+        for i, file_path in enumerate(file_path_list):
+            with open(file_path, 'r', encoding = 'utf-8') as f:
+                feature_name_value_list = f.readlines()[0].split(',')
+                key_index = feature_name_value_list.index(key)
+                key_value = feature_name_value_list[key_index + 1]
+                del feature_name_value_list[key_index: key_index+2]
+                feature_name_value_str = ','.join(feature_name_value_list)
+                file_name = file_name_list[i][:-4] + '_' + key_value + '.txt'
+                file_save_path = os.path.join(save_folder, file_name)
+                with open (file_save_path, 'w', encoding = 'utf-8') as f:
+                    f.write(feature_name_value_str)
+        print ("Write the regression value for {} files".format(len(file_name_list)))
 
 
-        # print (pos_samples_split_list)
-        # print (len(pos_samples_split_list))
 
     def get_stocks_feature_this_week(self):
         nearest_friday = datetime.datetime.today().date()

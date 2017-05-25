@@ -54,7 +54,7 @@ data_folder = os.path.join(parent_folder, 'data', data_folder)
 # FEATURE AND TOPOLOGY TEST
 # ======================================================================================================================
 feature_switch_list_all = mlp1.generate_feature_switch_list(data_folder)
-feature_switch_list_all = feature_switch_list_all[:5]
+feature_switch_list_all = feature_switch_list_all[:]
 for feature_switch_tuple in feature_switch_list_all:
     mlp1.read_selected_feature_list(data_folder, feature_switch_tuple)
     mlp1.feed_and_seperate_data(data_folder, dev_per = dev_per, data_per = data_per,
@@ -86,10 +86,10 @@ for feature_switch_tuple in feature_switch_list_all:
     # config hidden layer size
     # ----------------------------------------------------------------------------------------------------------------------
     hidden_layer_node_min = 10
-    hidden_layer_node_max = 13
+    hidden_layer_node_max = 50
     hidden_layer_node_step = 1
     hidden_layer_depth_min = 1
-    hidden_layer_depth_max = 1
+    hidden_layer_depth_max = 4
     hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,
                                  hidden_layer_depth_max)
     # ----------------------------------------------------------------------------------------------------------------------
