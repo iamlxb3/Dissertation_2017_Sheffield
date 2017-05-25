@@ -1,4 +1,4 @@
-from sklearn.neural_network import MLPClassifier
+from sklearn.neural_network import MLPClassifier, MLPRegressor
 import os
 import numpy as np
 import collections
@@ -10,6 +10,19 @@ import itertools
 import sys
 from pjslib.logger import logger2
 
+# ==========================================================================================================
+# ADD SYS PATH
+# ==========================================================================================================
+parent_folder = os.path.dirname((os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+path1 = os.path.join(parent_folder, 'general_functions')
+sys.path.append(path1)
+# ==========================================================================================================
+
+# ==========================================================================================================
+# local package import
+# ==========================================================================================================
+from general_funcs import calculate_mrse
+# ==========================================================================================================
 
 class MlpClassifier:
     def __init__(self):
@@ -26,6 +39,8 @@ class MlpClassifier:
         self.feature_switch_list = []
         self.feature_selected_list = []
         self.iteration_loss_list = []
+        self.mres_list = []
+        self.avg_price_change_list = []
 
     def count_label(self, folder):
         file_name_list = os.listdir(folder)
@@ -38,6 +53,8 @@ class MlpClassifier:
                 break
             label_dict[label] += 1
         print ("label_dict: {}".format(list(label_dict.items())))
+
+
 
     def set_mlp(self, hidden_layer_sizes, tol = 1e-6, learning_rate_init = 0.001):
         self.hidden_size_list.append(hidden_layer_sizes)
@@ -228,7 +245,6 @@ class MlpClassifier:
         print ("average_f1: ", average_f1)
         print("=================================================================")
 
-
     def weekly_predict(self):
         mlp = pickle.load(open("mlp_classifier", "rb"))
         # read feature txt for check
@@ -404,3 +420,150 @@ class MlpClassifier:
                 f.write('iteration_loss: {}\n\n'.format(iteration_loss_list))
 
         print ("save feature and topology test result complete!!!!")
+
+    #   ====================================================================================================================
+    #   regressor
+    #   ====================================================================================================================
+
+    def set_regressor(self, hidden_layer_sizes, tol = 1e-6, learning_rate_init = 0.001):
+        self.hidden_size_list.append(hidden_layer_sizes)
+        self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
+        # self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
+        #                              tol = tol, learning_rate_init = learning_rate_init, verbose = True,
+        #                              solver = 'sgd', momentum = 0.3,  max_iter = 10000)
+        self.mlp_regressor = MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
+                                     tol = tol, learning_rate_init = learning_rate_init,
+                                     max_iter = 1000, random_state = 1, verbose= True)
+
+    def _r_feed_data(self, folder, data_per, feature_switch_tuple = None):
+        if feature_switch_tuple:
+            self.feature_switch_list.append(feature_switch_tuple)
+        # ::: _feed_data :::
+        # TODO test the folder exists
+        file_name_list = os.listdir(folder)
+        file_path_list = [os.path.join(folder, x) for x in file_name_list]
+        file_total_number = len(file_name_list)
+        file_used_number = math.floor(data_per*file_total_number)  # restrict the number of training sample
+        file_path_list = file_path_list[0:file_used_number]
+        samples_feature_list = []
+        samples_value_list = []
+        date_str_list = []
+        stock_id_list = []
+        for f_path in file_path_list:
+            f_name = os.path.basename(f_path)
+            regression_value = float(re.findall(r'#([0-9\.\+\-e]+)#', f_name)[0])
+            date_str = re.findall(r'([0-9]+-[0-9]+-[0-9]+)_', f_name)[0]
+            stock_id = re.findall(r'_([0-9]{6})_', f_name)[0]
+            with open (f_path, 'r') as f:
+                features_list  = f.readlines()[0].split(',')
+                features_list = features_list[1::2]
+                features_list = [float(x) for x in features_list]
+                if feature_switch_tuple:
+                    features_list = self._feature_degradation(features_list, feature_switch_tuple)
+                features_array = np.array(features_list)
+                #features_array = features_array.reshape(-1,1)
+                samples_feature_list.append(features_array)
+                samples_value_list.append(regression_value)
+                date_str_list.append(date_str)
+                stock_id_list.append(stock_id)
+        print ("read feature list and regression_value list for {} successful!".format(folder))
+        return samples_feature_list, samples_value_list, date_str_list, stock_id_list
+
+    def r_feed_and_seperate_data(self, folder, dev_per = 0.2, data_per = 1.0, feature_switch_tuple = None):
+
+        # clear training_set, dev_set
+        self.r_training_set = []
+        self.r_training_value_set = []
+        self.r_dev_set = []
+        self.r_dev_value_set = []
+
+
+        # cut the number of training sample
+        samples_feature_list, samples_value_list, date_str_list, stock_id_list = self._r_feed_data(folder, data_per,
+                                                                   feature_switch_tuple= feature_switch_tuple)
+
+        sample_number = len(samples_feature_list)
+        dev_sample_num = math.floor(sample_number * dev_per) * -1
+
+        self.r_training_set = samples_feature_list[0:dev_sample_num]
+        self.r_training_value_set = samples_value_list[0:dev_sample_num]
+        self.r_dev_set = samples_feature_list[dev_sample_num:]
+        self.r_dev_value_set = samples_value_list[dev_sample_num:]
+        self.r_dev_date_set = date_str_list[dev_sample_num:]
+        self.r_dev_stock_id_set = stock_id_list[dev_sample_num:]
+
+        print ("r_training_set_size: {}, r_dev_set_size: {}".format(len(self.r_training_set), len(self.r_dev_set)))
+
+
+
+
+    def regressor_train(self, save_clsfy_path="mlp_regressor"):
+        print("self.training_set_size: ", len(self.training_set))
+        self.mlp_regressor.fit(self.r_training_set, self.r_training_value_set)
+        self.iteration_loss_list.append((self.mlp_regressor.n_iter_, self.mlp_regressor.loss_))
+        pickle.dump(self.mlp_regressor, open(save_clsfy_path, "wb"))
+        print ("mlp regressor saved to {}.".format(save_clsfy_path))
+
+
+    def _get_avg_price_change(self, pred_value_list, actual_value_list, date_list, stock_id_list):
+
+        # construct stock_pred_v_dict
+        stock_pred_v_dict = collections.defaultdict(lambda : [])
+        for i, date in enumerate(date_list):
+            stock_pred_v_pair = (stock_id_list[i], pred_value_list[i])
+            stock_pred_v_dict[date].append(stock_pred_v_pair)
+        #
+
+        #
+        stock_actual_v_dict = collections.defaultdict(lambda : 0)
+        for i, date in enumerate(date_list):
+            date_stock_id_pair = (date, stock_id_list[i])
+            stock_actual_v_dict[date_stock_id_pair] = actual_value_list[i]
+        #
+
+        # find the stock with the highest predicted priceChange and compute the avg priceChange
+        actual_price_change_sum = 0
+        for date, stock_pred_v_pair_list in stock_pred_v_dict.items():
+            best_stock_id = sorted(stock_pred_v_pair_list, key = lambda x:x[1], reverse = True)[0][0]
+            date_stock_id_pair = (best_stock_id, date)
+            actual_price_change = stock_actual_v_dict[date_stock_id_pair]
+            actual_price_change_sum += actual_price_change
+        #
+
+        # compute the average
+        avg_price_change = actual_price_change_sum / len(stock_pred_v_dict.keys())
+        #
+
+        return avg_price_change
+
+
+
+    def regressor_dev(self, save_clsfy_path="mlp_regressor"):
+        print("get regressor from {}.".format(save_clsfy_path))
+        mlp_regressor = pickle.load(open(save_clsfy_path, "rb"))
+        pred_value_list = np.array(mlp_regressor.predict(self.r_dev_set))
+        actual_value_list = np.array(self.r_dev_value_set)
+        mrse = calculate_mrse(actual_value_list, pred_value_list)
+        date_list = self.r_dev_date_set
+        stock_id_list = self.r_dev_stock_id_set
+        avg_price_change = self._get_avg_price_change(pred_value_list, actual_value_list, date_list, stock_id_list)
+
+        # count how many predicted value has the same polarity as actual value
+        polar_list = [1 for x, y in zip(pred_value_list, actual_value_list) if x*y >= 0]
+        polar_count = len(polar_list)
+        polar_percent = "{:.3f}%".format(100*polar_count / len(pred_value_list))
+        #
+
+        self.mres_list.append(mrse)
+        self.avg_price_change_list.append(avg_price_change)
+
+        print ("actual_value_list, ", actual_value_list)
+        print ("pred_value_list, ", pred_value_list)
+
+        print ("polar_percent: {}".format(polar_percent))
+        print ("mrse: {}".format(mrse))
+        print ("avg_price_change: {}".format(avg_price_change))
+
+    #   ====================================================================================================================
+    #   regressor END
+    #   ====================================================================================================================

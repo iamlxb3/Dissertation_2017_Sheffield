@@ -298,10 +298,12 @@ class Ashare:
                 key_value = feature_name_value_list[key_index + 1]
                 del feature_name_value_list[key_index: key_index+2]
                 feature_name_value_str = ','.join(feature_name_value_list)
-                file_name = file_name_list[i][:-4] + '_' + key_value + '.txt'
+                file_name = file_name_list[i][:-4] + '_' + '#' + key_value + '#' + '.txt'
                 file_save_path = os.path.join(save_folder, file_name)
                 with open (file_save_path, 'w', encoding = 'utf-8') as f:
                     f.write(feature_name_value_str)
+
+        print ("key: ", key)
         print ("Write the regression value for {} files".format(len(file_name_list)))
 
 
