@@ -37,8 +37,8 @@ from mlp_classifier import MlpClassifier
 # ==========================================================================================================
 # (1.) build classifer
 mlp_regressor1 = MlpClassifier()
-hidden_layer_sizes = (10, 1)
-learning_rate_init = 0.001
+hidden_layer_sizes = (30, 3)
+learning_rate_init = 0.00001
 mlp_regressor1.set_regressor(hidden_layer_sizes, learning_rate_init = learning_rate_init)
 
 

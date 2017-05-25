@@ -401,6 +401,9 @@ class MlpClassifier:
         print ("Total feature combination: {}".format(len(feature_switch_list_all)))
         return feature_switch_list_all
 
+
+
+
     def save_feature_topology_result(self, path):
         topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
                                         self.hidden_size_list, self.average_f1_list, self.iteration_loss_list)),
@@ -425,7 +428,7 @@ class MlpClassifier:
     #   regressor
     #   ====================================================================================================================
 
-    def set_regressor(self, hidden_layer_sizes, tol = 1e-6, learning_rate_init = 0.001):
+    def set_regressor(self, hidden_layer_sizes, tol = 1e-8, learning_rate_init = 0.001):
         self.hidden_size_list.append(hidden_layer_sizes)
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
         # self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
@@ -433,9 +436,10 @@ class MlpClassifier:
         #                              solver = 'sgd', momentum = 0.3,  max_iter = 10000)
         self.mlp_regressor = MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
                                      tol = tol, learning_rate_init = learning_rate_init,
-                                     max_iter = 1000, random_state = 1, verbose= True)
+                                     max_iter = 1000, random_state = 1)
 
     def _r_feed_data(self, folder, data_per, feature_switch_tuple = None):
+        # feature_switch_tuple : (0,1,1,0,1,1,0,...) ?
         if feature_switch_tuple:
             self.feature_switch_list.append(feature_switch_tuple)
         # ::: _feed_data :::
@@ -471,6 +475,10 @@ class MlpClassifier:
 
     def r_feed_and_seperate_data(self, folder, dev_per = 0.2, data_per = 1.0, feature_switch_tuple = None):
 
+        print ("start feeding data......")
+        if feature_switch_tuple:
+            print ("feature_switch_tuple: ", feature_switch_tuple)
+
         # clear training_set, dev_set
         self.r_training_set = []
         self.r_training_value_set = []
@@ -498,45 +506,10 @@ class MlpClassifier:
 
 
     def regressor_train(self, save_clsfy_path="mlp_regressor"):
-        print("self.training_set_size: ", len(self.training_set))
         self.mlp_regressor.fit(self.r_training_set, self.r_training_value_set)
         self.iteration_loss_list.append((self.mlp_regressor.n_iter_, self.mlp_regressor.loss_))
         pickle.dump(self.mlp_regressor, open(save_clsfy_path, "wb"))
         print ("mlp regressor saved to {}.".format(save_clsfy_path))
-
-
-    def _get_avg_price_change(self, pred_value_list, actual_value_list, date_list, stock_id_list):
-
-        # construct stock_pred_v_dict
-        stock_pred_v_dict = collections.defaultdict(lambda : [])
-        for i, date in enumerate(date_list):
-            stock_pred_v_pair = (stock_id_list[i], pred_value_list[i])
-            stock_pred_v_dict[date].append(stock_pred_v_pair)
-        #
-
-        #
-        stock_actual_v_dict = collections.defaultdict(lambda : 0)
-        for i, date in enumerate(date_list):
-            date_stock_id_pair = (date, stock_id_list[i])
-            stock_actual_v_dict[date_stock_id_pair] = actual_value_list[i]
-        #
-
-        # find the stock with the highest predicted priceChange and compute the avg priceChange
-        actual_price_change_sum = 0
-        for date, stock_pred_v_pair_list in stock_pred_v_dict.items():
-            best_stock_id = sorted(stock_pred_v_pair_list, key = lambda x:x[1], reverse = True)[0][0]
-            date_stock_id_pair = (best_stock_id, date)
-            actual_price_change = stock_actual_v_dict[date_stock_id_pair]
-            actual_price_change_sum += actual_price_change
-        #
-
-        # compute the average
-        avg_price_change = actual_price_change_sum / len(stock_pred_v_dict.keys())
-        #
-
-        return avg_price_change
-
-
 
     def regressor_dev(self, save_clsfy_path="mlp_regressor"):
         print("get regressor from {}.".format(save_clsfy_path))
@@ -557,13 +530,144 @@ class MlpClassifier:
         self.mres_list.append(mrse)
         self.avg_price_change_list.append(avg_price_change)
 
+        print ("----------------------------------------------------------------------------------------")
         print ("actual_value_list, ", actual_value_list)
         print ("pred_value_list, ", pred_value_list)
-
         print ("polar_percent: {}".format(polar_percent))
         print ("mrse: {}".format(mrse))
         print ("avg_price_change: {}".format(avg_price_change))
+        print ("----------------------------------------------------------------------------------------")
 
+    def _get_avg_price_change(self, pred_value_list, actual_value_list, date_list, stock_id_list):
+
+
+        # construct stock_pred_v_dict
+        stock_pred_v_dict = collections.defaultdict(lambda : [])
+        for i, date in enumerate(date_list):
+            stock_pred_v_pair = (stock_id_list[i], pred_value_list[i])
+            stock_pred_v_dict[date].append(stock_pred_v_pair)
+        #
+
+        #
+        stock_actual_v_dict = collections.defaultdict(lambda : 0)
+        for i, date in enumerate(date_list):
+            date_stock_id_pair = (date, stock_id_list[i])
+            stock_actual_v_dict[date_stock_id_pair] = actual_value_list[i]
+        #
+
+
+        # find the stock with the highest predicted priceChange and compute the avg priceChange
+        actual_price_change_sum = 0
+
+        for date, stock_pred_v_pair_list in stock_pred_v_dict.items():
+            sorted_stock_pred_v_pair_list = sorted(stock_pred_v_pair_list, key = lambda x:x[1], reverse = True)
+            best_stock_id = sorted_stock_pred_v_pair_list[0][0]
+            best_stock_pred_price_change = sorted_stock_pred_v_pair_list[0][1]
+
+            date_stock_id_pair = (date, best_stock_id)
+
+            actual_price_change = stock_actual_v_dict[date_stock_id_pair]
+            actual_price_change_sum += actual_price_change
+
+            # # temp print
+            # print ("best_stock_pred_price_change: ", best_stock_pred_price_change)
+            # print("date_stock_id_pair: ", date_stock_id_pair)
+            # print("actual_price_change: ", actual_price_change)
+            # #
+
+        #
+
+
+        # compute the average
+        avg_price_change = actual_price_change_sum / len(stock_pred_v_dict.keys())
+        #
+
+        return avg_price_change
+
+
+
+    def r_topology_test(self, other_config_dict, hidden_layer_config_tuple):
+        def _build_hidden_layer_sizes_list(hidden_layer_config_tuple):
+            hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min, \
+            hidden_layer_depth_max = hidden_layer_config_tuple
+
+            hidden_layer_unit_list = [x for x in range(hidden_layer_node_min, hidden_layer_node_max + 1)]
+            hidden_layer_unit_list = hidden_layer_unit_list[::hidden_layer_node_step]
+            #
+
+            hidden_layer_layer_list = [x for x in range(hidden_layer_depth_min, hidden_layer_depth_max + 1)]
+            #
+            hidden_layer_sizes_list = list(itertools.product(hidden_layer_unit_list, hidden_layer_layer_list))
+            return hidden_layer_sizes_list
+
+        # :::topology_test:::
+
+
+
+
+        hidden_layer_sizes_list = _build_hidden_layer_sizes_list(hidden_layer_config_tuple)
+        hidden_layer_sizes_combination = len(hidden_layer_sizes_list)
+        print ("Total {} hidden layer size combination to test".format(hidden_layer_sizes_combination))
+
+        learning_rate_init = other_config_dict['learning_rate_init']
+        clf_path = other_config_dict['clf_path']
+        tol = other_config_dict['tol']
+
+        for i, hidden_layer_sizes in enumerate(hidden_layer_sizes_list):
+            # _update_feature_switch_list
+            self._update_feature_switch_list(i)
+
+            self.set_regressor(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol=tol)
+            self.regressor_train(save_clsfy_path=clf_path)
+            self.regressor_dev(save_clsfy_path=clf_path)
+            print ("==================================")
+            print ("Completeness: {:.2f}".format((i+1)/hidden_layer_sizes_combination))
+            print ("==================================")
+
+
+
+
+    def r_save_feature_topology_result(self, path, key = 'mres'):
+
+        if key == 'mres':
+            topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
+                                            self.hidden_size_list, self.iteration_loss_list,
+                                            self.avg_price_change_list, self.mres_list)),
+                                   key=lambda x: x[-1], reverse=True)
+        elif key == 'avg_pc':
+            topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
+                                            self.hidden_size_list, self.iteration_loss_list,
+                                            self.avg_price_change_list, self.mres_list)),
+                                   key=lambda x: x[-2], reverse=True)
+        else:
+            print ("Key should be mres or avg_pc, key: {}".format(key))
+
+        with open(path, 'w', encoding='utf-8') as f:
+            for tuple1 in topology_list:
+                feature_switch = str(tuple1[0])
+                feature_selected = str(tuple1[1])
+                hidden_size = str(tuple1[2])
+                iteration_loss = str(tuple1[3])
+                avg_price_change = str(tuple1[4])
+                mres = str(tuple1[5])
+                f.write('----------------------------------------------------\n')
+                f.write('feature_switch: {}\n'.format(feature_switch))
+                f.write('feature_selected: {}\n'.format(feature_selected))
+                f.write('hidden_size: {}\n'.format(hidden_size))
+                f.write('iteration_loss: {}\n'.format(iteration_loss))
+                f.write('avg_price_change: {}\n'.format(avg_price_change))
+                f.write('mres: {}\n'.format(mres))
+
+        print("save feature and topology test result for regression complete!!!!")
+
+    def get_full_feature_switch_tuple(self, folder):
+        # read feature length
+        file_name_list = os.listdir(folder)
+        file_path_0 = [os.path.join(folder, x) for x in file_name_list][0]
+        with open(file_path_0, 'r', encoding='utf-8') as f:
+            feature_name_list = f.readlines()[0].split(',')[::2]
+        full_feature_switch_tuple = tuple([1 for x in feature_name_list])
+        return full_feature_switch_tuple
     #   ====================================================================================================================
     #   regressor END
     #   ====================================================================================================================
