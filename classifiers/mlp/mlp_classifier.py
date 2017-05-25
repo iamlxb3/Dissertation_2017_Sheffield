@@ -41,6 +41,7 @@ class MlpClassifier:
         self.iteration_loss_list = []
         self.mres_list = []
         self.avg_price_change_list = []
+        self.polar_accuracy_list = []
 
     def count_label(self, folder):
         file_name_list = os.listdir(folder)
@@ -529,6 +530,8 @@ class MlpClassifier:
 
         self.mres_list.append(mrse)
         self.avg_price_change_list.append(avg_price_change)
+        self.avg_price_change_list.append(avg_price_change)
+        self.polar_accuracy_list.append(polar_percent)
 
         print ("----------------------------------------------------------------------------------------")
         print ("actual_value_list, ", actual_value_list)
@@ -621,7 +624,7 @@ class MlpClassifier:
             self.regressor_train(save_clsfy_path=clf_path)
             self.regressor_dev(save_clsfy_path=clf_path)
             print ("==================================")
-            print ("Completeness: {:.2f}".format((i+1)/hidden_layer_sizes_combination))
+            print ("Completeness: {:.5f}".format((i+1)/hidden_layer_sizes_combination))
             print ("==================================")
 
 
@@ -631,12 +634,12 @@ class MlpClassifier:
 
         if key == 'mres':
             topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
-                                            self.hidden_size_list, self.iteration_loss_list,
+                                            self.hidden_size_list, self.iteration_loss_list, self.polar_accuracy_list,
                                             self.avg_price_change_list, self.mres_list)),
-                                   key=lambda x: x[-1], reverse=True)
+                                   key=lambda x: x[-1])
         elif key == 'avg_pc':
             topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
-                                            self.hidden_size_list, self.iteration_loss_list,
+                                            self.hidden_size_list, self.iteration_loss_list, self.polar_accuracy_list,
                                             self.avg_price_change_list, self.mres_list)),
                                    key=lambda x: x[-2], reverse=True)
         else:
@@ -648,13 +651,15 @@ class MlpClassifier:
                 feature_selected = str(tuple1[1])
                 hidden_size = str(tuple1[2])
                 iteration_loss = str(tuple1[3])
-                avg_price_change = str(tuple1[4])
-                mres = str(tuple1[5])
+                polar_accuracy = str(tuple1[4])
+                avg_price_change = str(tuple1[5])
+                mres = str(tuple1[6])
                 f.write('----------------------------------------------------\n')
                 f.write('feature_switch: {}\n'.format(feature_switch))
                 f.write('feature_selected: {}\n'.format(feature_selected))
                 f.write('hidden_size: {}\n'.format(hidden_size))
                 f.write('iteration_loss: {}\n'.format(iteration_loss))
+                f.write('polar_accuracy: {}\n'.format(polar_accuracy))
                 f.write('avg_price_change: {}\n'.format(avg_price_change))
                 f.write('mres: {}\n'.format(mres))
 

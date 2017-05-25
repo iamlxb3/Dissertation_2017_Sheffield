@@ -86,11 +86,11 @@ f_t_t_save_path_avg_pc = os.path.join(parent_folder, 'topology_feature_test', 'a
 # ----------------------------------------------------------------------------------------------------------------------
 # config hidden layer size
 # ----------------------------------------------------------------------------------------------------------------------
-hidden_layer_node_min = 10
-hidden_layer_node_max = 13
+hidden_layer_node_min = 100
+hidden_layer_node_max = 1000
 hidden_layer_node_step = 1
 hidden_layer_depth_min = 1
-hidden_layer_depth_max = 2
+hidden_layer_depth_max = 6
 hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,
                              hidden_layer_depth_max)
 # ----------------------------------------------------------------------------------------------------------------------
