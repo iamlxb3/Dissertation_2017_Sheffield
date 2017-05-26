@@ -38,6 +38,14 @@ from a_share import Ashare
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+# # ==========================================================================================================
+# # [1.] Download the raw data
+# # ==========================================================================================================
+# a_share1 = Ashare()
+# start_date = '2016-07-01'
+# save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_raw_data')
+# a_share1.read_a_share_history_date(save_folder, start_date = start_date)
+# # ==========================================================================================================
 
 
 
@@ -51,18 +59,18 @@ from a_share import Ashare
 # # ==========================================================================================================
 
 
-# # ==========================================================================================================
-# # [3.] Clean data. <a> get rid of nan feature value.
-# # ==========================================================================================================
-# data_cleaner = DataPp()
-# input_folder = 'a_share_f_engineered_data'
-# input_folder = os.path.join(parent_folder, 'data', 'a_share', input_folder)
-# save_folder = 'a_share_processed_data'
-# save_folder = os.path.join(parent_folder, 'data', 'a_share', save_folder)
-# data_cleaner.correct_non_float_feature(input_folder, save_folder)
-# #data_cleaner.examine_data(input_folder)  # examine the feature to see whether it is float
-#
-# # ==========================================================================================================
+# ==========================================================================================================
+# [3.] Clean data. <a> get rid of nan feature value.
+# ==========================================================================================================
+data_cleaner = DataPp()
+input_folder = 'a_share_f_engineered_data'
+input_folder = os.path.join(parent_folder, 'data', 'a_share', input_folder)
+save_folder = 'a_share_processed_data'
+save_folder = os.path.join(parent_folder, 'data', 'a_share', save_folder)
+data_cleaner.correct_non_float_feature(input_folder, save_folder)
+#data_cleaner.examine_data(input_folder)  # examine the feature to see whether it is float
+
+# ==========================================================================================================
 
 
 
@@ -105,14 +113,14 @@ data_cleaner.scale_data(input_folder, save_folder,  features_scale_list, trained
 
 
 
-# # # ==========================================================================================================
-# # # [4.3] write the regression value of the data
-# # # ==========================================================================================================
-# a_share1 = Ashare()
-# input_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_scaled_data')
-# save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_regression_data')
-# a_share1.regression(input_folder, save_folder)
-# # # ==========================================================================================================
+# # ==========================================================================================================
+# # [4.3] write the regression value of the data
+# # ==========================================================================================================
+a_share1 = Ashare()
+input_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_scaled_data')
+save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_regression_data')
+a_share1.regression(input_folder, save_folder)
+# # ==========================================================================================================
 
 
 # # # ==========================================================================================================

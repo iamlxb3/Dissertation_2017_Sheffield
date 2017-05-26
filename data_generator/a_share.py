@@ -42,6 +42,10 @@ class Ashare:
         self.t_attributors = []
         self.f_attributors = []
 
+    def read_a_share_history_date(self,save_folder, start_date):
+        self.read_fundamental_data(start_date)
+        self.read_tech_history_data(start_date)
+        self.save_raw_data(save_folder)
 
     def read_tech_history_data(self, start_date, is_prediction = False):
         # clear
@@ -68,23 +72,66 @@ class Ashare:
             fund_dict = ts.get_k_data(stock_id, start=start_date, ktype='W').to_dict()
             # date_list: ['2017-05-05', '2017-05-12', '2017-05-19']
             try:
-                date_items = list(fund_dict['date'].items())
+                # date_items: [(29, '2016-08-05'), (30, '2016-08-12'), (31, '2016-08-19'), ...]
+                date_items = sorted(list(fund_dict['date'].items()), key = lambda x:x[0])
+                #print ("date_items: ", date_items)
             except KeyError:
                 logger1.error("{} stock has no key data".format(stock_id))
                 continue
 
             for i, (id, date_str) in enumerate(date_items):
-                feature_list = []
-                # skip the last date object, because the price change can not be calculated
-                if i == len(date_items) - 1 and is_prediction is False:
-                    print ("Skip {} because of date_str{}".format(id, date_str))
+                if i > len(date_items) - 3 and is_prediction is False:
+                    print("Skip {} on {} because of reaching the end. The data of the rest date "
+                          "cannot be fully presented".format(id, date_str))
                     continue
+
+                # # ======================================================================================================
+                # # TODO
+                # # DATA CHECK FOR NEXT WEEK AND NEXT NEXT WEEK, BUT IT'S HARD TO ACHIEVE BECAUSE THE VARITIES OF HOLIDAIES
+                # # ======================================================================================================
+                # # get the date_str for next next week
+                # date_temp = time.strptime(date_str, '%Y-%m-%d')
+                # date_obj = datetime.datetime(*date_temp[:3])
+                # delta_14 = datetime.timedelta(days=14)
+                # delta_7 = datetime.timedelta(days=7)
+                # date_obj_nw = date_obj + delta_7
+                # date_nw_str = date_obj_nw.strftime("%Y-%m-%d")
+                # date_obj_nnw = date_obj + delta_14
+                # date_nnw_str = date_obj_nnw.strftime("%Y-%m-%d")
+                # #
+                #
+                # # check next week's data
+                # if date_nw_str != date_items[i + 1][1]:
+                #     # print ("date_nw_str: ", date_nw_str)
+                #     # print ("date_items[i + 1][1]: ", date_items[i + 1][1])
+                #     # sys.exit()
+                #     logger1.error("{} stock has no tech data on {} for next week".format(stock_id, date_nnw_str))
+                #     continue
+                # #
+                #
+                # # check next next week's data
+                # if date_nnw_str != date_items[i + 2][1]:
+                #     logger1.error("{} stock has no tech data on {} for next next week".format(stock_id, date_nnw_str))
+                #     continue
+                # #
+                # # ======================================================================================================
+
+                feature_list = []
+
                 for attributor in t_attributors:
                     # for pricechange
                     if attributor == 'priceChange' and is_prediction is False:
-                        close_price = fund_dict['close'][id]
-                        close_price_next_week = fund_dict['close'][date_items[i+1][0]]
-                        priceChange = "{:.5f}".format((close_price_next_week - close_price) / close_price)
+
+                        nw_open = fund_dict['open'][date_items[i + 1][0]]
+                        nnw_open = fund_dict['open'][date_items[i + 2][0]]
+                        priceChange = "{:.5f}".format((nnw_open - nw_open) / nw_open)
+
+                        # # price change for the next week's close
+                        # close_price = fund_dict['close'][id]
+                        # close_price_next_week = fund_dict['close'][date_items[i + 1][0]]
+                        # priceChange = "{:.5f}".format((close_price_next_week - close_price) / close_price)
+                        # #
+
                         feature_list.append(priceChange)
                         continue
                     elif attributor == 'candleLength':
@@ -180,7 +227,7 @@ class Ashare:
         new_feature = np.concatenate((feature1, feature2))
         return new_feature
 
-    def save_raw_data(self, is_f = True, is_prediction = False):
+    def save_raw_data(self, save_folder, is_f = True, is_prediction = False):
 
         for sample, t_feature_array in self.a_share_samples_t_dict.items():
             feature_array_list = []
@@ -215,11 +262,7 @@ class Ashare:
 
             # save file
             save_name = sample + '.csv'
-            if is_prediction == True:
-                folder = 'pred_raw_data'
-            else:
-                folder = 'raw_data'
-            save_path = os.path.join(folder, save_name)
+            save_path = os.path.join(save_folder, save_name)
             with open(save_path, 'w', encoding = 'utf-8') as f:
                 for attribitor, feature_value in save_zip:
                     f.write(str(attribitor) + ',' + str(feature_value) + '\n')
@@ -336,24 +379,35 @@ class Ashare:
             date_obj_temp = time.strptime(date, '%Y-%m-%d')
             date_obj = datetime.datetime(*date_obj_temp[:3])
 
-            previous_friday_obj = date_obj - datetime.timedelta(days = 7)
-            previous_friday_str = previous_friday_obj.strftime("%Y-%m-%d")
-            previous_friday_full_path = previous_friday_str + '_' + stock_id + '.csv'
-            previous_friday_full_path = os.path.join(input_folder, previous_friday_full_path)
 
+            # find the file for the previous week for the calculation of certain features,
+            # the day gap does not necessary to be 7 days
+            previous_week_date_full_path = ''
+            pre_f_day_range = (7, 13)
+            for days in range(pre_f_day_range[0], pre_f_day_range[1]):
+                previous_friday_obj = date_obj - datetime.timedelta(days = days)
+                previous_friday_str = previous_friday_obj.strftime("%Y-%m-%d")
+                previous_friday_full_path = previous_friday_str + '_' + stock_id + '.csv'
+                previous_friday_full_path = os.path.join(input_folder, previous_friday_full_path)
+                try:
+                    open (previous_friday_full_path, 'r', encoding = 'utf-8')
+                    previous_week_date_full_path = previous_friday_full_path
+                    break
+                except FileNotFoundError:
+                    continue
 
-            try:
-                with open (previous_friday_full_path, 'r', encoding = 'utf-8') as f:
+            if not previous_week_date_full_path:
+                logger1.error("{} cannot find the previous week's data within 13 days".format(file_name))
+                continue
+            else:
+                with open(previous_week_date_full_path, 'r', encoding='utf-8') as f:
                     previous_f_feature_pair_dict = {}
                     for line in f:
                         line_list = line.split(',')
                         feature_name = line_list[0]
                         feature_value = float(line_list[1].strip())
                         previous_f_feature_pair_dict[feature_name] = feature_value
-            except FileNotFoundError:
-                logger1.error("{} cannot find the previous friday data".format(file_name))
-                continue
-
+            #
 
             feature_pair_dict = {}
             with open(file_path, 'r', encoding = 'utf-8') as f:
