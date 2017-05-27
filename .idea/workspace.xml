@@ -29,23 +29,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="a_share_download_process_data.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/a_share_download_process_data.py">
+      <file leaf-file-name="a_share_mlp_train_test_history.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/a_share_mlp_train_test_history.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="945">
-              <caret line="117" column="0" lean-forward="false" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
-              <folding>
-                <element signature="e#910#920#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="408">
+              <caret line="47" column="0" lean-forward="false" selection-start-line="47" selection-start-column="0" selection-end-line="50" selection-end-column="3" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="a_share_mlp_train_test_history.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/a_share_mlp_train_test_history.py">
+      <file leaf-file-name="a_share_cv_complete_regression_test.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_regression_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="261">
-              <caret line="40" column="8" lean-forward="true" selection-start-line="40" selection-start-column="8" selection-end-line="40" selection-end-column="8" />
+            <state relative-caret-position="681">
+              <caret line="87" column="26" lean-forward="true" selection-start-line="87" selection-start-column="26" selection-end-line="87" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -54,8 +52,8 @@
       <file leaf-file-name="a_share_cv_complete_classification_test.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_classification_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="86" column="26" lean-forward="true" selection-start-line="86" selection-start-column="26" selection-end-line="86" selection-end-column="26" />
+            <state relative-caret-position="597">
+              <caret line="104" column="20" lean-forward="true" selection-start-line="104" selection-start-column="20" selection-end-line="104" selection-end-column="20" />
               <folding>
                 <element signature="e#676#686#0" expanded="true" />
               </folding>
@@ -66,8 +64,8 @@
       <file leaf-file-name="mlp_classifier.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="675">
-              <caret line="251" column="46" lean-forward="true" selection-start-line="251" selection-start-column="46" selection-end-line="251" selection-end-column="46" />
+            <state relative-caret-position="1039">
+              <caret line="969" column="72" lean-forward="true" selection-start-line="969" selection-start-column="72" selection-end-line="969" selection-end-column="72" />
               <folding>
                 <element signature="e#0#62#0" expanded="true" />
               </folding>
@@ -115,6 +113,7 @@
       <find>self.feature_switch_list</find>
       <find>Set data</find>
       <find>label_data</find>
+      <find>Set Data</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -639,7 +638,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/topology_feature_test/ashare_regression_avg_pc.txt" />
-    <entry file="file://$PROJECT_DIR$/topology_feature_test/ashare_regression_mres.txt" />
     <entry file="file://$PROJECT_DIR$/app/dow_jones_index_complete_test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="21">
@@ -758,28 +756,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/a_share_download_process_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="945">
-          <caret line="117" column="0" lean-forward="false" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
-          <folding>
-            <element signature="e#910#920#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/topology_feature_test/ashare_cv_regression_avg_pc.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_regression_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="58" column="51" lean-forward="true" selection-start-line="58" selection-start-column="51" selection-end-line="58" selection-end-column="51" />
           <folding />
         </state>
       </provider>
@@ -792,28 +772,54 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
+    <entry file="file://$PROJECT_DIR$/topology_feature_test/ashare_regression_mres.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
-          <caret line="251" column="46" lean-forward="true" selection-start-line="251" selection-start-column="46" selection-end-line="251" selection-end-column="46" />
+        <state relative-caret-position="147">
+          <caret line="7" column="25" lean-forward="false" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/a_share_download_process_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="945">
+          <caret line="117" column="0" lean-forward="false" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
           <folding>
-            <element signature="e#0#62#0" expanded="true" />
+            <element signature="e#910#920#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/a_share_mlp_train_test_history.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
-          <caret line="40" column="8" lean-forward="true" selection-start-line="40" selection-start-column="8" selection-end-line="40" selection-end-column="8" />
+        <state relative-caret-position="408">
+          <caret line="47" column="0" lean-forward="false" selection-start-line="47" selection-start-column="0" selection-end-line="50" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1039">
+          <caret line="969" column="72" lean-forward="true" selection-start-line="969" selection-start-column="72" selection-end-line="969" selection-end-column="72" />
+          <folding>
+            <element signature="e#0#62#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_regression_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="681">
+          <caret line="87" column="26" lean-forward="true" selection-start-line="87" selection-start-column="26" selection-end-line="87" selection-end-column="26" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_classification_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="86" column="26" lean-forward="true" selection-start-line="86" selection-start-column="26" selection-end-line="86" selection-end-column="26" />
+        <state relative-caret-position="597">
+          <caret line="104" column="20" lean-forward="true" selection-start-line="104" selection-start-column="20" selection-end-line="104" selection-end-column="20" />
           <folding>
             <element signature="e#676#686#0" expanded="true" />
           </folding>

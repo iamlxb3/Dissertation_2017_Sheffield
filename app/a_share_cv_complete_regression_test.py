@@ -91,7 +91,7 @@ hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidde
                              hidden_layer_depth_max)
 # ----------------------------------------------------------------------------------------------------------------------
 print("====================================================================")
-print("Start training for topology of MLP on regression!")
+print("Start testing for MLP's topology for regression!")
 print("====================================================================")
 
 # run topology test

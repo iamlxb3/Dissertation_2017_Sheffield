@@ -39,10 +39,16 @@ from mlp_classifier import MlpClassifier
 mlp1 = MlpClassifier()
 
 
-# dow jones index dsata
-data_folder = os.path.join('a_share','a_share_labeled_data')
+# gaussian_data
+data_folder = os.path.join('test','gaussian_data')
 data_folder = os.path.join(parent_folder, 'data', data_folder)
 #
+
+
+# # dow jones index dsata
+# data_folder = os.path.join('a_share','a_share_labeled_data')
+# data_folder = os.path.join(parent_folder, 'data', data_folder)
+# #
 
 
 # ======================================================================================================================
@@ -68,7 +74,7 @@ mlp1.read_selected_feature_list(data_folder, feature_switch_tuple)
 # ----------------------------------------------------------------------------------------------------------------------
 other_config_dict = {}
 # (1.) learning_rate
-other_config_dict['learning_rate_init'] = 0.00001
+other_config_dict['learning_rate_init'] = 0.0001
 other_config_dict['tol'] = 1e-8
 
 # (2.) clf_path
@@ -82,11 +88,11 @@ cv_f_t_t_save_path = os.path.join(parent_folder, 'topology_feature_test', 'ashar
 # ----------------------------------------------------------------------------------------------------------------------
 # config hidden layer size
 # ----------------------------------------------------------------------------------------------------------------------
-hidden_layer_node_min = 30
-hidden_layer_node_max = 40
+hidden_layer_node_min = 5
+hidden_layer_node_max = 10
 hidden_layer_node_step = 1
-hidden_layer_depth_min = 1
-hidden_layer_depth_max = 4
+hidden_layer_depth_min = 2
+hidden_layer_depth_max = 3
 hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,
                              hidden_layer_depth_max)
 # ----------------------------------------------------------------------------------------------------------------------
@@ -94,7 +100,7 @@ hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidde
 
 # run topology test
 print("====================================================================")
-print("Start training for the topology of MLP on classification!")
+print("Start testing for MLP's topology for classification!")
 print("====================================================================")
 mlp1.cv_cls_topology_test(data_folder, feature_switch_tuple, other_config_dict, hidden_layer_config_tuple,
                           is_random = True)

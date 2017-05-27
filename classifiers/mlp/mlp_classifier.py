@@ -227,11 +227,8 @@ class MlpClassifier:
 
     def dev(self, save_clsfy_path="mlp_classifier", is_cv = False):
         mlp = pickle.load(open(save_clsfy_path, "rb"))
-        pred_label_list = []
-        for feature_array in self.dev_set:
-            feature_array = feature_array.reshape(1, -1)
-            pred_label = mlp.predict(feature_array)[0]
-            pred_label_list.append(pred_label)
+
+        pred_label_list = mlp.predict(self.dev_set)
 
         pred_label_dict = collections.defaultdict(lambda: 0)
         for pred_label in pred_label_list:
@@ -249,17 +246,23 @@ class MlpClassifier:
         for i, pred_label in enumerate(pred_label_list):
             if pred_label == self.dev_label[i]:
                 correct += 1
+
         accuracy = correct/len(self.dev_label)
         self.accuracy_list.append(accuracy)
 
-        # print("\n=================================================================")
-        # print("Dev set result!")
-        # print("=================================================================")
-        # print("pred_label_dict: {}".format(list(pred_label_dict.items())))
-        # print("label_f1_list: {}".format(label_f1_list))
-        # print("average_f1: ", average_f1)
-        # print("accuracy: ", accuracy)
-        #print("=================================================================")
+        dev_label_dict = collections.defaultdict(lambda: 0)
+        for dev_label in self.dev_label:
+            dev_label_dict[dev_label] += 1
+
+        print("\n=================================================================")
+        print("Dev set result!")
+        print("=================================================================")
+        print("dev_label_dict: {}".format(list(dev_label_dict.items())))
+        print("pred_label_dict: {}".format(list(pred_label_dict.items())))
+        print("label_f1_list: {}".format(label_f1_list))
+        print("average_f1: ", average_f1)
+        print("accuracy: ", accuracy)
+        print("=================================================================")
 
     def weekly_predict(self, input_folder, classifier_path, prediction_save_path):
         mlp = pickle.load(open(classifier_path, "rb"))
@@ -655,7 +658,8 @@ class MlpClassifier:
     #   ====================================================================================================================
 
     def cv_r_feed_data_train_test(self, validation_index, samples_feature_list, samples_value_list,
-                                  date_str_list, stock_id_list, is_random = False, feature_switch_tuple=None):
+                                  date_str_list, stock_id_list, is_random = False, feature_switch_tuple=None,
+                                  is_print = False):
         '''10 cross validation split data'''
         data_per = 1.0
         dev_per = 0.1
@@ -688,11 +692,11 @@ class MlpClassifier:
         self.r_dev_date_set = date_str_list[dev_start_index:dev_end_index]
         self.r_dev_stock_id_set = stock_id_list[dev_start_index:dev_end_index]
 
-
-        print ("-------------------------------------------------------------------------")
-        print ("Set data for validation index: {}, range: ({}, {})".format(validation_index,
-                                                                                 dev_start_index, dev_end_index))
-        print("-------------------------------------------------------------------------")
+        if is_print:
+            print ("-------------------------------------------------------------------------")
+            print ("Set data for validation index: {}, range: ({}, {})".format(validation_index,
+                                                                                     dev_start_index, dev_end_index))
+            print("-------------------------------------------------------------------------")
 
 
 
@@ -842,7 +846,7 @@ class MlpClassifier:
     #   CROSS VALIDATION FUNCTIONS FOR CLASSIFICATION
     #   ====================================================================================================================
     def cv_feed_and_seperate_data(self, validation_index, samples_feature_list, samples_label_list,
-                                  dev_per=0.1, data_per=1.0, feature_switch_tuple=None, is_random=False):
+                                  dev_per=0.1, is_print = False):
 
 
         # clear training_set, dev_set
@@ -878,14 +882,14 @@ class MlpClassifier:
         for label in self.training_label:
             training_label_dict[label] += 1
 
-
-        print("-------------------------------------------------------------------------\n")
-        print ("-------------------------------------------------------------------------")
-        print ("Set data for validation index: {}, range: ({}, {})".format(validation_index,
-                                                                                 dev_start_index, dev_end_index))
-        #print ("Training Label: {}".format(training_label_dict.items()))
-        print ("Dev Label: {}".format(dict(dev_label_dict.items())))
-        print ("-------------------------------------------------------------------------")
+        if is_print:
+            print("-------------------------------------------------------------------------\n")
+            print ("-------------------------------------------------------------------------")
+            print ("Set data for validation index: {}, range: ({}, {})".format(validation_index,
+                                                                                     dev_start_index, dev_end_index))
+            #print ("Training Label: {}".format(training_label_dict.items()))
+            print ("Dev Label: {}".format(dict(dev_label_dict.items())))
+            print ("-------------------------------------------------------------------------")
 
 
 
@@ -956,8 +960,7 @@ class MlpClassifier:
             self.set_mlp(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol=tol)
             for validation_index in range(10):
                 self.cv_feed_and_seperate_data(validation_index, samples_feature_list, samples_label_list,
-                                               dev_per=0.1, data_per=1.0, feature_switch_tuple=feature_switch_tuple,
-                                               is_random = is_random)
+                                               dev_per=0.1, is_print = False)
                 self.train(save_clsfy_path=clf_path, is_cv=True)
                 self.dev(save_clsfy_path=clf_path, is_cv=True)
             #
@@ -970,7 +973,7 @@ class MlpClassifier:
             # (d.) real-time print
             print("====================================================================")
             print("Average avg f1: {}".format(np.average(self.average_f1_list)))
-            print("Average accuracy: {}".format(np.average(self.cv_average_accuracy_list)))
+            print("Average accuracy: {}".format(np.average(self.accuracy_list)))
             print("Average iteration_loss: {}".format(
                 np.average(np.average([x[1] for x in self.iteration_loss_list]))))
             print("====================================================================")
