@@ -457,14 +457,16 @@ class MlpClassifier:
 
         print("r_training_set_size: {}, r_dev_set_size: {}".format(len(self.r_training_set), len(self.r_dev_set)))
 
-    def regressor_train(self, save_clsfy_path="mlp_regressor"):
+    def regressor_train(self, save_clsfy_path="mlp_regressor", is_cv = False):
         self.mlp_regressor.fit(self.r_training_set, self.r_training_value_set)
         self.iteration_loss_list.append((self.mlp_regressor.n_iter_, self.mlp_regressor.loss_))
         pickle.dump(self.mlp_regressor, open(save_clsfy_path, "wb"))
-        print("mlp regressor saved to {}.".format(save_clsfy_path))
+        if is_cv:
+            print ("Traing complete! Training Set size: {}".format(len(self.r_training_value_set)))
+        #print("mlp regressor saved to {}.".format(save_clsfy_path))
 
-    def regressor_dev(self, save_clsfy_path="mlp_regressor"):
-        print("get regressor from {}.".format(save_clsfy_path))
+    def regressor_dev(self, save_clsfy_path="mlp_regressor", is_cv = False):
+        #print("get regressor from {}.".format(save_clsfy_path))
         mlp_regressor = pickle.load(open(save_clsfy_path, "rb"))
         pred_value_list = np.array(mlp_regressor.predict(self.r_dev_set))
         actual_value_list = np.array(self.r_dev_value_set)
@@ -476,7 +478,7 @@ class MlpClassifier:
         # count how many predicted value has the same polarity as actual value
         polar_list = [1 for x, y in zip(pred_value_list, actual_value_list) if x * y >= 0]
         polar_count = len(polar_list)
-        polar_percent = "{:.3f}%".format(100 * polar_count / len(pred_value_list))
+        polar_percent = polar_count / len(pred_value_list)
         #
 
         self.mres_list.append(mrse)
@@ -484,13 +486,16 @@ class MlpClassifier:
         self.avg_price_change_list.append(avg_price_change)
         self.polar_accuracy_list.append(polar_percent)
 
-        print("----------------------------------------------------------------------------------------")
-        print("actual_value_list, ", actual_value_list)
-        print("pred_value_list, ", pred_value_list)
-        print("polar_percent: {}".format(polar_percent))
-        print("mrse: {}".format(mrse))
-        print("avg_price_change: {}".format(avg_price_change))
-        print("----------------------------------------------------------------------------------------")
+        if not is_cv:
+            print("----------------------------------------------------------------------------------------")
+            print("actual_value_list, ", actual_value_list)
+            print("pred_value_list, ", pred_value_list)
+            print("polarity: {}".format(polar_percent))
+            print("mrse: {}".format(mrse))
+            print("avg_price_change: {}".format(avg_price_change))
+            print("----------------------------------------------------------------------------------------")
+        else:
+            print("Testing complete! Testing Set size: {}".format(len(self.r_dev_value_set)))
 
     def _get_avg_price_change(self, pred_value_list, actual_value_list, date_list, stock_id_list):
 
@@ -626,7 +631,7 @@ class MlpClassifier:
 
 
     #   ====================================================================================================================
-    #   CROSS VALIDATION
+    #   CROSS VALIDATION FUNCTIONS
     #   ====================================================================================================================
 
     def cv_r_feed_data_train_test(self, validation_index, samples_feature_list, samples_value_list,
@@ -636,7 +641,6 @@ class MlpClassifier:
         dev_per = 0.1
 
 
-        print("start feeding data......")
         if feature_switch_tuple:
             print("feature_switch_tuple: ", feature_switch_tuple)
 
@@ -649,11 +653,11 @@ class MlpClassifier:
 
         sample_number = len(samples_feature_list)
         sample_last_index = sample_number - 1
-        dev_sample_num = math.floor(sample_number * dev_per) * -1
+        dev_sample_num = math.floor(sample_number * dev_per)
         validation_split_list = [[i*dev_sample_num, (i+1)*dev_sample_num] for i in range(10)]
         validation_split_list[-1][1] = sample_last_index
 
-        print ("validation_split_list: ", validation_split_list)
+        # print ("validation_split_list: ", validation_split_list)
         dev_start_index = validation_split_list[validation_index][0]
         dev_end_index = validation_split_list[validation_index][1]
 
@@ -664,11 +668,10 @@ class MlpClassifier:
         self.r_dev_date_set = date_str_list[dev_start_index:dev_end_index]
         self.r_dev_stock_id_set = stock_id_list[dev_start_index:dev_end_index]
 
-        print ("Cross Validation dev set range: ({}, {}), validation_index: {}".
-               format(dev_start_index, dev_end_index, validation_index))
-
-
-
+        print ("-------------------------------------------------------------------------")
+        print ("Set data for validation index: {}, range: ({}, {})......".format(validation_index,
+                                                                                 dev_start_index, dev_end_index))
+        print("-------------------------------------------------------------------------")
 
 
 
@@ -716,6 +719,11 @@ class MlpClassifier:
 
         # (4.) test the performance of different topology of MLP by 10-cross validation
         for i, hidden_layer_sizes in enumerate(hidden_layer_sizes_list):
+            print ("====================================================================")
+            print ("Topology: {} starts training and testing".format(hidden_layer_sizes))
+            print ("====================================================================")
+
+
             self._update_feature_switch_list(i)
 
             # (a.) clear the evaluation list for one hidden layer topology
@@ -730,8 +738,8 @@ class MlpClassifier:
             for validation_index in range(10):
                 self.cv_r_feed_data_train_test(validation_index, samples_feature_list, samples_value_list,
                                       date_str_list, stock_id_list,)
-                self.regressor_train(save_clsfy_path=clf_path)
-                self.regressor_dev(save_clsfy_path=clf_path)
+                self.regressor_train(save_clsfy_path=clf_path, is_cv = True)
+                self.regressor_dev(save_clsfy_path=clf_path, is_cv = True)
             #
 
             # (c.) save the 10-cross-valiation evaluate result for each topology
@@ -739,17 +747,71 @@ class MlpClassifier:
             self.cv_mres_list.append(self.mres_list)
             self.cv_avg_price_change_list.append(self.avg_price_change_list)
             self.cv_polar_accuracy_list.append(self.polar_accuracy_list)
-            #
 
+            # (d.) real-time print
+            print ("====================================================================")
+            print ("Average mres: {}".format(np.average(self.mres_list)))
+            print ("Average price change: {}".format(np.average(self.avg_price_change_list)))
+            print ("Average polarity: {}".format(np.average(self.polar_accuracy_list)))
+            print ("Average iteration_loss: {}".format(np.average(np.average([x[1] for x in self.iteration_loss_list]))))
             print ("====================================================================")
             print ("Completeness: {:.5f}".format((i+1)/hidden_layer_sizes_combination))
             print ("====================================================================")
+            #
+        # ==============================================================================================================
+        # Cross Validation Train And Test END
+        # ==============================================================================================================
+
         # --------------------------------------------------------------------------------------------------------------
-        
+
         print ("self.cv_mres_list: ", self.cv_mres_list)
+
+    def cv_r_save_feature_topology_result(self, path, key='mres'):
+
+        # compute the average for each list
+        self.cv_iteration_loss_list = [np.average(x) for x in self.cv_iteration_loss_list]
+        self.cv_polar_accuracy_list = [np.average(x) for x in self.cv_polar_accuracy_list]
+        self.cv_avg_price_change_list = [np.average(x) for x in self.cv_avg_price_change_list]
+        self.cv_mres_list = [np.average(x) for x in self.cv_mres_list]
+
+        if key == 'mres':
+            topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
+                                            self.hidden_size_list, self.cv_iteration_loss_list,
+                                            self.cv_polar_accuracy_list,
+                                            self.cv_avg_price_change_list, self.cv_mres_list)),
+                                   key=lambda x: x[-1])
+        elif key == 'avg_pc':
+            topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
+                                            self.hidden_size_list, self.cv_iteration_loss_list,
+                                            self.cv_polar_accuracy_list,
+                                            self.cv_avg_price_change_list, self.cv_mres_list)),
+                                   key=lambda x: x[-2], reverse = True)
+        else:
+            print("Key should be mres or avg_pc, key: {}".format(key))
+
+        with open(path, 'w', encoding='utf-8') as f:
+            for tuple1 in topology_list:
+                feature_switch = str(tuple1[0])
+                feature_selected = str(tuple1[1])
+                hidden_size = str(tuple1[2])
+                iteration_loss = str(tuple1[3])
+                polar_accuracy = str(tuple1[4])
+                avg_price_change = str(tuple1[5])
+                mres = str(tuple1[6])
+                f.write('----------------------------------------------------\n')
+                f.write('feature_switch: {}\n'.format(feature_switch))
+                f.write('feature_selected: {}\n'.format(feature_selected))
+                f.write('hidden_size: {}\n'.format(hidden_size))
+                f.write('average_iteration_loss: {}\n'.format(iteration_loss))
+                f.write('average_polar_accuracy: {}\n'.format(polar_accuracy))
+                f.write('average_avg_price_change: {}\n'.format(avg_price_change))
+                f.write('average_mres: {}\n'.format(mres))
+
+        print("Save 10-cross-validation topology test result by {} to {} sucessfully!".format(key, path))
+
 
         # ==============================================================================================================
 
     #   ====================================================================================================================
-    #   CROSS VALIDATION
+    #   CROSS VALIDATION FUNCTIONS END
     #   ====================================================================================================================
