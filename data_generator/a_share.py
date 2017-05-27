@@ -42,10 +42,10 @@ class Ashare:
         self.t_attributors = []
         self.f_attributors = []
 
-    def read_a_share_history_date(self,save_folder, start_date):
+    def read_a_share_history_date(self,save_folder, start_date, is_prediction = False):
         self.read_fundamental_data(start_date)
-        self.read_tech_history_data(start_date)
-        self.save_raw_data(save_folder)
+        self.read_tech_history_data(start_date, is_prediction = is_prediction)
+        self.save_raw_data(save_folder, is_prediction = is_prediction)
 
     def read_tech_history_data(self, start_date, is_prediction = False):
         # clear
@@ -132,6 +132,10 @@ class Ashare:
                         # priceChange = "{:.5f}".format((close_price_next_week - close_price) / close_price)
                         # #
 
+                        feature_list.append(priceChange)
+                        continue
+                    elif attributor == 'priceChange' and is_prediction is True:
+                        priceChange = "nan"
                         feature_list.append(priceChange)
                         continue
                     elif attributor == 'candleLength':
@@ -483,3 +487,22 @@ class Ashare:
                 successful_save_count += 1
         print ("Succesfully engineered {} raw data! original count: {}, delete {} files"
                .format(successful_save_count, original_data_count, original_data_count - successful_save_count))
+
+
+    def prediction_transfrom(self, input_folder, save_folder):
+
+        file_name_list = os.listdir(input_folder)
+        file_path_list = [os.path.join(input_folder, file_name) for file_name in file_name_list]
+        file_save_path_list = [os.path.join(save_folder, file_name) for file_name in file_name_list]
+        delete_key = 'priceChange'
+
+        for i, file_path in enumerate(file_path_list):
+            with open(file_path, 'r', encoding = 'utf-8') as f:
+                feature_name_value_list = f.readlines()[0].split(',')
+                delete_key_index = feature_name_value_list.index(delete_key)
+                del feature_name_value_list[delete_key_index: delete_key_index+2]
+                feature_name_value_str = ','.join(feature_name_value_list)
+                with open(file_save_path_list[i], 'w', encoding = 'utf-8') as f:
+                    f.write(feature_name_value_str)
+
+        print ("All files are ready for prediction! Total: {} files".format(len(file_name_list)))

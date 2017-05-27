@@ -6,6 +6,7 @@ import re
 import pickle
 import math
 import datetime
+import time
 import itertools
 import sys
 from pjslib.logger import logger2
@@ -246,105 +247,54 @@ class MlpClassifier:
         print ("average_f1: ", average_f1)
         print("=================================================================")
 
-    def weekly_predict(self):
-        mlp = pickle.load(open("mlp_classifier", "rb"))
-        # read feature txt for check
-        standard_feature = []
-        with open('features.txt', 'r') as f:
-            for line in f:
-                standard_feature.append(line.strip())
-        #
+    def weekly_predict(self, input_folder, classifier_path, prediction_save_path):
+        mlp = pickle.load(open(classifier_path, "rb"))
 
-        folder = "pred_raw_data"
-        nearest_friday = datetime.datetime.today().date()
-        delta = datetime.timedelta(days=1)
-        while nearest_friday.weekday() != 4:
-            nearest_friday -= delta
-        nearest_friday_str = nearest_friday.strftime("%Y-%m-%d")
-        file_name_list = os.listdir(folder)
+        file_name_list = os.listdir(input_folder)
         prediction_set = []
 
+        # find the nearest date
+        date_set = set()
         for file_name in file_name_list:
-            is_file_valid = True
-            stock_id = re.findall(r'_([0-9]+).csv', file_name)[0]
             date = re.findall(r'([0-9]+-[0-9]+-[0-9]+)_', file_name)[0]
-            if date != nearest_friday_str:
-                print ("{} is out dated!".format(file_name))
+            date_set.update(date)
+        nearest_date = sorted(list(date_set), reverse = True)[0]
+        nearest_date_temp = time.strptime(nearest_date, '%Y-%m-%d')
+        nearest_date_obj = datetime.datetime(*nearest_date_temp[:3])
+
+        print ("==============================================================================")
+        print ("This prediction is based on the data of DATE:[{}]".format(nearest_date))
+        print ("==============================================================================")
+
+        if nearest_date_obj.weekday() != 4:
+            print ("WARNING! The nearest date for prediction is not friday!")
+
+        # accumulate the prediction result
+        for file_name in file_name_list:
+            
+            stock_id = re.findall(r'_([0-9]+).txt', file_name)[0]
+            date = re.findall(r'([0-9]+-[0-9]+-[0-9]+)_', file_name)[0]
+            if date != nearest_date:
                 continue
-            file_path = os.path.join(folder, file_name)
-            feature_tuple_list = []
+            file_path = os.path.join(input_folder, file_name)
+
             with open(file_path, 'r') as f:
-                for line in f:
-                    line_list = line.split(',')
-                    feature_tuple_list.append(tuple(line_list))
+                feature_value_list = f.readlines()[0].strip().split(',')[1::2]
+                # =================================================================================================
+                # construct features_set and predict
+                # =================================================================================================
+                feature_array = np.array(feature_value_list).reshape(1,-1)
+                pred_value = float(mlp.predict(feature_array)[0])
+                prediction_set.append((stock_id, pred_value))
+                # =================================================================================================
 
-            # =================================================================================================
-            # check features are complete
-            # =================================================================================================
-            # print ("feature_tuple_list: ", feature_tuple_list)
-            # print ("standard_feature: ", standard_feature)
-            if len(feature_tuple_list) != len(standard_feature):
-                logger2.error("{} file has more or less features!".format(file_name))
-                continue
-
-            for i, (feature_name, _) in enumerate(feature_tuple_list):
-                if feature_name == standard_feature[i]:
-                    pass
-                else:
-                    logger2.error("{} file has missing or wrong feature!".format(file_name))
-                    is_file_valid = False
-                    break
-            if not is_file_valid:
-                continue
-            else:
-                feature_tuple_list = [float(x[1]) for x in feature_tuple_list]
-            # =================================================================================================
-
-            # =================================================================================================
-            # construct features_set and predict
-            # =================================================================================================
-            feature_array = np.array(feature_tuple_list).reshape(1,-1)
-            pred_label = mlp.predict(feature_array)[0]
-            prob = 0.0
-            prediction_set.append((stock_id, pred_label, prob))
-            # =================================================================================================
-
-        # manual debug
-
-
-
-        # sort by label
-        final_prediction_set = []
-        is_prediction_set_not_found = True
-        print ("prediction_set_size: ", len(prediction_set))
-        #
-        while is_prediction_set_not_found:
-            prediction_set_top = [x for x in prediction_set if x[1] == 'top']
-            if not prediction_set_top:
-                prediction_set_good = [x for x in prediction_set if x[1] == 'good']
-            else:
-                final_prediction_set = prediction_set_top
-                is_prediction_set_not_found = False
-                break
-
-            if not prediction_set_good:
-                prediction_set_pos = [x for x in prediction_set if x[1] == 'pos']
-            else:
-                final_prediction_set = prediction_set_good
-                is_prediction_set_not_found = False
-                break
-
-            if prediction_set_top == [] and prediction_set_good == []:
-                final_prediction_set = prediction_set_pos
-                is_prediction_set_not_found = False
+        # write the prediciton result to file
+        prediction_set = sorted(prediction_set, key = lambda x:x[1])
+        with open(prediction_save_path, 'w', encoding = 'utf-8') as f:
+            for stock_id, pred_value in prediction_set:
+                f.write(stock_id + ' ' + str(pred_value) + '\n')
         #
 
-        prediction_set = sorted(final_prediction_set, key = lambda x:x[2], reverse = True)
-
-        # write prediction result
-        with open('prediction.txt', 'w') as f:
-            for prediction_tuple in prediction_set:
-                f.write(str(prediction_tuple)+ '\n')
 
     def topology_test(self, other_config_dict, hidden_layer_config_tuple):
 

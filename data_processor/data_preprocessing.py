@@ -179,3 +179,54 @@ class DataPp():
 
         print ("Scaling data succesful!")
         print ("features_scale_list: ", features_scale_list)
+
+
+    def pred_scale_data(self, input_folder, save_folder, scaler_path_list):
+
+        # intialize sk-learn preprocessing
+        from sklearn import preprocessing
+
+
+        file_name_list = os.listdir(input_folder)
+        file_path_list = [os.path.join(input_folder, x) for x in file_name_list]
+        file_save_path_list = [os.path.join(save_folder, x) for x in file_name_list]
+
+        # read the feature name list
+        for i, file_path in enumerate(file_path_list):
+            with open(file_path, 'r', encoding = 'utf-8') as f:
+                feature_name_list = f.readlines()[0].split(',')[::2]
+                break
+        #
+
+        # read X
+        X = []
+        for i, file_path in enumerate(file_path_list):
+            with open(file_path, 'r', encoding = 'utf-8') as f:
+                feature_value_list = f.readlines()[0].split(',')[1::2]
+                feature_value_list = [float(x) for x in feature_value_list]
+                X.append(feature_value_list)
+        X = np.array(X)
+        #
+
+        # transfrom the X by the trained scaler
+        for scaler_path in scaler_path_list:
+            scaler = pickle.load(open(scaler_path, "rb"))
+            scaler_config_path = scaler_path + '_config.txt'
+            with open(scaler_config_path, 'r', encoding ='utf-8') as f:
+                file_list = f.readlines()
+                s_feature_name_tuple = tuple(file_list[0].strip().split(','))
+                scale_range = tuple(file_list[1].strip().split(','))
+                f_name_index_list = [feature_name_list.index(f_name) for f_name in s_feature_name_tuple]
+                trans_X = scaler.transform(X)
+                for index in f_name_index_list:
+                    X[:, index] = trans_X[:, index]
+        #
+
+        # save file
+        for i, file_save_path in enumerate(file_save_path_list):
+            with open(file_save_path, 'w', encoding = 'utf-8') as f:
+                feature_write_list = [str(j) for i in zip(feature_name_list,X[i]) for j in i]
+                feature_write_str = ','.join(feature_write_list)
+                f.write(feature_write_str)
+
+        print ("Scaling data for prediction succesful!")
