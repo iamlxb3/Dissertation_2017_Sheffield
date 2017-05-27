@@ -78,8 +78,8 @@
       <file leaf-file-name="a_share_cv_complete_regression_test.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_regression_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="76" column="27" lean-forward="true" selection-start-line="76" selection-start-column="27" selection-end-line="76" selection-end-column="27" />
+            <state relative-caret-position="576">
+              <caret line="94" column="109" lean-forward="true" selection-start-line="94" selection-start-column="109" selection-end-line="94" selection-end-column="109" />
               <folding>
                 <element signature="e#676#686#0" expanded="true" />
               </folding>
@@ -90,8 +90,8 @@
       <file leaf-file-name="mlp_classifier.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="790" column="0" lean-forward="true" selection-start-line="790" selection-start-column="0" selection-end-line="790" selection-end-column="0" />
+            <state relative-caret-position="619">
+              <caret line="665" column="0" lean-forward="true" selection-start-line="665" selection-start-column="0" selection-end-line="665" selection-end-column="0" />
               <folding>
                 <element signature="e#0#62#0" expanded="true" />
               </folding>
@@ -182,8 +182,8 @@
         <option value="$PROJECT_DIR$/data_generator/a_share.py" />
         <option value="$PROJECT_DIR$/app/a_share_weekly_predict.py" />
         <option value="$PROJECT_DIR$/app/a_share_simple_predict.py" />
-        <option value="$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py" />
         <option value="$PROJECT_DIR$/app/a_share_cv_complete_regression_test.py" />
+        <option value="$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py" />
       </list>
     </option>
   </component>
@@ -418,7 +418,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="5" y="0" width="1932" height="1092" extended-state="1" />
+    <frame x="5" y="0" width="1932" height="1092" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25130618" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -817,8 +817,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_regression_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="76" column="27" lean-forward="true" selection-start-line="76" selection-start-column="27" selection-end-line="76" selection-end-column="27" />
+        <state relative-caret-position="576">
+          <caret line="94" column="109" lean-forward="true" selection-start-line="94" selection-start-column="109" selection-end-line="94" selection-end-column="109" />
           <folding>
             <element signature="e#676#686#0" expanded="true" />
           </folding>
@@ -827,8 +827,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="790" column="0" lean-forward="true" selection-start-line="790" selection-start-column="0" selection-end-line="790" selection-end-column="0" />
+        <state relative-caret-position="619">
+          <caret line="665" column="0" lean-forward="true" selection-start-line="665" selection-start-column="0" selection-end-line="665" selection-end-column="0" />
           <folding>
             <element signature="e#0#62#0" expanded="true" />
           </folding>

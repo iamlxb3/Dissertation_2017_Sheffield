@@ -423,9 +423,16 @@ class MlpClassifier:
                 stock_id_list.append(stock_id)
         print("read feature list and regression_value list for {} successful!".format(folder))
 
-        # TODO, random seed everything
+        # random by random seed
         if is_random:
-            pass
+            print("Start shuffling the data...")
+            import random
+            combind_list = list(zip(samples_feature_list, samples_value_list, date_str_list, stock_id_list))
+            random_seed = 1
+            random.seed(random_seed)
+            random.shuffle(combind_list)
+            samples_feature_list, samples_value_list, date_str_list, stock_id_list = zip(*combind_list)
+            print ("Data set shuffling complete! Random Seed: {}".format(random_seed))
         #
 
         return samples_feature_list, samples_value_list, date_str_list, stock_id_list
@@ -669,14 +676,15 @@ class MlpClassifier:
         self.r_dev_stock_id_set = stock_id_list[dev_start_index:dev_end_index]
 
         print ("-------------------------------------------------------------------------")
-        print ("Set data for validation index: {}, range: ({}, {})......".format(validation_index,
+        print ("Set data for validation index: {}, range: ({}, {})".format(validation_index,
                                                                                  dev_start_index, dev_end_index))
         print("-------------------------------------------------------------------------")
 
 
 
 
-    def cv_r_topology_test(self, input_folder, feature_switch_tuple, other_config_dict, hidden_layer_config_tuple):
+    def cv_r_topology_test(self, input_folder, feature_switch_tuple, other_config_dict,
+                           hidden_layer_config_tuple, is_random = False):
         '''10 cross validation test for mlp regressor'''
         def _build_hidden_layer_sizes_list(hidden_layer_config_tuple):
             hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min, \
@@ -702,7 +710,7 @@ class MlpClassifier:
         # cut the number of training sample
         samples_feature_list, samples_value_list, \
         date_str_list, stock_id_list = self._r_feed_data(input_folder, data_per = 1.0,
-                                                         feature_switch_tuple=feature_switch_tuple)
+                                                         feature_switch_tuple=feature_switch_tuple, is_random = True)
         # --------------------------------------------------------------------------------------------------------------
 
         # (2.) construct hidden layer size list
@@ -764,7 +772,6 @@ class MlpClassifier:
 
         # --------------------------------------------------------------------------------------------------------------
 
-        print ("self.cv_mres_list: ", self.cv_mres_list)
 
     def cv_r_save_feature_topology_result(self, path, key='mres'):
 

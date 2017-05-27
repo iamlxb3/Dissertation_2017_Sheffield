@@ -92,7 +92,8 @@ hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidde
 # ----------------------------------------------------------------------------------------------------------------------
 
 # run topology test
-mlp_regressor1.cv_r_topology_test(data_folder, feature_switch_tuple, other_config_dict, hidden_layer_config_tuple)
+mlp_regressor1.cv_r_topology_test(data_folder, feature_switch_tuple, other_config_dict, hidden_layer_config_tuple,
+                                  is_random = True)
 # ======================================================================================================================
 
 mlp_regressor1.cv_r_save_feature_topology_result(cv_f_t_t_save_path_mres, key = 'mres')
