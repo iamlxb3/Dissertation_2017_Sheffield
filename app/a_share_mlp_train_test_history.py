@@ -36,8 +36,8 @@ from mlp_classifier import MlpClassifier
 # ==========================================================================================================
 # (1.) build classifer
 mlp1 = MlpClassifier()
-hidden_layer_sizes = (50, 2)
-learning_rate_init = 0.001
+hidden_layer_sizes = (5, 1)
+learning_rate_init = 0.0001
 tol=1e-8
 mlp1.set_mlp(hidden_layer_sizes, learning_rate_init = learning_rate_init, tol = tol, verbose = True)
 

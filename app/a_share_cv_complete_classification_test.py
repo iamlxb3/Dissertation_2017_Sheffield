@@ -36,13 +36,14 @@ from mlp_classifier import MlpClassifier
 # Build MLP classifier for a-share data, save the mlp to local
 # ==========================================================================================================
 # (1.) build classifer
-mlp_regressor1 = MlpClassifier()
+mlp1 = MlpClassifier()
 
 
 # dow jones index dsata
-data_folder = os.path.join('a_share','a_share_regression_data')
+data_folder = os.path.join('a_share','a_share_labeled_data')
 data_folder = os.path.join(parent_folder, 'data', data_folder)
 #
+
 
 # ======================================================================================================================
 # ======================================================================================================================
@@ -57,8 +58,8 @@ data_folder = os.path.join(parent_folder, 'data', data_folder)
 
 
 # get_full_feature_switch_tuple, (1,1,1,1,1,1,....)
-feature_switch_tuple = mlp_regressor1.get_full_feature_switch_tuple(data_folder)
-mlp_regressor1.read_selected_feature_list(data_folder, feature_switch_tuple)
+feature_switch_tuple = mlp1.get_full_feature_switch_tuple(data_folder)
+mlp1.read_selected_feature_list(data_folder, feature_switch_tuple)
 #
 
 
@@ -67,40 +68,39 @@ mlp_regressor1.read_selected_feature_list(data_folder, feature_switch_tuple)
 # ----------------------------------------------------------------------------------------------------------------------
 other_config_dict = {}
 # (1.) learning_rate
-other_config_dict['learning_rate_init'] = 0.0001
+other_config_dict['learning_rate_init'] = 0.00001
 other_config_dict['tol'] = 1e-8
 
 # (2.) clf_path
-clsfy_name = 'a_share_mlp_cv_regressor'
+clsfy_name = 'a_share_mlp_cv_classifier'
 other_config_dict['clf_path'] = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
 
 # (3.) topology_result_path
-cv_f_t_t_save_path_mres = os.path.join(parent_folder, 'topology_feature_test', 'ashare_cv_regression_mres.txt')
-cv_f_t_t_save_path_avg_pc = os.path.join(parent_folder, 'topology_feature_test', 'ashare_cv_regression_avg_pc.txt')
+cv_f_t_t_save_path = os.path.join(parent_folder, 'topology_feature_test', 'ashare_cv_classification.txt')
 # ----------------------------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------------------------
 # config hidden layer size
 # ----------------------------------------------------------------------------------------------------------------------
-hidden_layer_node_min = 1
-hidden_layer_node_max = 3
+hidden_layer_node_min = 30
+hidden_layer_node_max = 40
 hidden_layer_node_step = 1
 hidden_layer_depth_min = 1
-hidden_layer_depth_max = 1
+hidden_layer_depth_max = 4
 hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,
                              hidden_layer_depth_max)
 # ----------------------------------------------------------------------------------------------------------------------
-print("====================================================================")
-print("Start training for topology of MLP on regression!")
-print("====================================================================")
+
 
 # run topology test
-mlp_regressor1.cv_r_topology_test(data_folder, feature_switch_tuple, other_config_dict, hidden_layer_config_tuple)
-# ======================================================================================================================
+print("====================================================================")
+print("Start training for the topology of MLP on classification!")
+print("====================================================================")
+mlp1.cv_cls_topology_test(data_folder, feature_switch_tuple, other_config_dict, hidden_layer_config_tuple,
+                          is_random = True)
 
-mlp_regressor1.cv_r_save_feature_topology_result(cv_f_t_t_save_path_mres, key = 'mres')
-mlp_regressor1.r_save_feature_topology_result(cv_f_t_t_save_path_avg_pc, key = 'avg_pc')
-# ==========================================================================================================
-# ==========================================================================================================
+# save result
+mlp1.cv_cls_save_feature_topology_result(cv_f_t_t_save_path)
+
 # ==========================================================================================================
 
