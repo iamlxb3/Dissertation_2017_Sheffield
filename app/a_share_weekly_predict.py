@@ -43,7 +43,17 @@ from a_share import Ashare
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+# ==========================================================================================================
+# [0.] Delete all the files in the prediction folder
+# ==========================================================================================================
+a_share1 = Ashare()
 
+prediction_folder_set = {'[pred]_a_share_f_engineered_data', '[pred]_a_share_prediction_data',
+                         '[pred]_a_share_processed_data', '[pred]_a_share_raw_data', '[pred]_a_share_scaled_data'}
+prediction_folder_list = [os.path.join(parent_folder, 'data', 'a_share', x) for x in prediction_folder_set]
+
+a_share1.delete_all_prediction_folder(prediction_folder_list)
+# ==========================================================================================================
 
 
 # ==========================================================================================================
@@ -64,6 +74,7 @@ print ("Data from {} will be downloaded.".format(start_date))
 save_folder = os.path.join(parent_folder, 'data', 'a_share', '[pred]_a_share_raw_data')
 a_share1.read_a_share_history_date(save_folder, start_date = start_date, is_prediction = True)
 # ==========================================================================================================
+
 
 
 # ==========================================================================================================
@@ -136,25 +147,25 @@ a_share1.prediction_transfrom(input_folder, save_folder)
 
 
 
-# # ==========================================================================================================
-# # Build MLP classifier for a-share data, save the mlp to local
-# # ==========================================================================================================
-# # (1.) build classifer
-# mlp_predictor = MlpClassifier()
-#
-#
-# # prediction_input_folder
-# prediction_input_folder = os.path.join('a_share','[pred]_a_share_prediction_data')
-# prediction_input_folder = os.path.join(parent_folder, 'data', prediction_input_folder)
-#
-# # classifier_path
-# classifier_name = 'a_share_mlp_regressor'
-# classifier_path = os.path.join(parent_folder, 'trained_classifiers', classifier_name)
-#
-# # prediction result save path
-# result_name = datetime.datetime.today().date().strftime("%Y-%m-%d")
-# result_name = 'a_share_' + result_name + '_prediction.txt'
-# prediction_save_path = os.path.join(parent_folder, 'results', classifier_name)
-#
-# mlp_predictor.weekly_predict(prediction_input_folder, classifier_path, prediction_save_path)
-# # ==========================================================================================================
+# ==========================================================================================================
+# Build MLP classifier for a-share data, save the mlp to local
+# ==========================================================================================================
+# (1.) build classifer
+mlp_predictor = MlpClassifier()
+
+
+# prediction_input_folder
+prediction_input_folder = os.path.join('a_share','[pred]_a_share_prediction_data')
+prediction_input_folder = os.path.join(parent_folder, 'data', prediction_input_folder)
+
+# classifier_path
+classifier_name = 'a_share_mlp_regressor'
+classifier_path = os.path.join(parent_folder, 'trained_classifiers', classifier_name)
+
+# prediction result save path
+result_name = datetime.datetime.today().date().strftime("%Y-%m-%d")
+result_name = 'a_share_' + result_name + '_prediction.txt'
+prediction_save_path = os.path.join(parent_folder, 'prediction', 'a_share', result_name)
+
+mlp_predictor.weekly_predict(prediction_input_folder, classifier_path, prediction_save_path)
+# ==========================================================================================================

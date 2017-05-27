@@ -58,8 +58,7 @@ class Ashare:
         today = datetime.datetime.today().strftime("%Y-%m-%d")
         t_attributors_set = set(ts.get_k_data("600883", start="2017-05-09", ktype='W').keys())
         t_attributors_set -= {'code', 'date'}
-        if is_prediction is False:
-            t_attributors_set.add('priceChange')
+        t_attributors_set.add('priceChange')
         t_attributors_set.add('candleLength')
         t_attributors_set.add('candlePos')
         t_attributors = sorted(list(t_attributors_set))
@@ -131,13 +130,12 @@ class Ashare:
                         # close_price_next_week = fund_dict['close'][date_items[i + 1][0]]
                         # priceChange = "{:.5f}".format((close_price_next_week - close_price) / close_price)
                         # #
-
                         feature_list.append(priceChange)
-                        continue
+
                     elif attributor == 'priceChange' and is_prediction is True:
                         priceChange = "nan"
                         feature_list.append(priceChange)
-                        continue
+
                     elif attributor == 'candleLength':
                         close_price = fund_dict['close'][id]
                         open_price = fund_dict['open'][id]
@@ -145,7 +143,7 @@ class Ashare:
                         low_price = fund_dict['low'][id]
                         candle_length = "{:.5f}".format(abs((close_price- open_price)/(high_price-low_price)))
                         feature_list.append(candle_length)
-                        continue
+
                     elif attributor == 'candlePos':
                         close_price = fund_dict['close'][id]
                         open_price = fund_dict['open'][id]
@@ -154,10 +152,11 @@ class Ashare:
                         price = max(close_price, open_price)
                         candle_pos = "{:.5f}".format(abs((high_price- price)/(high_price-low_price)))
                         feature_list.append(candle_pos)
-                        continue
 
-                    # for other attributors
-                    feature_list.append(fund_dict[attributor][id])
+                    else:
+                        # for other attributors
+                        feature_list.append(fund_dict[attributor][id])
+
                 feature_array = np.array(feature_list)
                 sample_name = date_str + '_' + stock_id
                 self.a_share_samples_t_dict[sample_name] = feature_array
@@ -506,3 +505,12 @@ class Ashare:
                     f.write(feature_name_value_str)
 
         print ("All files are ready for prediction! Total: {} files".format(len(file_name_list)))
+
+    def delete_all_prediction_folder(self, prediction_folder_list):
+        for prediction_foler in prediction_folder_list:
+            file_name_list = os.listdir(prediction_foler)
+            file_count = len(file_name_list)
+            file_path_list = [os.path.join(prediction_foler, x) for x in file_name_list]
+            for file_path in file_path_list:
+                os.remove(file_path)
+            print ("Succefully remove {} files in {}".format(file_count, prediction_foler))
