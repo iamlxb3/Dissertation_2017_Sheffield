@@ -64,7 +64,7 @@ class MlpClassifier:
             label_dict[label] += 1
         print("label_dict: {}".format(list(label_dict.items())))
 
-    def set_mlp(self, hidden_layer_sizes, tol=1e-6, learning_rate_init=0.001):
+    def set_mlp(self, hidden_layer_sizes, tol=1e-6, learning_rate_init=0.001, verbose = False):
         self.hidden_size_list.append(hidden_layer_sizes)
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
         # self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
@@ -72,7 +72,7 @@ class MlpClassifier:
         #                              solver = 'sgd', momentum = 0.3,  max_iter = 10000)
         self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
                                      tol=tol, learning_rate_init=learning_rate_init,
-                                     max_iter=1000, random_state=1)
+                                     max_iter=2000, random_state=1, verbose = verbose)
 
     def _feature_degradation(self, features_list, feature_switch_tuple):
         new_feature_list = []
@@ -166,8 +166,6 @@ class MlpClassifier:
         # self.dev_label = samples_label_list[dev_sample_num:]
 
     def train(self, save_clsfy_path="mlp_classifier"):
-        print("self.training_set_size: ", len(self.training_set))
-        print("self.training_label_size: ", len(self.training_label))
 
         self.mlp_clf.fit(self.training_set, self.training_label)
         self.iteration_loss_list.append((self.mlp_clf.n_iter_, self.mlp_clf.loss_))
@@ -638,7 +636,7 @@ class MlpClassifier:
 
 
     #   ====================================================================================================================
-    #   CROSS VALIDATION FUNCTIONS
+    #   CROSS VALIDATION FUNCTIONS FOR REGRESSION
     #   ====================================================================================================================
 
     def cv_r_feed_data_train_test(self, validation_index, samples_feature_list, samples_value_list,
@@ -820,5 +818,5 @@ class MlpClassifier:
         # ==============================================================================================================
 
     #   ====================================================================================================================
-    #   CROSS VALIDATION FUNCTIONS END
+    #   CROSS VALIDATION FUNCTIONS FOR REGRESSION END
     #   ====================================================================================================================

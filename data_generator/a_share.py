@@ -298,9 +298,18 @@ class Ashare:
         samples_list = sorted(samples_list, key = lambda x:x[2], reverse = True)
         neg_samples_list = [x for x in samples_list if x[2] < 0]
         pos_samples_list = [x for x in samples_list if x[2] >= 0]
-        per_tuple = (0.05, 0.3, 1)
-        pos_label_tuple = ('top','good','pos')
-        neg_label_tuple = ('bottom', 'bad', 'neg')
+
+        # # for multiple tags
+        # per_tuple = (0.05, 0.3, 1)
+        # pos_label_tuple = ('top','good','pos')
+        # neg_label_tuple = ('bottom', 'bad', 'neg')
+        # #
+
+        per_tuple = (1,)
+        pos_label_tuple = ('pos',)
+        neg_label_tuple = ('neg',)
+
+
         pos_samples_split_list = split_list_by_percentage(per_tuple, pos_samples_list)
         neg_samples_split_list = split_list_by_percentage(per_tuple, neg_samples_list)
 
@@ -330,6 +339,12 @@ class Ashare:
             feature_str = ','.join(feature_list)
             with open (file_path, 'w', encoding = 'utf-8') as f:
                 f.write(feature_str)
+
+        print ("Label {} samples succesfully! Pos: {} Neg: {}".format(len(samples_list),
+                                                                       len(pos_samples_list),
+                                                                       len(neg_samples_list),
+                                                                       ))
+        print ("All files have been saved to {}".format(save_folder))
 
     def regression(self, input_folder, save_folder):
 

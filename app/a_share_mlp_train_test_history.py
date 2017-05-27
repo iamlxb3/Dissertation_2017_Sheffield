@@ -36,28 +36,29 @@ from mlp_classifier import MlpClassifier
 # ==========================================================================================================
 # (1.) build classifer
 mlp1 = MlpClassifier()
-hidden_layer_sizes = (10, 3)
+hidden_layer_sizes = (50, 2)
 learning_rate_init = 0.001
-mlp1.set_mlp(hidden_layer_sizes, learning_rate_init = learning_rate_init)
+tol=1e-8
+mlp1.set_mlp(hidden_layer_sizes, learning_rate_init = learning_rate_init, tol = tol, verbose = True)
 
 # (2.) feed data
 data_per = 1.0  # the percentage of data using for training and testing
 dev_per = 0.2 # the percentage of data using for developing
 
-# # a share data
-# data_folder = os.path.join('a_share','a_share_labeled_data')
+# # gaussian_data
+# data_folder = os.path.join('test','gaussian_data')
 # data_folder = os.path.join(parent_folder, 'data', data_folder)
 # #
 
-# gaussian_data
-data_folder = os.path.join('test','gaussian_data')
+# a share data
+data_folder = os.path.join('a_share','a_share_labeled_data')
 data_folder = os.path.join(parent_folder, 'data', data_folder)
 #
 
 mlp1.feed_and_seperate_data(data_folder, dev_per = dev_per, data_per = data_per)
 
 # (3.) train and test
-clsfy_name = 'a_share_mlp'
+clsfy_name = 'a_share_cls_mlp'
 mlp_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
 mlp1.train(save_clsfy_path= mlp_path)
 mlp1.dev(save_clsfy_path= mlp_path)
