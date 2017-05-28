@@ -84,11 +84,11 @@ cv_f_t_t_save_path_polar = os.path.join(parent_folder, 'topology_feature_test', 
 # ----------------------------------------------------------------------------------------------------------------------
 # config hidden layer size
 # ----------------------------------------------------------------------------------------------------------------------
-hidden_layer_node_min = 1
-hidden_layer_node_max = 2
+hidden_layer_node_min = 20
+hidden_layer_node_max = 120
 hidden_layer_node_step = 1
-hidden_layer_depth_min = 1
-hidden_layer_depth_max = 1
+hidden_layer_depth_min = 2
+hidden_layer_depth_max = 8
 hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,
                              hidden_layer_depth_max)
 # ----------------------------------------------------------------------------------------------------------------------

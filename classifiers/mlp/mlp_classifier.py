@@ -42,6 +42,7 @@ class MlpClassifier:
         self.feature_selected_list = []
         self.iteration_loss_list = []
         self.mres_list = []
+        self.var_std_list = []
         self.avg_price_change_list = []
         self.polar_accuracy_list = []
 
@@ -54,6 +55,7 @@ class MlpClassifier:
         self.cv_mres_list = []
         self.cv_avg_price_change_list = []
         self.cv_polar_accuracy_list = []
+        self.cv_var_std_list = []
         #
 
         # for all
@@ -498,7 +500,7 @@ class MlpClassifier:
         mrse = calculate_mrse(actual_value_list, pred_value_list)
         date_list = self.r_dev_date_set
         stock_id_list = self.r_dev_stock_id_set
-        avg_price_change = self._get_avg_price_change(pred_value_list, actual_value_list, date_list, stock_id_list)
+        avg_price_change, var, std = self._get_avg_price_change(pred_value_list, actual_value_list, date_list, stock_id_list)
 
         # count how many predicted value has the same polarity as actual value
         polar_list = [1 for x, y in zip(pred_value_list, actual_value_list) if x * y >= 0]
@@ -508,8 +510,8 @@ class MlpClassifier:
 
         self.mres_list.append(mrse)
         self.avg_price_change_list.append(avg_price_change)
-        self.avg_price_change_list.append(avg_price_change)
         self.polar_accuracy_list.append(polar_percent)
+        self.var_std_list.append((var, std))
 
         # <uncomment for debugging>
         # if not is_cv:
@@ -544,6 +546,7 @@ class MlpClassifier:
 
         # find the stock with the highest predicted priceChange and compute the avg priceChange
         actual_price_change_sum = 0
+        actual_price_change_list = []
 
         for date, stock_pred_v_pair_list in stock_pred_v_dict.items():
             sorted_stock_pred_v_pair_list = sorted(stock_pred_v_pair_list, key=lambda x: x[1], reverse=True)
@@ -553,6 +556,7 @@ class MlpClassifier:
             date_stock_id_pair = (date, best_stock_id)
 
             actual_price_change = stock_actual_v_dict[date_stock_id_pair]
+            actual_price_change_list.append(actual_price_change)
             actual_price_change_sum += actual_price_change
 
             # # temp print
@@ -568,7 +572,10 @@ class MlpClassifier:
         avg_price_change = actual_price_change_sum / len(stock_pred_v_dict.keys())
         #
 
-        return avg_price_change
+        var = np.var(actual_price_change_list)
+        std = np.std(actual_price_change_list)
+
+        return avg_price_change, var, std
 
     def r_topology_test(self, other_config_dict, hidden_layer_config_tuple):
         def _build_hidden_layer_sizes_list(hidden_layer_config_tuple):
@@ -762,6 +769,9 @@ class MlpClassifier:
             self.mres_list = []
             self.avg_price_change_list = []
             self.polar_accuracy_list = []
+            self.var_std_list = []
+
+
             #
 
             # (b.) 10-cross-validation train and test
@@ -778,11 +788,15 @@ class MlpClassifier:
             self.cv_mres_list.append(self.mres_list)
             self.cv_avg_price_change_list.append(self.avg_price_change_list)
             self.cv_polar_accuracy_list.append(self.polar_accuracy_list)
+            self.cv_var_std_list.append(self.var_std_list)
+            #
 
             # (d.) real-time print
             print ("====================================================================")
             print ("Average mres: {}".format(np.average(self.mres_list)))
             print ("Average price change: {}".format(np.average(self.avg_price_change_list)))
+            print ("Average var: {}, Average std: {}".format(np.average([x[0] for x in self.var_std_list]),
+                                             np.average([x[1] for x in self.var_std_list])))
             print ("Average polarity: {}".format(np.average(self.polar_accuracy_list)))
             print ("Average iteration_loss: {}".format(np.average(np.average([x[1] for x in self.iteration_loss_list]))))
             print ("====================================================================")
@@ -803,26 +817,27 @@ class MlpClassifier:
         self.cv_polar_accuracy_list = [np.average(x) for x in self.cv_polar_accuracy_list]
         self.cv_avg_price_change_list = [np.average(x) for x in self.cv_avg_price_change_list]
         self.cv_mres_list = [np.average(x) for x in self.cv_mres_list]
+        _var_list = [[y[0] for y in x] for x in self.cv_var_std_list] # cv_var_std_list : [[(0.1,0.2), ...], [(0.3,0.4), ...], ...]
+        _var_list = [np.average(x) for x in _var_list]
+        _std_list = [[y[1] for y in x] for x in self.cv_var_std_list] # cv_var_std_list : [[(0.1,0.2), ...], [(0.3,0.4), ...], ...]
+        _std_list = [np.average(x) for x in _std_list]
+
+
+        topology_list = list(zip(self.feature_switch_list, self.feature_selected_list,
+                                            self.hidden_size_list, self.cv_iteration_loss_list,
+                                            self.cv_polar_accuracy_list,
+                                            self.cv_avg_price_change_list, self.cv_mres_list, _var_list, _std_list))
 
         if key == 'mres':
-            topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
-                                            self.hidden_size_list, self.cv_iteration_loss_list,
-                                            self.cv_polar_accuracy_list,
-                                            self.cv_avg_price_change_list, self.cv_mres_list)),
-                                   key=lambda x: x[-1])
+            topology_list = sorted(topology_list,
+                                   key=lambda x: x[-3])
         elif key == 'avg_pc':
-            topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
-                                            self.hidden_size_list, self.cv_iteration_loss_list,
-                                            self.cv_polar_accuracy_list,
-                                            self.cv_avg_price_change_list, self.cv_mres_list)),
-                                   key=lambda x: x[-2], reverse = True)
+            topology_list = sorted(topology_list,
+                                   key=lambda x: x[-4], reverse = True)
 
         elif key == 'polar':
-            topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
-                                        self.hidden_size_list, self.cv_iteration_loss_list,
-                                        self.cv_polar_accuracy_list,
-                                        self.cv_avg_price_change_list, self.cv_mres_list)),
-                                key=lambda x: x[-3], reverse=True)
+            topology_list = sorted(topology_list,
+                                key=lambda x: x[-5], reverse=True)
         else:
             print("Key should be mres or avg_pc, key: {}".format(key))
 
@@ -835,6 +850,8 @@ class MlpClassifier:
                 polar_accuracy = str(tuple1[4])
                 avg_price_change = str(tuple1[5])
                 mres = str(tuple1[6])
+                var = str(tuple1[7])
+                std = str(tuple1[8])
                 f.write('----------------------------------------------------\n')
                 f.write('feature_switch: {}\n'.format(feature_switch))
                 f.write('feature_selected: {}\n'.format(feature_selected))
@@ -843,6 +860,7 @@ class MlpClassifier:
                 f.write('average_polar_accuracy: {}\n'.format(polar_accuracy))
                 f.write('average_avg_price_change: {}\n'.format(avg_price_change))
                 f.write('average_mres: {}\n'.format(mres))
+                f.write('var: {} std: {}\n'.format(var, std))
 
         print("Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(key, path))
 
