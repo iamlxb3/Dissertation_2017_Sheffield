@@ -39,16 +39,16 @@ from mlp_classifier import MlpClassifier
 mlp1 = MlpClassifier()
 
 
-# gaussian_data
-data_folder = os.path.join('test','gaussian_data')
-data_folder = os.path.join(parent_folder, 'data', data_folder)
-#
-
-
-# # dow jones index dsata
-# data_folder = os.path.join('a_share','a_share_labeled_data')
+# # gaussian_data
+# data_folder = os.path.join('test','gaussian_data')
 # data_folder = os.path.join(parent_folder, 'data', data_folder)
 # #
+
+
+# dow jones index dsata
+data_folder = os.path.join('a_share','a_share_labeled_data')
+data_folder = os.path.join(parent_folder, 'data', data_folder)
+#
 
 
 # ======================================================================================================================
@@ -88,11 +88,11 @@ cv_f_t_t_save_path = os.path.join(parent_folder, 'topology_feature_test', 'ashar
 # ----------------------------------------------------------------------------------------------------------------------
 # config hidden layer size
 # ----------------------------------------------------------------------------------------------------------------------
-hidden_layer_node_min = 5
-hidden_layer_node_max = 10
+hidden_layer_node_min = 1
+hidden_layer_node_max = 2
 hidden_layer_node_step = 1
-hidden_layer_depth_min = 2
-hidden_layer_depth_max = 3
+hidden_layer_depth_min = 1
+hidden_layer_depth_max = 1
 hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,
                              hidden_layer_depth_max)
 # ----------------------------------------------------------------------------------------------------------------------

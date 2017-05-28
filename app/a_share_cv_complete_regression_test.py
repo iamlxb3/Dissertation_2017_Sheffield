@@ -77,13 +77,15 @@ other_config_dict['clf_path'] = os.path.join(parent_folder, 'trained_classifiers
 # (3.) topology_result_path
 cv_f_t_t_save_path_mres = os.path.join(parent_folder, 'topology_feature_test', 'ashare_cv_regression_mres.txt')
 cv_f_t_t_save_path_avg_pc = os.path.join(parent_folder, 'topology_feature_test', 'ashare_cv_regression_avg_pc.txt')
+cv_f_t_t_save_path_polar = os.path.join(parent_folder, 'topology_feature_test', 'ashare_cv_regression_polar.txt')
+
 # ----------------------------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------------------------
 # config hidden layer size
 # ----------------------------------------------------------------------------------------------------------------------
 hidden_layer_node_min = 1
-hidden_layer_node_max = 3
+hidden_layer_node_max = 2
 hidden_layer_node_step = 1
 hidden_layer_depth_min = 1
 hidden_layer_depth_max = 1
@@ -99,7 +101,8 @@ mlp_regressor1.cv_r_topology_test(data_folder, feature_switch_tuple, other_confi
 # ======================================================================================================================
 
 mlp_regressor1.cv_r_save_feature_topology_result(cv_f_t_t_save_path_mres, key = 'mres')
-mlp_regressor1.r_save_feature_topology_result(cv_f_t_t_save_path_avg_pc, key = 'avg_pc')
+mlp_regressor1.cv_r_save_feature_topology_result(cv_f_t_t_save_path_avg_pc, key = 'avg_pc')
+mlp_regressor1.cv_r_save_feature_topology_result(cv_f_t_t_save_path_polar, key = 'polar')
 # ==========================================================================================================
 # ==========================================================================================================
 # ==========================================================================================================

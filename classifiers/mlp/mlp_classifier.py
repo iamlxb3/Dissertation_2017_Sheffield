@@ -254,15 +254,15 @@ class MlpClassifier:
         for dev_label in self.dev_label:
             dev_label_dict[dev_label] += 1
 
-        print("\n=================================================================")
-        print("Dev set result!")
-        print("=================================================================")
-        print("dev_label_dict: {}".format(list(dev_label_dict.items())))
-        print("pred_label_dict: {}".format(list(pred_label_dict.items())))
-        print("label_f1_list: {}".format(label_f1_list))
-        print("average_f1: ", average_f1)
-        print("accuracy: ", accuracy)
-        print("=================================================================")
+        # print("\n=================================================================")
+        # print("Dev set result!")
+        # print("=================================================================")
+        # print("dev_label_dict: {}".format(list(dev_label_dict.items())))
+        # print("pred_label_dict: {}".format(list(pred_label_dict.items())))
+        # print("label_f1_list: {}".format(label_f1_list))
+        # print("average_f1: ", average_f1)
+        # print("accuracy: ", accuracy)
+        # print("=================================================================")
 
     def weekly_predict(self, input_folder, classifier_path, prediction_save_path):
         mlp = pickle.load(open(classifier_path, "rb"))
@@ -484,9 +484,11 @@ class MlpClassifier:
         self.mlp_regressor.fit(self.r_training_set, self.r_training_value_set)
         self.iteration_loss_list.append((self.mlp_regressor.n_iter_, self.mlp_regressor.loss_))
         pickle.dump(self.mlp_regressor, open(save_clsfy_path, "wb"))
-        if is_cv:
-            print ("Traing complete! Training Set size: {}".format(len(self.r_training_value_set)))
-        #print("mlp regressor saved to {}.".format(save_clsfy_path))
+
+        # # <debug_print>
+        # if is_cv:
+        #     print ("Training complete! Training Set size: {}".format(len(self.r_training_value_set)))
+        # # <debug_print>
 
     def regressor_dev(self, save_clsfy_path="mlp_regressor", is_cv = False):
         #print("get regressor from {}.".format(save_clsfy_path))
@@ -509,16 +511,19 @@ class MlpClassifier:
         self.avg_price_change_list.append(avg_price_change)
         self.polar_accuracy_list.append(polar_percent)
 
-        if not is_cv:
-            print("----------------------------------------------------------------------------------------")
-            print("actual_value_list, ", actual_value_list)
-            print("pred_value_list, ", pred_value_list)
-            print("polarity: {}".format(polar_percent))
-            print("mrse: {}".format(mrse))
-            print("avg_price_change: {}".format(avg_price_change))
-            print("----------------------------------------------------------------------------------------")
-        else:
-            print("Testing complete! Testing Set size: {}".format(len(self.r_dev_value_set)))
+        # <uncomment for debugging>
+        # if not is_cv:
+        #     print("----------------------------------------------------------------------------------------")
+        #     print("actual_value_list, ", actual_value_list)
+        #     print("pred_value_list, ", pred_value_list)
+        #     print("polarity: {}".format(polar_percent))
+        #     print("mrse: {}".format(mrse))
+        #     print("avg_price_change: {}".format(avg_price_change))
+        #     print("----------------------------------------------------------------------------------------")
+        # else:
+        #     print("Testing complete! Testing Set size: {}".format(len(self.r_dev_value_set)))
+        # <uncomment for debugging>
+
 
     def _get_avg_price_change(self, pred_value_list, actual_value_list, date_list, stock_id_list):
 
@@ -811,6 +816,13 @@ class MlpClassifier:
                                             self.cv_polar_accuracy_list,
                                             self.cv_avg_price_change_list, self.cv_mres_list)),
                                    key=lambda x: x[-2], reverse = True)
+
+        elif key == 'polar':
+            topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
+                                        self.hidden_size_list, self.cv_iteration_loss_list,
+                                        self.cv_polar_accuracy_list,
+                                        self.cv_avg_price_change_list, self.cv_mres_list)),
+                                key=lambda x: x[-3], reverse=True)
         else:
             print("Key should be mres or avg_pc, key: {}".format(key))
 
@@ -966,7 +978,8 @@ class MlpClassifier:
             #
 
             # (c.) save the 10-cross-valiation evaluate result for each topology
-            self.cv_iteration_loss_list.append(self.iteration_loss_list)
+
+            self.cv_iteration_loss_list.append([x[1] for x in self.iteration_loss_list])
             self.cv_average_average_f1_list.append(self.average_f1_list)
             self.cv_average_accuracy_list.append(self.accuracy_list)
 
@@ -974,8 +987,7 @@ class MlpClassifier:
             print("====================================================================")
             print("Average avg f1: {}".format(np.average(self.average_f1_list)))
             print("Average accuracy: {}".format(np.average(self.accuracy_list)))
-            print("Average iteration_loss: {}".format(
-                np.average(np.average([x[1] for x in self.iteration_loss_list]))))
+            print("Average iteration_loss: {}".format(np.average([x[1] for x in self.iteration_loss_list])))
             print("====================================================================")
             print("Completeness: {:.5f}".format((i + 1) / hidden_layer_sizes_combination))
             print("====================================================================")
