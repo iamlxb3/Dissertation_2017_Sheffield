@@ -3,13 +3,13 @@ import math
 import matplotlib.pyplot as plt
 import collections
 
-initial_capital = 10000
+initial_capital = 50000
 avg_profit = 0.2
 
 mu = avg_profit
 sigma = 0.25 # mean and standard deviation
-week_num = 52
-run_loop = 5000
+week_num = 4
+run_loop = 1000
 capital_all_list = []
 
 def calculate_capital(capital, mu, sigma, week_num, is_plot = False, multiple_run = True):

@@ -455,7 +455,7 @@ class MlpClassifier:
 
         return samples_feature_list, samples_value_list, date_str_list, stock_id_list
 
-    def r_feed_and_seperate_data(self, folder, dev_per=0.2, data_per=1.0, feature_switch_tuple=None):
+    def r_feed_and_seperate_data(self, folder, dev_per=0.2, data_per=1.0, feature_switch_tuple=None, is_production = False):
         print("start feeding data......")
         if feature_switch_tuple:
             print("feature_switch_tuple: ", feature_switch_tuple)
@@ -469,24 +469,33 @@ class MlpClassifier:
         # cut the number of training sample
         samples_feature_list, samples_value_list, date_str_list, stock_id_list = self._r_feed_data(folder, data_per,
                                                                                                    feature_switch_tuple=feature_switch_tuple)
+        if is_production:
+            self.r_training_set = samples_feature_list[:]
+            self.r_training_value_set = samples_value_list[:]
+            self.r_dev_set = samples_feature_list[-1000:]
+            self.r_dev_value_set = samples_value_list[-1000:]
+            self.r_dev_date_set = date_str_list[-1000:]
+            self.r_dev_stock_id_set = stock_id_list[-1000:]
 
-        sample_number = len(samples_feature_list)
-        dev_sample_num = math.floor(sample_number * dev_per) * -1
-
-        self.r_training_set = samples_feature_list[0:dev_sample_num]
-        self.r_training_value_set = samples_value_list[0:dev_sample_num]
-        self.r_dev_set = samples_feature_list[dev_sample_num:]
-        self.r_dev_value_set = samples_value_list[dev_sample_num:]
-        self.r_dev_date_set = date_str_list[dev_sample_num:]
-        self.r_dev_stock_id_set = stock_id_list[dev_sample_num:]
+        else:
+            sample_number = len(samples_feature_list)
+            dev_sample_num = math.floor(sample_number * dev_per) * -1
+            self.r_training_set = samples_feature_list[0:dev_sample_num]
+            self.r_training_value_set = samples_value_list[0:dev_sample_num]
+            self.r_dev_set = samples_feature_list[dev_sample_num:]
+            self.r_dev_value_set = samples_value_list[dev_sample_num:]
+            self.r_dev_date_set = date_str_list[dev_sample_num:]
+            self.r_dev_stock_id_set = stock_id_list[dev_sample_num:]
 
         print("r_training_set_size: {}, r_dev_set_size: {}".format(len(self.r_training_set), len(self.r_dev_set)))
 
-    def regressor_train(self, save_clsfy_path="mlp_regressor", is_cv = False):
+    def regressor_train(self, save_clsfy_path="mlp_regressor", is_cv = False, is_production = False):
         self.mlp_regressor.fit(self.r_training_set, self.r_training_value_set)
         self.iteration_loss_list.append((self.mlp_regressor.n_iter_, self.mlp_regressor.loss_))
         pickle.dump(self.mlp_regressor, open(save_clsfy_path, "wb"))
 
+        if is_production:
+            print ("classifier for production saved to {} successfully!".format(save_clsfy_path))
         # # <debug_print>
         # if is_cv:
         #     print ("Training complete! Training Set size: {}".format(len(self.r_training_value_set)))
@@ -514,16 +523,17 @@ class MlpClassifier:
         self.var_std_list.append((var, std))
 
         # <uncomment for debugging>
-        # if not is_cv:
-        #     print("----------------------------------------------------------------------------------------")
-        #     print("actual_value_list, ", actual_value_list)
-        #     print("pred_value_list, ", pred_value_list)
-        #     print("polarity: {}".format(polar_percent))
-        #     print("mrse: {}".format(mrse))
-        #     print("avg_price_change: {}".format(avg_price_change))
-        #     print("----------------------------------------------------------------------------------------")
-        # else:
-        #     print("Testing complete! Testing Set size: {}".format(len(self.r_dev_value_set)))
+        if not is_cv:
+            print("----------------------------------------------------------------------------------------")
+            print("actual_value_list, ", actual_value_list)
+            print("pred_value_list, ", pred_value_list)
+            print("polarity: {}".format(polar_percent))
+            print("mrse: {}".format(mrse))
+            print("avg_price_change: {}".format(avg_price_change))
+            print("----------------------------------------------------------------------------------------")
+        else:
+            pass
+            #print("Testing complete! Testing Set size: {}".format(len(self.r_dev_value_set)))
         # <uncomment for debugging>
 
 
@@ -798,7 +808,7 @@ class MlpClassifier:
             print ("Average var: {}, Average std: {}".format(np.average([x[0] for x in self.var_std_list]),
                                              np.average([x[1] for x in self.var_std_list])))
             print ("Average polarity: {}".format(np.average(self.polar_accuracy_list)))
-            print ("Average iteration_loss: {}".format(np.average(np.average([x[1] for x in self.iteration_loss_list]))))
+            print ("Average iteration_loss: {}".format(np.average([x[1] for x in self.iteration_loss_list])))
             print ("====================================================================")
             print ("Completeness: {:.5f}".format((i+1)/hidden_layer_sizes_combination))
             print ("====================================================================")
@@ -813,10 +823,11 @@ class MlpClassifier:
     def cv_r_save_feature_topology_result(self, path, key='mres'):
 
         # compute the average for each list
-        self.cv_iteration_loss_list = [np.average(x) for x in self.cv_iteration_loss_list]
-        self.cv_polar_accuracy_list = [np.average(x) for x in self.cv_polar_accuracy_list]
-        self.cv_avg_price_change_list = [np.average(x) for x in self.cv_avg_price_change_list]
-        self.cv_mres_list = [np.average(x) for x in self.cv_mres_list]
+        cv_iteration_loss_list = [[y[1] for y in x] for x in self.cv_iteration_loss_list]
+        cv_iteration_loss_list = [np.average(x) for x in cv_iteration_loss_list]
+        cv_polar_accuracy_list = [np.average(x) for x in self.cv_polar_accuracy_list]
+        cv_avg_price_change_list = [np.average(x) for x in self.cv_avg_price_change_list]
+        cv_mres_list = [np.average(x) for x in self.cv_mres_list]
         _var_list = [[y[0] for y in x] for x in self.cv_var_std_list] # cv_var_std_list : [[(0.1,0.2), ...], [(0.3,0.4), ...], ...]
         _var_list = [np.average(x) for x in _var_list]
         _std_list = [[y[1] for y in x] for x in self.cv_var_std_list] # cv_var_std_list : [[(0.1,0.2), ...], [(0.3,0.4), ...], ...]
@@ -824,9 +835,9 @@ class MlpClassifier:
 
 
         topology_list = list(zip(self.feature_switch_list, self.feature_selected_list,
-                                            self.hidden_size_list, self.cv_iteration_loss_list,
-                                            self.cv_polar_accuracy_list,
-                                            self.cv_avg_price_change_list, self.cv_mres_list, _var_list, _std_list))
+                                            self.hidden_size_list, cv_iteration_loss_list,
+                                            cv_polar_accuracy_list,
+                                            cv_avg_price_change_list, cv_mres_list, _var_list, _std_list))
 
         if key == 'mres':
             topology_list = sorted(topology_list,

@@ -154,6 +154,8 @@ a_share1.prediction_transfrom(input_folder, save_folder)
 mlp_predictor = MlpClassifier()
 
 
+# (2.) predict and save result
+
 # prediction_input_folder
 prediction_input_folder = os.path.join('a_share','[pred]_a_share_prediction_data')
 prediction_input_folder = os.path.join(parent_folder, 'data', prediction_input_folder)
