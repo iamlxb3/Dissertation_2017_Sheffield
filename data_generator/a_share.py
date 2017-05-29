@@ -42,8 +42,8 @@ class Ashare:
         self.t_attributors = []
         self.f_attributors = []
 
-    def read_a_share_history_date(self,save_folder, start_date, is_prediction = False):
-        self.read_fundamental_data(start_date)
+    def read_a_share_history_date(self,save_folder, start_date, is_prediction = False, is_filter_new_stock = False):
+        self.read_fundamental_data(start_date, is_filter_new_stock = is_filter_new_stock)
         self.read_tech_history_data(start_date, is_prediction = is_prediction)
         self.save_raw_data(save_folder, is_prediction = is_prediction)
 
@@ -167,7 +167,7 @@ class Ashare:
         print ("a_share_samples_t_dict_value: {}".format(list(self.a_share_samples_t_dict.values())[0]))
 
 
-    def read_fundamental_data(self, start_date):
+    def read_fundamental_data(self, start_date, is_filter_new_stock = False):
         # clear
         self.a_share_samples_f_dict = collections.defaultdict(lambda: 0)
         #
@@ -184,7 +184,7 @@ class Ashare:
 
         for single_date in daterange(start_date_obj, today_obj):
             temp_stock_feature_dict = collections.defaultdict(lambda :[])
-
+            temp_stock_feature_dict_key_pop_set = set() # for filtering the new stocks
             # if it is not friday, skip!
             if single_date.weekday() != 4:
                 continue
@@ -209,8 +209,37 @@ class Ashare:
                     continue
                 #
 
+
                 for stock_id, value in stock_key_value_dict.items():
+
+                    if is_filter_new_stock:
+                        if key == "timeToMarket":
+                            date_str = str(value)
+                            try:
+                                date_temp = time.strptime(date_str, '%Y%m%d')
+                            except ValueError:
+                                logger1.error("{} has invalid timeToMarket value!".format(stock_id))
+                                temp_stock_feature_dict[stock_id].append((key, value))
+                                continue
+
+                            date_obj = datetime.datetime(*date_temp[:3]).date()
+
+                            # set the threshold for new stock
+                            delta = datetime.timedelta(days=28)
+                            #
+                            date_gap = single_date - date_obj
+
+                            if date_gap <= delta:
+                                print ("stock_id: {} is new stock for {}, release date: {}".format(stock_id, single_date, date_str))
+                                temp_stock_feature_dict_key_pop_set.add(stock_id)
+
                     temp_stock_feature_dict[stock_id].append((key, value))
+
+            # filter new stocks
+            if is_filter_new_stock:
+                for stock_id in temp_stock_feature_dict_key_pop_set:
+                    temp_stock_feature_dict.pop(stock_id, 'None')
+                #
 
             for stock_id, feature_list in temp_stock_feature_dict.items():
                 feature_list = sorted(feature_list, key = lambda x: x[0])

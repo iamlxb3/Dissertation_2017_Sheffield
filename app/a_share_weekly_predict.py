@@ -72,7 +72,7 @@ if not today_obj.weekday() in weekend_set:
 start_date = days_ago_str
 print ("Data from {} will be downloaded.".format(start_date))
 save_folder = os.path.join(parent_folder, 'data', 'a_share', '[pred]_a_share_raw_data')
-a_share1.read_a_share_history_date(save_folder, start_date = start_date, is_prediction = True)
+a_share1.read_a_share_history_date(save_folder, start_date = start_date, is_prediction = True, is_filter_new_stock = True)
 # ==========================================================================================================
 
 
@@ -161,7 +161,7 @@ prediction_input_folder = os.path.join('a_share','[pred]_a_share_prediction_data
 prediction_input_folder = os.path.join(parent_folder, 'data', prediction_input_folder)
 
 # classifier_path
-classifier_name = 'a_share_mlp_regressor'
+classifier_name = 'a_share_mlp_regressor_v1.0'
 classifier_path = os.path.join(parent_folder, 'trained_classifiers', classifier_name)
 
 # prediction result save path
