@@ -42,14 +42,14 @@ from a_share import Ashare
 
 
 
-# ==========================================================================================================
-# [1.] Download the raw data
-# ==========================================================================================================
-a_share1 = Ashare()
-start_date = '2016-07-01'
-save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_raw_data')
-a_share1.read_a_share_history_date(save_folder, start_date = start_date, is_filter_new_stock = True)
-# ==========================================================================================================
+# # ==========================================================================================================
+# # [1.] Download the raw data
+# # ==========================================================================================================
+# a_share1 = Ashare()
+# start_date = '2016-07-01'
+# save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_raw_data')
+# a_share1.read_a_share_history_date(save_folder, start_date = start_date, is_filter_new_stock = True)
+# # ==========================================================================================================
 
 
 
@@ -116,24 +116,22 @@ a_share1.read_a_share_history_date(save_folder, start_date = start_date, is_filt
 # # # ==========================================================================================================
 
 
+# # ==========================================================================================================
+# # [4.a] PCA
+# # ==========================================================================================================
+# total n_components for a share: 29, without price change 28
+stock_pca1 = StockPca(n_components = 28)
+input_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_regression_data')
+save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_regression_PCA_data')
+stock_pca1.transfrom_data_by_pca(input_folder, save_folder)
+# # ==========================================================================================================
+
 
 # # # ==========================================================================================================
 # # # [4.3] write the regression value of the data
 # # # ==========================================================================================================
 # a_share1 = Ashare()
-# input_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_scaled_data')
-# save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_regression_data')
+# input_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_scaled_data_[PCA]')
+# save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_regression_PCA_data')
 # a_share1.regression(input_folder, save_folder)
 # # # ==========================================================================================================
-
-
-# # # ==========================================================================================================
-# # # [4.a] PCA
-# # # ==========================================================================================================
-# stock_pca1 = StockPca(n_components = 10)
-# input_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_labeled_data')
-# save_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_labeled_data_[PCA]')
-# stock_pca1.transfrom_data_by_pca(input_folder, save_folder)
-# # # ==========================================================================================================
-
-

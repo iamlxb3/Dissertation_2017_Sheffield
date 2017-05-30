@@ -43,17 +43,17 @@ from a_share import Ashare
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-# ==========================================================================================================
-# [0.] Delete all the files in the prediction folder
-# ==========================================================================================================
-a_share1 = Ashare()
-
-prediction_folder_set = {'[pred]_a_share_f_engineered_data', '[pred]_a_share_prediction_data',
-                         '[pred]_a_share_processed_data', '[pred]_a_share_raw_data', '[pred]_a_share_scaled_data'}
-prediction_folder_list = [os.path.join(parent_folder, 'data', 'a_share', x) for x in prediction_folder_set]
-
-a_share1.delete_all_prediction_folder(prediction_folder_list)
-# ==========================================================================================================
+# # ==========================================================================================================
+# # [0.] Delete all the files in the prediction folder
+# # ==========================================================================================================
+# a_share1 = Ashare()
+#
+# prediction_folder_set = {'[pred]_a_share_f_engineered_data', '[pred]_a_share_prediction_data',
+#                          '[pred]_a_share_processed_data', '[pred]_a_share_raw_data', '[pred]_a_share_scaled_data'}
+# prediction_folder_list = [os.path.join(parent_folder, 'data', 'a_share', x) for x in prediction_folder_set]
+#
+# a_share1.delete_all_prediction_folder(prediction_folder_list)
+# # ==========================================================================================================
 
 
 # ==========================================================================================================

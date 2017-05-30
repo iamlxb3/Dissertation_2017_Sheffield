@@ -16,13 +16,17 @@ from pjslib.logger import logger2
 # ==========================================================================================================
 parent_folder = os.path.dirname((os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 path1 = os.path.join(parent_folder, 'general_functions')
+path2 = os.path.join(parent_folder, 'strategy')
 sys.path.append(path1)
+sys.path.append(path2)
+
 # ==========================================================================================================
 
 # ==========================================================================================================
 # local package import
 # ==========================================================================================================
 from general_funcs import calculate_mrse
+from a_share_strategy import top_n_avg_strategy
 # ==========================================================================================================
 
 class MlpClassifier:
@@ -501,7 +505,7 @@ class MlpClassifier:
         #     print ("Training complete! Training Set size: {}".format(len(self.r_training_value_set)))
         # # <debug_print>
 
-    def regressor_dev(self, save_clsfy_path="mlp_regressor", is_cv = False):
+    def regressor_dev(self, save_clsfy_path="mlp_regressor", is_cv = False, include_top = 1):
         #print("get regressor from {}.".format(save_clsfy_path))
         mlp_regressor = pickle.load(open(save_clsfy_path, "rb"))
         pred_value_list = np.array(mlp_regressor.predict(self.r_dev_set))
@@ -509,7 +513,8 @@ class MlpClassifier:
         mrse = calculate_mrse(actual_value_list, pred_value_list)
         date_list = self.r_dev_date_set
         stock_id_list = self.r_dev_stock_id_set
-        avg_price_change, var, std = self._get_avg_price_change(pred_value_list, actual_value_list, date_list, stock_id_list)
+        avg_price_change, var, std = self._get_avg_price_change(pred_value_list, actual_value_list,
+                                                                date_list, stock_id_list, include_top = include_top)
 
         # count how many predicted value has the same polarity as actual value
         polar_list = [1 for x, y in zip(pred_value_list, actual_value_list) if x * y >= 0]
@@ -537,7 +542,8 @@ class MlpClassifier:
         # <uncomment for debugging>
 
 
-    def _get_avg_price_change(self, pred_value_list, actual_value_list, date_list, stock_id_list):
+
+    def _get_avg_price_change(self, pred_value_list, actual_value_list, date_list, stock_id_list, include_top = 1):
 
         # construct stock_pred_v_dict
         stock_pred_v_dict = collections.defaultdict(lambda: [])
@@ -553,37 +559,9 @@ class MlpClassifier:
             stock_actual_v_dict[date_stock_id_pair] = actual_value_list[i]
         #
 
-
-        # find the stock with the highest predicted priceChange and compute the avg priceChange
-        actual_price_change_sum = 0
-        actual_price_change_list = []
-
-        for date, stock_pred_v_pair_list in stock_pred_v_dict.items():
-            sorted_stock_pred_v_pair_list = sorted(stock_pred_v_pair_list, key=lambda x: x[1], reverse=True)
-            best_stock_id = sorted_stock_pred_v_pair_list[0][0]
-            best_stock_pred_price_change = sorted_stock_pred_v_pair_list[0][1]
-
-            date_stock_id_pair = (date, best_stock_id)
-
-            actual_price_change = stock_actual_v_dict[date_stock_id_pair]
-            actual_price_change_list.append(actual_price_change)
-            actual_price_change_sum += actual_price_change
-
-            # # temp print
-            # print ("best_stock_pred_price_change: ", best_stock_pred_price_change)
-            # print("date_stock_id_pair: ", date_stock_id_pair)
-            # print("actual_price_change: ", actual_price_change)
-            # #
-
-        #
-
-
-        # compute the average
-        avg_price_change = actual_price_change_sum / len(stock_pred_v_dict.keys())
-        #
-
-        var = np.var(actual_price_change_list)
-        std = np.std(actual_price_change_list)
+        # (0.) avg_price_change
+        avg_price_change, var, std = top_n_avg_strategy(stock_actual_v_dict, stock_pred_v_dict,
+                                                        include_top = include_top)
 
         return avg_price_change, var, std
 
@@ -763,6 +741,7 @@ class MlpClassifier:
         learning_rate_init = other_config_dict['learning_rate_init']
         clf_path = other_config_dict['clf_path']
         tol = other_config_dict['tol']
+        include_top = other_config_dict['include_top']
         # --------------------------------------------------------------------------------------------------------------
 
         # (4.) test the performance of different topology of MLP by 10-cross validation
@@ -790,7 +769,7 @@ class MlpClassifier:
                 self.cv_r_feed_data_train_test(validation_index, samples_feature_list, samples_value_list,
                                       date_str_list, stock_id_list,)
                 self.regressor_train(save_clsfy_path=clf_path, is_cv = True)
-                self.regressor_dev(save_clsfy_path=clf_path, is_cv = True)
+                self.regressor_dev(save_clsfy_path=clf_path, is_cv = True, include_top = include_top)
             #
 
             # (c.) save the 10-cross-valiation evaluate result for each topology
@@ -803,6 +782,8 @@ class MlpClassifier:
 
             # (d.) real-time print
             print ("====================================================================")
+            print ("Feature selected: {}, Total number: {}".format(self.feature_selected_list[-1],
+                                                                   self.feature_switch_list[-1].count(1)))
             print ("Average mres: {}".format(np.average(self.mres_list)))
             print ("Average price change: {}".format(np.average(self.avg_price_change_list)))
             print ("Average var: {}, Average std: {}".format(np.average([x[0] for x in self.var_std_list]),

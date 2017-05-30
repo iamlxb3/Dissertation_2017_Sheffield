@@ -33,6 +33,7 @@ class StockPca:
     def __init__(self, n_components):
         self.pca = PCA(n_components=n_components)
         self.n_components = n_components
+        print ("Build stock PCA complete! N components: {}".format(self.n_components))
 
     def fit_data(self,data):
         # data -> ndarray #np.array([[-1, -1], [-2, -1], [-3, -2], [1, 1], [2, 1], [3, 2]])
@@ -47,6 +48,7 @@ class StockPca:
         return trans_data
 
     def transfrom_data_by_pca(self, input_folder, save_folder):
+        print ("Start transforming data from {}".format(input_folder))
         file_name_list = os.listdir(input_folder)
         file_path_list = [os.path.join(input_folder, x) for x in file_name_list]
         save_file_path_list = [os.path.join(save_folder, x) for x in file_name_list]

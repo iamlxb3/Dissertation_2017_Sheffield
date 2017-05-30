@@ -19,66 +19,48 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+      <file leaf-file-name="a_share_cv_complete_regression_PCA_test.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_regression_PCA_test.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="333">
+              <caret line="63" column="43" lean-forward="true" selection-start-line="63" selection-start-column="43" selection-end-line="63" selection-end-column="43" />
+              <folding>
+                <element signature="e#676#686#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mlp_classifier.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1332">
+              <caret line="791" column="109" lean-forward="true" selection-start-line="791" selection-start-column="109" selection-end-line="791" selection-end-column="109" />
+              <folding>
+                <element signature="e#0#62#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dow_jones_index_complete_test.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/dow_jones_index_complete_test.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="378">
+              <caret line="57" column="51" lean-forward="false" selection-start-line="57" selection-start-column="28" selection-end-line="57" selection-end-column="51" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="a_share_download_process_data_r.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/a_share_download_process_data_r.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="368">
-              <caret line="50" column="99" lean-forward="false" selection-start-line="50" selection-start-column="71" selection-end-line="50" selection-end-column="99" />
+            <state relative-caret-position="396">
+              <caret line="121" column="61" lean-forward="false" selection-start-line="121" selection-start-column="61" selection-end-line="121" selection-end-column="61" />
               <folding>
                 <element signature="e#910#920#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="a_share_weekly_predict.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/a_share_weekly_predict.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-558">
-              <caret line="70" column="0" lean-forward="true" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="a_share.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data_generator/a_share.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="283">
-              <caret line="44" column="106" lean-forward="false" selection-start-line="44" selection-start-column="87" selection-end-line="44" selection-end-column="106" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="a_share_clear_data.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/a_share_clear_data.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="576">
-              <caret line="51" column="33" lean-forward="false" selection-start-line="51" selection-start-column="33" selection-end-line="51" selection-end-column="33" />
-              <folding>
-                <element signature="e#910#920#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="a_share_weekly_predict_no_download.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/a_share_weekly_predict_no_download.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="576">
-              <caret line="63" column="19" lean-forward="false" selection-start-line="63" selection-start-column="19" selection-end-line="63" selection-end-column="45" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="a_share_2017-05-29_prediction.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prediction/a_share/a_share_2017-05-29_prediction.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -94,13 +76,11 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>training_set_size</find>
       <find>feature_engineering</find>
       <find>a_share_samples_t_dict</find>
       <find>read_tech_history_data</find>
       <find>read_fundamental_data</find>
       <find>a_share_samples_f_dict</find>
-      <find>save_raw_data</find>
       <find>pickle</find>
       <find>data_per</find>
       <find>read_selected_feature_list</find>
@@ -124,6 +104,8 @@
       <find>MlpClassifier</find>
       <find>testing comp;e</find>
       <find>read_a_share_history_date</find>
+      <find>save_raw_data</find>
+      <find>self.a_share_samples_f_dict</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -135,7 +117,6 @@
       <list>
         <option value="$PROJECT_DIR$/app/a_share_mlp_build.py" />
         <option value="$PROJECT_DIR$/data_processor/pca.py" />
-        <option value="$PROJECT_DIR$/data_processor/stock_pca.py" />
         <option value="$PROJECT_DIR$/app/generate_test_gaussain_data.py" />
         <option value="$PROJECT_DIR$/app/generate_test_gaussian_data.py" />
         <option value="$PROJECT_DIR$/data_generator/gaussian_data.py" />
@@ -157,21 +138,25 @@
         <option value="$PROJECT_DIR$/app/a_share_mlp_train_test_history.py" />
         <option value="$PROJECT_DIR$/topology_feature_test/ashare_cv_classification.txt" />
         <option value="$PROJECT_DIR$/app/a_share_cv_complete_classification_test.py" />
-        <option value="$PROJECT_DIR$/app/a_share_cv_complete_regression_test.py" />
         <option value="$PROJECT_DIR$/app/a_share_build_classifier_for_production.py" />
-        <option value="$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py" />
         <option value="$PROJECT_DIR$/app/a_share_weekly_predict_no_download.py" />
         <option value="$PROJECT_DIR$/app/a_share_clear_data.py" />
         <option value="$PROJECT_DIR$/data_generator/a_share.py" />
-        <option value="$PROJECT_DIR$/app/a_share_download_process_data_r.py" />
+        <option value="$PROJECT_DIR$/app/a_share_clear_pred_data.py" />
         <option value="$PROJECT_DIR$/app/a_share_weekly_predict.py" />
+        <option value="$PROJECT_DIR$/strategy/a_share_strategy.py" />
+        <option value="$PROJECT_DIR$/app/a_share_cv_complete_regression_test.py" />
+        <option value="$PROJECT_DIR$/data_processor/stock_pca.py" />
+        <option value="$PROJECT_DIR$/app/a_share_download_process_data_r.py" />
+        <option value="$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py" />
+        <option value="$PROJECT_DIR$/app/a_share_cv_complete_regression_PCA_test.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="5" />
-    <option name="width" value="1932" />
-    <option name="height" value="1092" />
+    <option name="x" value="-8" />
+    <option name="width" value="1924" />
+    <option name="height" value="1038" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -188,6 +173,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -197,20 +183,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="Dissertation_2017_Sheffield" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Dissertation_2017_Sheffield" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Dissertation_2017_Sheffield" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="data_generator" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -256,24 +228,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="classifiers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mlp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Dissertation_2017_Sheffield" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Dissertation_2017_Sheffield" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -281,7 +235,6 @@
         </subPane>
       </pane>
       <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -297,14 +250,14 @@
     </option>
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\JIASHU\Desktop\Dissertation_2017_Sheffield\app" />
+      <recent name="C:\Users\PJS\Desktop\Dissertation_2017_Sheffield\app" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\JIASHU\Desktop\Dissertation_2017_Sheffield\classifiers\mlp" />
       <recent name="C:\Users\PJS\Desktop\Dissertation_2017_Sheffield\data\dow_jones_index\dow_jones_index_raw" />
       <recent name="C:\Users\PJS\Desktop\Dissertation_2017_Sheffield\data\dow_jones_index" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\JIASHU\Desktop\Dissertation_2017_Sheffield\app" />
-      <recent name="C:\Users\PJS\Desktop\Dissertation_2017_Sheffield\app" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -450,12 +403,12 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="5" y="0" width="1932" height="1092" extended-state="1" />
-    <editor active="true" />
+    <frame x="-8" y="0" width="1924" height="1038" extended-state="1" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26489028" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26390347" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32711306" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -469,7 +422,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3277487" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -494,73 +446,7 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1215">
-          <caret line="53" column="50" lean-forward="false" selection-start-line="53" selection-start-column="50" selection-end-line="53" selection-end-column="50" />
-          <folding>
-            <element signature="e#0#62#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data_processor/stock_pca.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1809">
-          <caret line="70" column="63" lean-forward="false" selection-start-line="70" selection-start-column="63" selection-end-line="70" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/a_share_mlp_train_test_history.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1404">
-          <caret line="53" column="35" lean-forward="false" selection-start-line="53" selection-start-column="35" selection-end-line="53" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/a_share_download_process_data_r.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#910#920#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data_generator/a_share.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10233">
-          <caret line="389" column="54" lean-forward="true" selection-start-line="389" selection-start-column="54" selection-end-line="389" selection-end-column="54" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/general_functions/general_funcs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="12" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1809">
-          <caret line="75" column="42" lean-forward="false" selection-start-line="75" selection-start-column="42" selection-end-line="75" selection-end-column="42" />
-          <folding>
-            <element signature="e#0#62#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.PyCharmCE2016.3/system/python_stubs/-1313743207/math.py" />
-    <entry file="file://$PROJECT_DIR$/data_processor/stock_pca.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1809">
-          <caret line="70" column="63" lean-forward="false" selection-start-line="70" selection-start-column="63" selection-end-line="70" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/test/gaussian_data/_cat.txt" />
     <entry file="file://$PROJECT_DIR$/data_generator/gaussian_data.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -612,13 +498,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/general_functions/general_funcs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/topology_feature_test/ashare_regression.txt" />
     <entry file="file://$PROJECT_DIR$/trained_data_processor/a_share_scaler_0_0_config.txt" />
     <entry file="file://$PROJECT_DIR$/topology_feature_test/backup/ashare_regression_avg_pc.txt">
@@ -629,13 +508,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/topology_feature_test/ashare_regression_avg_pc.txt" />
-    <entry file="file://$PROJECT_DIR$/app/dow_jones_index_complete_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="58" column="70" lean-forward="false" selection-start-line="58" selection-start-column="4" selection-end-line="58" selection-end-column="70" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/a_share/[pred]_a_share_raw_data/2017-05-19_002741.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -666,13 +538,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/prediction/a_share/a_share_2017-05-27_prediction.txt" />
-    <entry file="file://$PROJECT_DIR$/app/a_share_complete_regression_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="588">
-          <caret line="28" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/topology_feature_test/dow_jones_index.txt" />
     <entry file="file://$PROJECT_DIR$/topology_feature_test/ashare_regression_mres.txt" />
     <entry file="file://$PROJECT_DIR$/topology_feature_test/ashare_cv_classification.txt" />
@@ -704,27 +569,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/topology_feature_test/ashare_cv_regression_avg_pc.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="6" column="40" lean-forward="true" selection-start-line="6" selection-start-column="40" selection-end-line="6" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/a_share_mlp_train_test_history.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="903">
-          <caret line="44" column="49" lean-forward="false" selection-start-line="44" selection-start-column="49" selection-end-line="44" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_regression_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="576">
-          <caret line="100" column="26" lean-forward="false" selection-start-line="100" selection-start-column="26" selection-end-line="100" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/a_share_mlp_regressor.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
@@ -732,32 +576,62 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/topology_feature_test/ashare_cv_regression_mres.txt">
+    <entry file="file://$PROJECT_DIR$/app/a_share_weekly_predict_no_download.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="4" column="40" lean-forward="true" selection-start-line="4" selection-start-column="40" selection-end-line="4" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="820" column="0" lean-forward="true" selection-start-line="820" selection-start-column="0" selection-end-line="820" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#62#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/a_share_build_classifier_for_production.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="744">
-          <caret line="60" column="29" lean-forward="false" selection-start-line="60" selection-start-column="29" selection-end-line="60" selection-end-column="29" />
+        <state relative-caret-position="471">
+          <caret line="55" column="0" lean-forward="true" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/prediction/a_share/a_share_2017-05-29_prediction.txt">
+    <entry file="file://$PROJECT_DIR$/app/a_share_clear_pred_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="36" column="0" lean-forward="true" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+          <folding>
+            <element signature="e#910#920#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/a_share_weekly_predict.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="343">
+          <caret line="70" column="0" lean-forward="false" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
+          <folding>
+            <marker date="1496082199180" expanded="true" signature="2765:2950" ph="..." />
+            <marker date="1496082199180" expanded="true" signature="3130:3502" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_generator/a_share.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="93">
+          <caret line="191" column="42" lean-forward="true" selection-start-line="191" selection-start-column="42" selection-end-line="191" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prediction/a_share/[new_stock]_a_share_2017-05-29_prediction.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="0" lean-forward="true" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/a_share_clear_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="693">
+          <caret line="33" column="26" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+          <folding>
+            <element signature="e#910#920#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/topology_feature_test/backup/ashare_cv_regression_mres.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -765,47 +639,137 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/a_share_weekly_predict_no_download.py">
+    <entry file="file://$PROJECT_DIR$/topology_feature_test/backup/5-29-regression/ashare_cv_regression_avg_pc.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="576">
-          <caret line="63" column="19" lean-forward="false" selection-start-line="63" selection-start-column="19" selection-end-line="63" selection-end-column="45" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/a_share_clear_data.py">
+    <entry file="file://$PROJECT_DIR$/topology_feature_test/backup/5-29-regression/ashare_cv_regression_mres.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="576">
-          <caret line="51" column="33" lean-forward="false" selection-start-line="51" selection-start-column="33" selection-end-line="51" selection-end-column="33" />
-          <folding>
-            <element signature="e#910#920#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="105">
+          <caret line="5" column="38" lean-forward="true" selection-start-line="5" selection-start-column="38" selection-end-line="5" selection-end-column="38" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data_generator/a_share.py">
+    <entry file="file://$PROJECT_DIR$/app/a_share_build_classifier_for_production.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="283">
-          <caret line="44" column="106" lean-forward="false" selection-start-line="44" selection-start-column="87" selection-end-line="44" selection-end-column="106" />
+        <state relative-caret-position="679">
+          <caret line="60" column="29" lean-forward="false" selection-start-line="60" selection-start-column="29" selection-end-line="60" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/topology_feature_test/ashare_cv_regression_mres.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="40" lean-forward="true" selection-start-line="0" selection-start-column="40" selection-end-line="0" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prediction/a_share/a_share_2017-05-29_prediction.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="63">
+          <caret line="3" column="27" lean-forward="false" selection-start-line="3" selection-start-column="27" selection-end-line="3" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/general_functions/general_funcs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/strategy/a_share_strategy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="24" column="49" lean-forward="false" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_regression_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-129">
+          <caret line="70" column="31" lean-forward="false" selection-start-line="70" selection-start-column="31" selection-end-line="70" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_processor/stock_pca.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="333">
+          <caret line="50" column="70" lean-forward="true" selection-start-line="50" selection-start-column="70" selection-end-line="50" selection-end-column="70" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/topology_feature_test/ashare_cv_regression_avg_pc.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="7" column="29" lean-forward="true" selection-start-line="7" selection-start-column="29" selection-end-line="7" selection-end-column="29" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/a_share_download_process_data_r.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="368">
-          <caret line="50" column="99" lean-forward="false" selection-start-line="50" selection-start-column="71" selection-end-line="50" selection-end-column="99" />
+        <state relative-caret-position="396">
+          <caret line="121" column="61" lean-forward="false" selection-start-line="121" selection-start-column="61" selection-end-line="121" selection-end-column="61" />
           <folding>
             <element signature="e#910#920#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/a_share_weekly_predict.py">
+    <entry file="file://$PROJECT_DIR$/app/a_share_complete_regression_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-558">
-          <caret line="70" column="0" lean-forward="true" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
+        <state relative-caret-position="81">
+          <caret line="63" column="67" lean-forward="false" selection-start-line="63" selection-start-column="38" selection-end-line="63" selection-end-column="67" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/a_share_mlp_train_test_history.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="903">
+          <caret line="44" column="49" lean-forward="false" selection-start-line="44" selection-start-column="49" selection-end-line="44" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/dow_jones_index_complete_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="57" column="51" lean-forward="false" selection-start-line="57" selection-start-column="28" selection-end-line="57" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1332">
+          <caret line="791" column="109" lean-forward="true" selection-start-line="791" selection-start-column="109" selection-end-line="791" selection-end-column="109" />
+          <folding>
+            <element signature="e#0#62#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_regression_PCA_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="333">
+          <caret line="63" column="43" lean-forward="true" selection-start-line="63" selection-start-column="43" selection-end-line="63" selection-end-column="43" />
+          <folding>
+            <element signature="e#676#686#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

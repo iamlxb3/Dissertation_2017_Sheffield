@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 import collections
 
 initial_capital = 50000
-avg_profit = 0.001
+avg_profit = 0.012
 
 mu = avg_profit
-sigma = 0.25 # mean and standard deviation
-week_num = 20
+sigma = 0.065 # mean and standard deviation
+week_num = 52
 run_loop = 1000
 capital_all_list = []
 

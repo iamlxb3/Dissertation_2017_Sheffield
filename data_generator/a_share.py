@@ -176,7 +176,16 @@ class Ashare:
         today_obj = datetime.datetime.today().date()
         today = datetime.datetime.today().strftime("%Y-%m-%d")
 
-        f_attributors_set = set(ts.get_stock_basics(date = "2017-05-09").to_dict().keys())
+        # manually type
+        f_attributors_set = {'holders', 'undp', 'gpr', 'pb', 'industry', 'bvps', 'timeToMarket',
+                             'rev', 'perundp', 'fixedAssets', 'name', 'reservedPerShare', 'totals',
+                             'outstanding', 'liquidAssets', 'profit', 'pe', 'reserved', 'npr', 'area',
+                             'totalAssets', 'esp'}
+        #
+        # change the date if time out
+        #f_attributors_set = set(ts.get_stock_basics(date = "2017-05-26").to_dict().keys())
+        #
+
         filter_set = {'name', 'industry', 'area'}
         f_attributors_set = f_attributors_set - filter_set
         f_attributors = sorted(list(f_attributors_set))
@@ -191,6 +200,7 @@ class Ashare:
             date_str = single_date.strftime("%Y-%m-%d")
 
             try:
+                print ("date_str: ", date_str)
                 ts_temp = ts.get_stock_basics(date = date_str)
                 if ts_temp is None:
                     logger1.error("{} not found any data!".format(date_str))
@@ -214,9 +224,9 @@ class Ashare:
 
                     if is_filter_new_stock:
                         if key == "timeToMarket":
-                            date_str = str(value)
+                            timeToMarket = str(value)
                             try:
-                                date_temp = time.strptime(date_str, '%Y%m%d')
+                                date_temp = time.strptime(timeToMarket, '%Y%m%d')
                             except ValueError:
                                 logger1.error("{} has invalid timeToMarket value!".format(stock_id))
                                 temp_stock_feature_dict[stock_id].append((key, value))
@@ -227,10 +237,11 @@ class Ashare:
                             # set the threshold for new stock
                             delta = datetime.timedelta(days=28)
                             #
+
                             date_gap = single_date - date_obj
 
                             if date_gap <= delta:
-                                print ("stock_id: {} is new stock for {}, release date: {}".format(stock_id, single_date, date_str))
+                                print ("stock_id: {} is new stock for {}, release date: {}".format(stock_id, single_date, timeToMarket))
                                 temp_stock_feature_dict_key_pop_set.add(stock_id)
 
                     temp_stock_feature_dict[stock_id].append((key, value))
@@ -260,7 +271,7 @@ class Ashare:
         return new_feature
 
     def save_raw_data(self, save_folder, is_f = True, is_prediction = False):
-
+        save_count = 0
         for sample, t_feature_array in self.a_share_samples_t_dict.items():
             feature_array_list = []
             # (0.) add technical features
@@ -269,6 +280,7 @@ class Ashare:
             if is_f:
                 is_sample_exist = self.a_share_samples_f_dict.get(sample)
                 if is_sample_exist is None:
+                    logger1.error('sample {} does not have any fundamental data'.format(sample))
                     continue
                 f_feature_array = self.a_share_samples_f_dict[sample]
                 feature_array_list.append(f_feature_array)
@@ -291,13 +303,16 @@ class Ashare:
                 continue
 
             save_zip = zip(attribitors, feature_list_final)
-
             # save file
             save_name = sample + '.csv'
             save_path = os.path.join(save_folder, save_name)
             with open(save_path, 'w', encoding = 'utf-8') as f:
                 for attribitor, feature_value in save_zip:
                     f.write(str(attribitor) + ',' + str(feature_value) + '\n')
+                save_count += 1
+
+        print ("Save {} samples to {} succesfully!".format(save_count, save_folder))
+
 
     def label_data(self, input_folder, save_folder):
 
