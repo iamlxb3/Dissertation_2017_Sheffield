@@ -106,7 +106,10 @@ class DataPp():
 
         print ("Fill in nan succesful! nan sample count: {}, nan count: {}".format(sample_count, nan_count))
 
-    def scale_data(self, input_folder, save_folder, features_scale_list, scaler_save_folder, scaler_save_name):
+    def scale_data(self, input_folder, save_folder, features_scale_list,
+                   scaler_save_folder, scaler_save_name, mode = "min_max"):
+
+
 
         # intialize sk-learn preprocessing
         from sklearn import preprocessing
@@ -116,6 +119,19 @@ class DataPp():
         file_path_list = [os.path.join(input_folder, x) for x in file_name_list]
         file_save_path_list = [os.path.join(save_folder, x) for x in file_name_list]
 
+
+        # read the features_scale_list for z_score
+        if mode == "z_score":
+            # fetch all the features for z-score
+            with open (file_path_list[0], 'r', encoding = 'utf-8') as f:
+                feature_list = f.readlines()[0].strip().split(',')[::2]
+                feature_list.remove('priceChange')
+                features_scale1 = [tuple(feature_list)]
+                features_scale1.append((1,1)) # random tuple, just for consistency
+            features_scale_list = [features_scale1]
+        #
+
+        #
         # read the feature name list
         for i, file_path in enumerate(file_path_list):
             with open(file_path, 'r', encoding = 'utf-8') as f:
@@ -138,7 +154,14 @@ class DataPp():
             s_feature_name_tuple = features_scale[0]
             scale_range = features_scale[1]
             f_name_index_list = [feature_name_list.index(f_name) for f_name in s_feature_name_tuple]
-            scaler = preprocessing.MinMaxScaler(feature_range = scale_range)
+            if mode == "z_score":
+                scaler = preprocessing.StandardScaler()
+            elif mode == "min_max":
+                scaler = preprocessing.MinMaxScaler(feature_range = scale_range)
+            else:
+                print ("Error! Please input the corret mode!")
+                sys.exit()
+            print("Scaler apdoted: {}".format(mode))
             scaler.fit(X)
             trans_X = scaler.transform(X)
             for index in f_name_index_list:
@@ -148,44 +171,52 @@ class DataPp():
             # ----------------------------------------------------------------------------------------------------------
             # save scaler
             # ----------------------------------------------------------------------------------------------------------
-            scaler_name = scaler_save_name + '_' + str(scale_range[0]) + '_' + str(scale_range[1])
+            if mode == "z_score":
+                scaler_name = scaler_save_name
+            elif mode == "min_max":
+                scaler_name = mode + '_' + scaler_save_name + '_' + str(scale_range[0]) + '_' + str(scale_range[1])
+
+            # (1.) save scaler pickle
             scaler_save_path = os.path.join(scaler_save_folder, scaler_name)
+            pickle.dump(scaler, open(scaler_save_path, "wb"))
+            #
+            print("save {} scaler to {} successfully!".format(mode, scaler_save_path))
+
+            # (2.) save scaler config
+
             scaler_config_name = scaler_name + '_config.txt'
             scaler_config_save_path = os.path.join(scaler_save_folder, scaler_config_name)
 
-            # (1.) save scaler pickle
-            pickle.dump(scaler, open(scaler_save_path, "wb"))
-            #
-
-            # (2.) save scaler config
             with open(scaler_config_save_path, 'w', encoding = 'utf-8') as f:
                 s_feature_name_str = ','.join(s_feature_name_tuple)
-                scale_range = ','.join([str(x) for x in list(scale_range)])
                 f.write(s_feature_name_str)
                 f.write('\n')
-                f.write(scale_range)
-            #
-            print ("save scaler to {} successfully!".format(scaler_save_path))
-            print ("save scaler config to {} successfully!".format(scaler_config_save_path))
+                if mode == "min_max":
+                    scale_range = ','.join([str(x) for x in list(scale_range)])
+                    f.write(scale_range)
+
+                print ("save scaler config to {} successfully!".format(scaler_config_save_path))
             # ----------------------------------------------------------------------------------------------------------
         #
 
-        # save file
+        # save file after scaling
         for i, file_save_path in enumerate(file_save_path_list):
             with open(file_save_path, 'w', encoding = 'utf-8') as f:
                 feature_write_list = [str(j) for i in zip(feature_name_list,X[i]) for j in i]
                 feature_write_str = ','.join(feature_write_list)
                 f.write(feature_write_str)
 
-        print ("Scaling data succesful!")
-        print ("features_scale_list: ", features_scale_list)
+        print ("Scaling data succesful! Save folder: {}".format(save_folder))
+        print ("Mode: {}, features_scale_list: {}".format(mode, features_scale_list))
+        #
+
+
 
 
     def pred_scale_data(self, input_folder, save_folder, scaler_path_list):
 
         # intialize sk-learn preprocessing
         from sklearn import preprocessing
-
 
         file_name_list = os.listdir(input_folder)
         file_path_list = [os.path.join(input_folder, x) for x in file_name_list]

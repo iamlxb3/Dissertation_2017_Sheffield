@@ -1,14 +1,43 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+import sys
 import collections
+import re
+import os
+
+
+# ==========================================================================================================
+# ADD SYS PATH
+# ==========================================================================================================
+parent_folder = os.path.dirname(os.path.abspath(__file__))
+regression_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_regression_data')
+# ==========================================================================================================
+
+
+def compute_sigma(date_folder):
+    file_name_list = os.listdir(date_folder)
+    priceChange_list = []
+    for file_name in file_name_list:
+        priceChange = float(re.findall(r'#([0-9e\.\-]+)#', file_name)[0])
+        priceChange_list.append(priceChange)
+        
+    priceChange_std = np.std(priceChange_list)
+    print ("all samples priceChange_std: {}".format(priceChange_std))
+    return priceChange_std
+
+# compute the sigma for all samples
+#compute_sigma(regression_folder)
+
 
 initial_capital = 50000
-avg_profit = 0.012
+trading_percent = 0.004
+avg_profit = 0.0125
+avg_profit -= trading_percent
 
 mu = avg_profit
-sigma = 0.065 # mean and standard deviation
-week_num = 52
+sigma = 0.075 # mean and standard deviation
+week_num = 5
 run_loop = 1000
 capital_all_list = []
 

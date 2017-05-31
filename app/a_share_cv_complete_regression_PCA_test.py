@@ -88,7 +88,8 @@ for i in range(len(feature_switch_tuple_all_1)):
     feature_switch_tuple_list.append(feature_switch_tuple)
 #print ("feature_switch_tuple_list: ", feature_switch_tuple_list)
 # ----------------------------------------------------------------------------------------------------------------------
-
+# using the top 10 best features
+feature_switch_tuple_list = feature_switch_tuple_list[-10:]
 print("====================================================================")
 print("PCA feature testing start!! Total feature combination: {}".format(len(feature_switch_tuple_list)))
 print("====================================================================")
@@ -104,11 +105,11 @@ for feature_switch_tuple in feature_switch_tuple_list:
     # ----------------------------------------------------------------------------------------------------------------------
     # config hidden layer size
     # ----------------------------------------------------------------------------------------------------------------------
-    hidden_layer_node_min = 1
-    hidden_layer_node_max = 2
+    hidden_layer_node_min = 20
+    hidden_layer_node_max = 50
     hidden_layer_node_step = 1
-    hidden_layer_depth_min = 1
-    hidden_layer_depth_max = 1
+    hidden_layer_depth_min = 2
+    hidden_layer_depth_max = 8
     hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,
                                  hidden_layer_depth_max)
     # ----------------------------------------------------------------------------------------------------------------------

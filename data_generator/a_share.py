@@ -506,24 +506,53 @@ class Ashare:
             pre_f = previous_f_feature_pair_dict['volume']
             f = feature_pair_dict['volume']
             feature_pair_dict['volumeChange'] = "{:.5f}".format((f - pre_f) / pre_f)
-
+            # -----------------------------------------------------------------------------------
             # (6.) open close change
             open_price = feature_pair_dict['open']
             close_price = feature_pair_dict['close']
             open_close_change = (close_price - open_price) / open_price
             feature_pair_dict['openCloseChange'] = "{:.5f}".format(open_close_change)
-
+            # -----------------------------------------------------------------------------------
             # (7.) low high change
             low_price = feature_pair_dict['low']
             high_price = feature_pair_dict['high']
             low_high_change = (high_price - low_price) / low_price
             feature_pair_dict['lowHighChange'] = "{:.5f}".format(low_high_change)
+
+
+            # # **********************************************************************************************
+            # # FUNDAMENTALS
+            # # **********************************************************************************************
+            # FUNDAMENTAL_ATTRIBUTOR_SET = {'liquidAssets', 'fixedAssets',
+            #                               'reserved', 'reservedPerShare', 'esp', 'bvps', 'pb', 'undp',
+            #                               'perundp', 'rev', 'profit', 'gpr', 'npr', 'holders'}
+            # for attritubtor in FUNDAMENTAL_ATTRIBUTOR_SET:
+            #     pre = previous_f_feature_pair_dict[attritubtor]
+            #     this_week = feature_pair_dict[attritubtor]
+            #     new_attributor_name = attritubtor + 'Change'
+            #     try:
+            #         feature_pair_dict[new_attributor_name] = "{:.6f}".format((this_week - pre) / pre)
+            #     except ZeroDivisionError:
+            #         set_value = "0.0"
+            #         feature_pair_dict[new_attributor_name] = set_value
+            #         logger1.error("New attributor {} has ZeroDivisionError! attritubtor: {}, temporal set value: {}"
+            #                       .format(os.path.basename(previous_week_date_full_path), new_attributor_name,
+            #                               attritubtor, set_value))
+            #
+            # # **********************************************************************************************
+
+
+
+
             # ===================================================================================
 
             # ===================================================================================
             # delete features: close, high, low, open
             # ===================================================================================
-            delete_features_set = {'close', 'high', 'low', 'open', 'timeToMarket'}
+            delete_features_set = {'close', 'high', 'low', 'open', 'timeToMarket', 'liquidAssets',
+                                   'fixedAssets','reserved', 'reservedPerShare', 'esp', 'bvps', 'pb',
+                                   'undp','perundp', 'holders', 'totals', 'totalAssets'}
+
             for feature_name in delete_features_set:
                 feature_pair_dict.pop(feature_name)
             # ===================================================================================
