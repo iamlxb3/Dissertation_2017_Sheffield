@@ -1,10 +1,5 @@
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# [1.] Download the a-share raw data.
-# [2.] Manually add features to a-share data.
-# [3.] Clean data. <a> get rid of nan feature value.
-# [4.1] Data pre-processing and label the data. <a> PCA <b> scaling
-# [4.2] label the data directly
-# [4.3] write the regression value of the data
+# clear all the a share data
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # (c) 2017 PJS, University of Sheffield, iamlxb3@gmail.com
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -46,8 +41,11 @@ processed = os.path.join(parent_folder, 'data', 'a_share', 'a_share_processed_da
 labeled = os.path.join(parent_folder, 'data', 'a_share', 'a_share_labeled_data')
 regression = os.path.join(parent_folder, 'data', 'a_share', 'a_share_regression_data')
 scaled = os.path.join(parent_folder, 'data', 'a_share', 'a_share_scaled_data')
+PCA = os.path.join(parent_folder, 'data', 'a_share', 'a_share_regression_PCA_data')
 
-delete_folder_list = [raw, f_engineered, processed, labeled, regression, scaled]
+
+delete_folder_list = [raw, f_engineered, processed, labeled, regression, scaled, PCA]
+delete_folder_list = [f_engineered]
 
 for folder in delete_folder_list:
     remove_count = 0

@@ -58,7 +58,7 @@ other_config_dict = {}
 # (1.) learning_rate
 other_config_dict['learning_rate_init'] = 0.0001
 other_config_dict['tol'] = 1e-8
-include_top = 1
+include_top = 5
 print ("include_top: {}".format(include_top))
 other_config_dict['include_top'] = include_top
 other_config_dict['random_seed_list'] = [1,99,199]

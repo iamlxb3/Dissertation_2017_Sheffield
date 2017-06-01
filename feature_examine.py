@@ -79,7 +79,7 @@ class FeatureExamine:
 # ADD SYS PATH
 # ==========================================================================================================
 parent_folder = os.path.dirname(os.path.abspath(__file__))
-regression_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_z_new_f_regression_data')
+regression_folder = os.path.join(parent_folder, 'data', 'a_share', 'a_share_scaled_data')
 # ==========================================================================================================
     
 print ("Examine Folder: {}".format(regression_folder))

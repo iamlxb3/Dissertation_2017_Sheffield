@@ -814,7 +814,7 @@ class MlpClassifier:
             print ("Completeness: {:.5f}".format((i+1)/hidden_layer_sizes_combination))
             print ("====================================================================")
 
-            if i % 1 == 0:
+            if i % 10 == 0:
                 self.print_real_time_best_result()
             #
         # ==============================================================================================================
@@ -1091,9 +1091,9 @@ class MlpClassifier:
         top_hidden_size = sorted_topology_list[0][2]
         top_cv_avg_price_change = sorted_topology_list[0][3]
 
-        print ("================================================================")
+        print ("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         print ("Best topology and feature selection so far!")
         print ("feature_switch: ", top_feature_switch)
         print ("hidden_size: ", top_hidden_size)
         print ("cv_avg_price_change: ", top_cv_avg_price_change)
-        print ("================================================================")
+        print ("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")

@@ -34,11 +34,12 @@ from pjslib.logger import logger1
 
 
 class Ashare:
-    def __init__(self):
+    def __init__(self, is_stock_set = False):
         self.a_share_samples_f_dict = collections.defaultdict(lambda :0)
         self.a_share_samples_t_dict = collections.defaultdict(lambda: 0)
         self.a_share_samples_dict = collections.defaultdict(lambda: 0)
-        self.stock_set =  set(ts.get_stock_basics().to_dict()['profit'].keys())
+        if is_stock_set:
+            self.stock_set =  set(ts.get_stock_basics().to_dict()['profit'].keys())
         self.t_attributors = []
         self.f_attributors = []
 
@@ -520,26 +521,25 @@ class Ashare:
             feature_pair_dict['lowHighChange'] = "{:.5f}".format(low_high_change)
 
 
-            # # **********************************************************************************************
-            # # FUNDAMENTALS
-            # # **********************************************************************************************
-            # FUNDAMENTAL_ATTRIBUTOR_SET = {'liquidAssets', 'fixedAssets',
-            #                               'reserved', 'reservedPerShare', 'esp', 'bvps', 'pb', 'undp',
-            #                               'perundp', 'rev', 'profit', 'gpr', 'npr', 'holders'}
-            # for attritubtor in FUNDAMENTAL_ATTRIBUTOR_SET:
-            #     pre = previous_f_feature_pair_dict[attritubtor]
-            #     this_week = feature_pair_dict[attritubtor]
-            #     new_attributor_name = attritubtor + 'Change'
-            #     try:
-            #         feature_pair_dict[new_attributor_name] = "{:.6f}".format((this_week - pre) / pre)
-            #     except ZeroDivisionError:
-            #         set_value = "0.0"
-            #         feature_pair_dict[new_attributor_name] = set_value
-            #         logger1.error("New attributor {} has ZeroDivisionError! attritubtor: {}, temporal set value: {}"
-            #                       .format(os.path.basename(previous_week_date_full_path), new_attributor_name,
-            #                               attritubtor, set_value))
-            #
-            # # **********************************************************************************************
+            # **********************************************************************************************
+            # FUNDAMENTALS
+            # **********************************************************************************************
+
+
+            FUNDAMENTAL_ATTRIBUTOR_SET = {'pb','pe'}
+            for attritubtor in FUNDAMENTAL_ATTRIBUTOR_SET:
+                pre = previous_f_feature_pair_dict[attritubtor]
+                this_week = feature_pair_dict[attritubtor]
+                new_attributor_name = attritubtor + 'Change'
+                try:
+                    feature_pair_dict[new_attributor_name] = "{:.6f}".format((this_week - pre) / pre)
+                except ZeroDivisionError:
+                    set_value = "1.0"
+                    feature_pair_dict[new_attributor_name] = set_value
+                    logger1.error("New attributor {} has ZeroDivisionError! attritubtor: {}, temporal set value: {}"
+                                  .format(os.path.basename(previous_week_date_full_path), new_attributor_name, set_value))
+
+            # **********************************************************************************************
 
 
 
@@ -549,9 +549,10 @@ class Ashare:
             # ===================================================================================
             # delete features: close, high, low, open
             # ===================================================================================
+            # delete_features_set = {'close', 'high', 'low', 'open', 'timeToMarket'}
             delete_features_set = {'close', 'high', 'low', 'open', 'timeToMarket', 'liquidAssets',
                                    'fixedAssets','reserved', 'reservedPerShare', 'esp', 'bvps', 'pb',
-                                   'undp','perundp', 'holders', 'totals', 'totalAssets'}
+                                   'undp','perundp', 'holders', 'totals', 'totalAssets', 'outstanding'}
 
             for feature_name in delete_features_set:
                 feature_pair_dict.pop(feature_name)
