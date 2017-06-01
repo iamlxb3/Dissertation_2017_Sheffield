@@ -59,6 +59,7 @@ other_config_dict = {}
 other_config_dict['learning_rate_init'] = 0.0001
 other_config_dict['tol'] = 1e-8
 other_config_dict['include_top'] = 1
+other_config_dict['random_seed_list'] = [1,99,199]
 
 # (2.) clf_path
 clsfy_name = 'a_share_mlp_cv_PCA_regressor'
@@ -90,6 +91,9 @@ for i in range(len(feature_switch_tuple_all_1)):
 # ----------------------------------------------------------------------------------------------------------------------
 # using the top 10 best features
 feature_switch_tuple_list = feature_switch_tuple_list[-10:]
+
+# TEST ONE FEATURE combination
+#feature_switch_tuple_list = [(1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)]
 print("====================================================================")
 print("PCA feature testing start!! Total feature combination: {}".format(len(feature_switch_tuple_list)))
 print("====================================================================")

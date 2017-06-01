@@ -57,6 +57,8 @@ class MlpClassifier:
 
         # cross validation list for regression
         self.cv_mres_list = []
+        # cv_avg_price_change_list eg. [[0.1,0.2,0.3,..0.99](each represent one topology,
+        # 10 or 30, based on random seed list), [0.1,0.2,0.3,..0.99], ... [0.1,0.2,0.3,..0.99]]
         self.cv_avg_price_change_list = []
         self.cv_polar_accuracy_list = []
         self.cv_var_std_list = []
@@ -411,7 +413,7 @@ class MlpClassifier:
                                           tol=tol, learning_rate_init=learning_rate_init,
                                           max_iter=1000, random_state=1)
 
-    def _r_feed_data(self, folder, data_per, feature_switch_tuple=None, is_random = False):
+    def _r_feed_data(self, folder, data_per, feature_switch_tuple=None, is_random = False, random_seed = 1):
         # feature_switch_tuple : (0,1,1,0,1,1,0,...) ?
         if feature_switch_tuple:
             self.feature_switch_list.append(feature_switch_tuple)
@@ -450,7 +452,7 @@ class MlpClassifier:
             print("Start shuffling the data...")
             import random
             combind_list = list(zip(samples_feature_list, samples_value_list, date_str_list, stock_id_list))
-            random_seed = 1
+            random_seed = random_seed
             random.seed(random_seed)
             random.shuffle(combind_list)
             samples_feature_list, samples_value_list, date_str_list, stock_id_list = zip(*combind_list)
@@ -702,7 +704,7 @@ class MlpClassifier:
 
 
     def cv_r_topology_test(self, input_folder, feature_switch_tuple, other_config_dict,
-                           hidden_layer_config_tuple, is_random = False):
+                           hidden_layer_config_tuple):
         '''10 cross validation test for mlp regressor'''
         def _build_hidden_layer_sizes_list(hidden_layer_config_tuple):
             hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min, \
@@ -726,9 +728,21 @@ class MlpClassifier:
 
         # (1.) read the whole data set
         # cut the number of training sample
-        samples_feature_list, samples_value_list, \
-        date_str_list, stock_id_list = self._r_feed_data(input_folder, data_per = 1.0,
-                                                         feature_switch_tuple=feature_switch_tuple, is_random = True)
+        # create list under different random seed
+        samples_feature_random_box = []
+        samples_value_random_box = []
+        date_str_random_box = []
+        stock_id_random_box = []
+        random_seed_list = other_config_dict['random_seed_list']
+        for random_seed in random_seed_list:
+            samples_feature_list, samples_value_list, \
+            date_str_list, stock_id_list = self._r_feed_data(input_folder, data_per = 1.0,
+                                                             feature_switch_tuple=feature_switch_tuple,
+                                                             is_random = True, random_seed = random_seed)
+            samples_feature_random_box.append(samples_feature_list)
+            samples_value_random_box.append(samples_value_list)
+            date_str_random_box.append(date_str_list)
+            stock_id_random_box.append(stock_id_list)
         # --------------------------------------------------------------------------------------------------------------
 
         # (2.) construct hidden layer size list
@@ -742,6 +756,7 @@ class MlpClassifier:
         clf_path = other_config_dict['clf_path']
         tol = other_config_dict['tol']
         include_top = other_config_dict['include_top']
+
         # --------------------------------------------------------------------------------------------------------------
 
         # (4.) test the performance of different topology of MLP by 10-cross validation
@@ -765,12 +780,16 @@ class MlpClassifier:
 
             # (b.) 10-cross-validation train and test
             self.set_regressor(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol=tol)
-            for validation_index in range(10):
-                self.cv_r_feed_data_train_test(validation_index, samples_feature_list, samples_value_list,
-                                      date_str_list, stock_id_list,)
-                self.regressor_train(save_clsfy_path=clf_path, is_cv = True)
-                self.regressor_dev(save_clsfy_path=clf_path, is_cv = True, include_top = include_top)
-            #
+
+            for i, (samples_feature_list, samples_value_list, date_str_list, stock_id_list) in enumerate(zip(samples_feature_random_box
+                    , samples_value_random_box, date_str_random_box, stock_id_random_box)):
+                print ("Random seed now: {}".format(random_seed_list[i]))
+                for validation_index in range(10):
+                    self.cv_r_feed_data_train_test(validation_index, samples_feature_list, samples_value_list,
+                                          date_str_list, stock_id_list)
+                    self.regressor_train(save_clsfy_path=clf_path, is_cv = True)
+                    self.regressor_dev(save_clsfy_path=clf_path, is_cv = True, include_top = include_top)
+                #
 
             # (c.) save the 10-cross-valiation evaluate result for each topology
             self.cv_iteration_loss_list.append(self.iteration_loss_list)
@@ -780,11 +799,12 @@ class MlpClassifier:
             self.cv_var_std_list.append(self.var_std_list)
             #
 
+
             # (d.) real-time print
             print ("====================================================================")
             print ("Feature selected: {}, Total number: {}".format(self.feature_selected_list[-1],
                                                                    self.feature_switch_list[-1].count(1)))
-            print ("Average mres: {}".format(np.average(self.mres_list)))
+            print ("Average mres: {} len: {}".format(np.average(self.mres_list), len(self.mres_list)))
             print ("Average price change: {}".format(np.average(self.avg_price_change_list)))
             print ("Average var: {}, Average std: {}".format(np.average([x[0] for x in self.var_std_list]),
                                              np.average([x[1] for x in self.var_std_list])))
@@ -793,6 +813,9 @@ class MlpClassifier:
             print ("====================================================================")
             print ("Completeness: {:.5f}".format((i+1)/hidden_layer_sizes_combination))
             print ("====================================================================")
+
+            if i % 1 == 0:
+                self.print_real_time_best_result()
             #
         # ==============================================================================================================
         # Cross Validation Train And Test END
@@ -1043,3 +1066,34 @@ class MlpClassifier:
     #   ====================================================================================================================
     #   CROSS VALIDATION FUNCTIONS FOR CLASSIFICATION END
     #   ====================================================================================================================
+
+
+    def print_real_time_best_result(self):
+
+        # compute the average for each list
+        # cv_iteration_loss_list = [[y[1] for y in x] for x in self.cv_iteration_loss_list]
+        # cv_iteration_loss_list = [np.average(x) for x in cv_iteration_loss_list]
+        # cv_polar_accuracy_list = [np.average(x) for x in self.cv_polar_accuracy_list]
+        cv_avg_price_change_list = [np.average(x) for x in self.cv_avg_price_change_list]
+        # cv_mres_list = [np.average(x) for x in self.cv_mres_list]
+        # _var_list = [[y[0] for y in x] for x in self.cv_var_std_list] # cv_var_std_list : [[(0.1,0.2), ...], [(0.3,0.4), ...], ...]
+        # _var_list = [np.average(x) for x in _var_list]
+        # _std_list = [[y[1] for y in x] for x in self.cv_var_std_list] # cv_var_std_list : [[(0.1,0.2), ...], [(0.3,0.4), ...], ...]
+        # _std_list = [np.average(x) for x in _std_list]
+
+
+        topology_list = list(zip(self.feature_switch_list, self.feature_selected_list,
+                                            self.hidden_size_list, cv_avg_price_change_list))
+        sorted_topology_list = sorted(topology_list,
+                               key=lambda x: x[-1], reverse=True)
+
+        top_feature_switch = sorted_topology_list[0][0]
+        top_hidden_size = sorted_topology_list[0][2]
+        top_cv_avg_price_change = sorted_topology_list[0][3]
+
+        print ("================================================================")
+        print ("Best topology and feature selection so far!")
+        print ("feature_switch: ", top_feature_switch)
+        print ("hidden_size: ", top_hidden_size)
+        print ("cv_avg_price_change: ", top_cv_avg_price_change)
+        print ("================================================================")
