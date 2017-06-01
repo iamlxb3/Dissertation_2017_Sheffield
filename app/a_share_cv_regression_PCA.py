@@ -97,7 +97,7 @@ for validation_index in range(10):
     mlp_regressor1.cv_r_feed_data_train_test(validation_index, samples_feature_list, samples_value_list,
                                    date_str_list, stock_id_list)
     mlp_regressor1.regressor_train(save_clsfy_path=clf_path, is_cv=True)
-    mlp_regressor1.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top=include_top)
+    mlp_regressor1.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top)
 
 
 # (d.) real-time print

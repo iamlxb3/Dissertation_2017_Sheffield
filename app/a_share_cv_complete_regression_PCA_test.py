@@ -38,6 +38,12 @@ from mlp_classifier import MlpClassifier
 # (1.) build classifer
 mlp_regressor1 = MlpClassifier()
 
+# # TODO ADD SOME REGRESSION TESTING DATA
+# data_folder = os.path.join('a_share','a_share_regression_PCA_data')
+# data_folder = os.path.join(parent_folder, 'data', data_folder)
+# #
+
+
 
 # a share data
 data_folder = os.path.join('a_share','a_share_regression_PCA_data')
@@ -57,11 +63,11 @@ data_folder = os.path.join(parent_folder, 'data', data_folder)
 other_config_dict = {}
 # (1.) learning_rate
 other_config_dict['learning_rate_init'] = 0.0001
-other_config_dict['tol'] = 1e-8
-include_top = 1
-print ("include_top: {}".format(include_top))
-other_config_dict['include_top'] = include_top
-other_config_dict['random_seed_list'] = [1,99,199]
+other_config_dict['tol'] = 1e-6
+include_top_list = [1, 3, 5, 7, 9]
+print ("include_top_list: {}".format(include_top_list))
+other_config_dict['include_top_list'] = include_top_list
+other_config_dict['random_seed_list'] = [1,99,299]
 
 # (2.) clf_path
 clsfy_name = 'a_share_mlp_cv_PCA_regressor'
@@ -69,11 +75,11 @@ other_config_dict['clf_path'] = os.path.join(parent_folder, 'trained_classifiers
 
 # (3.) topology_result_path
 cv_f_t_t_save_path_mres = os.path.join(parent_folder, 'topology_feature_test',
-                                       'ashare_cv_regression_PCA_mres_top_{}.txt'.format(include_top))
+                                       'ashare_cv_regression_PCA_mres.txt')
 cv_f_t_t_save_path_avg_pc = os.path.join(parent_folder, 'topology_feature_test',
-                                         'ashare_cv_regression_PCA_avg_pc_top_{}.txt'.format(include_top))
+                                         'ashare_cv_regression_PCA_avg_pc.txt')
 cv_f_t_t_save_path_polar = os.path.join(parent_folder, 'topology_feature_test',
-                                        'ashare_cv_regression_PCA_polar_top_{}.txt'.format(include_top))
+                                        'ashare_cv_regression_PCA_polar.txt')
 # ----------------------------------------------------------------------------------------------------------------------
 
 
@@ -92,6 +98,11 @@ for i in range(len(feature_switch_tuple_all_1)):
     feature_switch_list[-i:] = [0 for x in range(i)]
     feature_switch_tuple = tuple(feature_switch_list)
     feature_switch_tuple_list.append(feature_switch_tuple)
+
+# >>>>>>>>>DEBUG
+#feature_switch_tuple_list = [feature_switch_tuple_list[1]]
+#
+
 print ("feature_switch_tuple_list: ", feature_switch_tuple_list)
 # ----------------------------------------------------------------------------------------------------------------------
 

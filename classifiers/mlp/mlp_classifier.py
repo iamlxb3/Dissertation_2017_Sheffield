@@ -49,6 +49,7 @@ class MlpClassifier:
         self.var_std_list = []
         self.avg_price_change_list = []
         self.polar_accuracy_list = []
+        self.include_top_list = []
 
         # cross validation list for classification
         self.cv_average_average_f1_list = []
@@ -61,7 +62,7 @@ class MlpClassifier:
         # 10 or 30, based on random seed list), [0.1,0.2,0.3,..0.99], ... [0.1,0.2,0.3,..0.99]]
         self.cv_avg_price_change_list = []
         self.cv_polar_accuracy_list = []
-        self.cv_var_std_list = []
+        #self.cv_var_std_list = []
         #
 
         # for all
@@ -507,7 +508,7 @@ class MlpClassifier:
         #     print ("Training complete! Training Set size: {}".format(len(self.r_training_value_set)))
         # # <debug_print>
 
-    def regressor_dev(self, save_clsfy_path="mlp_regressor", is_cv = False, include_top = 1):
+    def regressor_dev(self, save_clsfy_path="mlp_regressor", is_cv = False, include_top_list = [1]):
         #print("get regressor from {}.".format(save_clsfy_path))
         mlp_regressor = pickle.load(open(save_clsfy_path, "rb"))
         pred_value_list = np.array(mlp_regressor.predict(self.r_dev_set))
@@ -515,8 +516,15 @@ class MlpClassifier:
         mrse = calculate_mrse(actual_value_list, pred_value_list)
         date_list = self.r_dev_date_set
         stock_id_list = self.r_dev_stock_id_set
-        avg_price_change, var, std = self._get_avg_price_change(pred_value_list, actual_value_list,
-                                                                date_list, stock_id_list, include_top = include_top)
+
+        # TODO add include top list
+        avg_price_change_tuple, var_tuple, std_tuple = self._get_avg_price_change2(pred_value_list, actual_value_list,
+                                                                date_list, stock_id_list, include_top_list =
+                                                                                   include_top_list)
+
+        #avg_price_change, var, std = self._get_avg_price_change(pred_value_list, actual_value_list,
+        #                                                        date_list, stock_id_list, include_top = include_top)
+
 
         # count how many predicted value has the same polarity as actual value
         polar_list = [1 for x, y in zip(pred_value_list, actual_value_list) if x * y >= 0]
@@ -525,9 +533,9 @@ class MlpClassifier:
         #
 
         self.mres_list.append(mrse)
-        self.avg_price_change_list.append(avg_price_change)
+        self.avg_price_change_list.append(avg_price_change_tuple)
         self.polar_accuracy_list.append(polar_percent)
-        self.var_std_list.append((var, std))
+        self.var_std_list.append((var_tuple, std_tuple))
 
         # <uncomment for debugging>
         if not is_cv:
@@ -536,14 +544,41 @@ class MlpClassifier:
             print("pred_value_list, ", pred_value_list)
             print("polarity: {}".format(polar_percent))
             print("mrse: {}".format(mrse))
-            print("avg_price_change: {}".format(avg_price_change))
+            print("avg_price_change: {}".format(avg_price_change_tuple))
             print("----------------------------------------------------------------------------------------")
         else:
             pass
             #print("Testing complete! Testing Set size: {}".format(len(self.r_dev_value_set)))
         # <uncomment for debugging>
 
+    def _get_avg_price_change2(self, pred_value_list, actual_value_list, date_list,
+                               stock_id_list, include_top_list = [1,3]):
+        avg_price_change_list = []
+        var_list = []
+        std_list = []
+        # construct stock_pred_v_dict
+        stock_pred_v_dict = collections.defaultdict(lambda: [])
+        for i, date in enumerate(date_list):
+            stock_pred_v_pair = (stock_id_list[i], pred_value_list[i])
+            stock_pred_v_dict[date].append(stock_pred_v_pair)
+        #
 
+        #
+        stock_actual_v_dict = collections.defaultdict(lambda: 0)
+        for i, date in enumerate(date_list):
+            date_stock_id_pair = (date, stock_id_list[i])
+            stock_actual_v_dict[date_stock_id_pair] = actual_value_list[i]
+        #
+        for include_top in include_top_list:
+            # (0.) avg_price_change
+            avg_price_change, var, std = top_n_avg_strategy(stock_actual_v_dict, stock_pred_v_dict,
+                                                            include_top = include_top)
+            avg_price_change_list.append(avg_price_change)
+            var_list.append(var)
+            std_list.append(std)
+
+
+        return tuple(avg_price_change_list), tuple(var_list),  tuple(std_list)
 
     def _get_avg_price_change(self, pred_value_list, actual_value_list, date_list, stock_id_list, include_top = 1):
 
@@ -601,6 +636,9 @@ class MlpClassifier:
             self.set_regressor(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol=tol)
             self.regressor_train(save_clsfy_path=clf_path)
             self.regressor_dev(save_clsfy_path=clf_path)
+
+
+
             print("==================================")
             print("Completeness: {:.5f}".format((i + 1) / hidden_layer_sizes_combination))
             print("==================================")
@@ -755,7 +793,8 @@ class MlpClassifier:
         learning_rate_init = other_config_dict['learning_rate_init']
         clf_path = other_config_dict['clf_path']
         tol = other_config_dict['tol']
-        include_top = other_config_dict['include_top']
+        include_top_list = other_config_dict['include_top_list']
+        self.include_top_list = include_top_list
 
         # --------------------------------------------------------------------------------------------------------------
 
@@ -781,14 +820,14 @@ class MlpClassifier:
             # (b.) 10-cross-validation train and test
             self.set_regressor(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol=tol)
 
-            for i, (samples_feature_list, samples_value_list, date_str_list, stock_id_list) in enumerate(zip(samples_feature_random_box
+            for k, (samples_feature_list, samples_value_list, date_str_list, stock_id_list) in enumerate(zip(samples_feature_random_box
                     , samples_value_random_box, date_str_random_box, stock_id_random_box)):
-                print ("Random seed now: {}".format(random_seed_list[i]))
+                print ("Random seed now: {}".format(random_seed_list[k]))
                 for validation_index in range(10):
                     self.cv_r_feed_data_train_test(validation_index, samples_feature_list, samples_value_list,
                                           date_str_list, stock_id_list)
                     self.regressor_train(save_clsfy_path=clf_path, is_cv = True)
-                    self.regressor_dev(save_clsfy_path=clf_path, is_cv = True, include_top = include_top)
+                    self.regressor_dev(save_clsfy_path=clf_path, is_cv = True, include_top_list= include_top_list)
                 #
 
             # (c.) save the 10-cross-valiation evaluate result for each topology
@@ -796,7 +835,9 @@ class MlpClassifier:
             self.cv_mres_list.append(self.mres_list)
             self.cv_avg_price_change_list.append(self.avg_price_change_list)
             self.cv_polar_accuracy_list.append(self.polar_accuracy_list)
-            self.cv_var_std_list.append(self.var_std_list)
+
+            # TODO ignore var and std for a while
+            #self.cv_var_std_list.append(self.var_std_list)
             #
 
 
@@ -805,9 +846,14 @@ class MlpClassifier:
             print ("Feature selected: {}, Total number: {}".format(self.feature_selected_list[-1],
                                                                    self.feature_switch_list[-1].count(1)))
             print ("Average mres: {} len: {}".format(np.average(self.mres_list), len(self.mres_list)))
-            print ("Average price change: {}".format(np.average(self.avg_price_change_list)))
-            print ("Average var: {}, Average std: {}".format(np.average([x[0] for x in self.var_std_list]),
-                                             np.average([x[1] for x in self.var_std_list])))
+            for j, top in enumerate(include_top_list):
+                n_top_list = [x[j] for x in self.avg_price_change_list]
+                print("Top: {} Average price change: {}".format(top, np.average(n_top_list)))
+
+            # TODO ignore var,std for a while
+            # print ("Average var: {}, Average std: {}".format(np.average([x[0] for x in self.var_std_list]),
+            #                                  np.average([x[1] for x in self.var_std_list])))
+
             print ("Average polarity: {}".format(np.average(self.polar_accuracy_list)))
             print ("Average iteration_loss: {}".format(np.average([x[1] for x in self.iteration_loss_list])))
             print ("====================================================================")
@@ -830,54 +876,131 @@ class MlpClassifier:
         cv_iteration_loss_list = [[y[1] for y in x] for x in self.cv_iteration_loss_list]
         cv_iteration_loss_list = [np.average(x) for x in cv_iteration_loss_list]
         cv_polar_accuracy_list = [np.average(x) for x in self.cv_polar_accuracy_list]
-        cv_avg_price_change_list = [np.average(x) for x in self.cv_avg_price_change_list]
+        #cv_avg_price_change_list = [np.average(x) for x in self.cv_avg_price_change_list]
         cv_mres_list = [np.average(x) for x in self.cv_mres_list]
-        _var_list = [[y[0] for y in x] for x in self.cv_var_std_list] # cv_var_std_list : [[(0.1,0.2), ...], [(0.3,0.4), ...], ...]
-        _var_list = [np.average(x) for x in _var_list]
-        _std_list = [[y[1] for y in x] for x in self.cv_var_std_list] # cv_var_std_list : [[(0.1,0.2), ...], [(0.3,0.4), ...], ...]
-        _std_list = [np.average(x) for x in _std_list]
-
 
         topology_list = list(zip(self.feature_switch_list, self.feature_selected_list,
                                             self.hidden_size_list, cv_iteration_loss_list,
-                                            cv_polar_accuracy_list,
-                                            cv_avg_price_change_list, cv_mres_list, _var_list, _std_list))
+                                            cv_polar_accuracy_list, cv_mres_list))
 
         if key == 'mres':
             topology_list = sorted(topology_list,
-                                   key=lambda x: x[-3])
-        elif key == 'avg_pc':
-            topology_list = sorted(topology_list,
-                                   key=lambda x: x[-4], reverse = True)
+                                   key=lambda x: x[-1])
+            # write to file
+            with open(path, 'w', encoding='utf-8') as f:
+                for tuple1 in topology_list:
+                    feature_switch = str(tuple1[0])
+                    feature_selected = str(tuple1[1])
+                    hidden_size = str(tuple1[2])
+                    iteration_loss = str(tuple1[3])
+                    polar_accuracy = str(tuple1[4])
+                    mres = str(tuple1[5])
+                    # TODO ignore var and std for a while
+                    # var = str(tuple1[7])
+                    # std = str(tuple1[8])
+                    f.write('----------------------------------------------------\n')
+                    f.write('feature_switch: {}\n'.format(feature_switch))
+                    f.write('feature_selected: {}\n'.format(feature_selected))
+                    f.write('hidden_size: {}\n'.format(hidden_size))
+                    f.write('average_iteration_loss: {}\n'.format(iteration_loss))
+                    f.write('average_polar_accuracy: {}\n'.format(polar_accuracy))
+                    f.write('average_mres: {}\n'.format(mres))
+                    print("Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(
+                        key, path))
+            #
 
         elif key == 'polar':
             topology_list = sorted(topology_list,
-                                key=lambda x: x[-5], reverse=True)
+                                key=lambda x: x[-2], reverse=True)
+            # write to file
+            with open(path, 'w', encoding='utf-8') as f:
+                for tuple1 in topology_list:
+                    feature_switch = str(tuple1[0])
+                    feature_selected = str(tuple1[1])
+                    hidden_size = str(tuple1[2])
+                    iteration_loss = str(tuple1[3])
+                    polar_accuracy = str(tuple1[4])
+                    mres = str(tuple1[5])
+                    # TODO ignore var and std for a while
+                    # var = str(tuple1[7])
+                    # std = str(tuple1[8])
+                    f.write('----------------------------------------------------\n')
+                    f.write('feature_switch: {}\n'.format(feature_switch))
+                    f.write('feature_selected: {}\n'.format(feature_selected))
+                    f.write('hidden_size: {}\n'.format(hidden_size))
+                    f.write('average_iteration_loss: {}\n'.format(iteration_loss))
+                    f.write('average_polar_accuracy: {}\n'.format(polar_accuracy))
+                    f.write('average_mres: {}\n'.format(mres))
+                    print("Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(
+                        key, path))
+            #
+
+        elif key == 'avg_pc':
+            # write the best result under different trading strategy
+            for i, include_top in enumerate(self.include_top_list):
+
+                # get the cv_avg_price_change_list for a particular strategy
+                top_n_pc_list = [[y[i] for y in x] for x in self.cv_avg_price_change_list]
+                cv_avg_price_change_list = [np.average(x) for x in top_n_pc_list]
+                topology_list = list(zip(self.feature_switch_list, self.feature_selected_list,
+                                         self.hidden_size_list, cv_iteration_loss_list,
+                                         cv_polar_accuracy_list, cv_avg_price_change_list, cv_mres_list))
+                topology_list = sorted(topology_list,
+                                       key=lambda x: x[-2], reverse=True)
+                #
+
+                # modify the path according to how many top N stocks are traded each week
+
+                upper_folder = os.path.dirname(path)
+                path_base_name  = os.path.basename(path)[:-4]
+                new_name = path_base_name + "_top_{}.txt".format(include_top)
+                new_path = os.path.join(upper_folder, new_name)
+                #
+
+                # save file
+                with open(new_path, 'w', encoding='utf-8') as f:
+                    for tuple1 in topology_list:
+                        feature_switch = str(tuple1[0])
+                        feature_selected = str(tuple1[1])
+                        hidden_size = str(tuple1[2])
+                        iteration_loss = str(tuple1[3])
+                        polar_accuracy = str(tuple1[4])
+                        avg_price_change = str(tuple1[5])
+                        mres = str(tuple1[6])
+                        # TODO ignore var and std for a while
+                        # var = str(tuple1[7])
+                        # std = str(tuple1[8])
+                        f.write('----------------------------------------------------\n')
+                        f.write('feature_switch: {}\n'.format(feature_switch))
+                        f.write('feature_selected: {}\n'.format(feature_selected))
+                        f.write('hidden_size: {}\n'.format(hidden_size))
+                        f.write('average_iteration_loss: {}\n'.format(iteration_loss))
+                        f.write('average_polar_accuracy: {}\n'.format(polar_accuracy))
+                        f.write('average_avg_price_change: {}\n'.format(avg_price_change))
+                        f.write('average_mres: {}\n'.format(mres))
+                        # # TODO ignore var and std for a while
+                        print("Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(
+                                key, new_path))
+                # save file
+
         else:
             print("Key should be mres or avg_pc, key: {}".format(key))
 
-        with open(path, 'w', encoding='utf-8') as f:
-            for tuple1 in topology_list:
-                feature_switch = str(tuple1[0])
-                feature_selected = str(tuple1[1])
-                hidden_size = str(tuple1[2])
-                iteration_loss = str(tuple1[3])
-                polar_accuracy = str(tuple1[4])
-                avg_price_change = str(tuple1[5])
-                mres = str(tuple1[6])
-                var = str(tuple1[7])
-                std = str(tuple1[8])
-                f.write('----------------------------------------------------\n')
-                f.write('feature_switch: {}\n'.format(feature_switch))
-                f.write('feature_selected: {}\n'.format(feature_selected))
-                f.write('hidden_size: {}\n'.format(hidden_size))
-                f.write('average_iteration_loss: {}\n'.format(iteration_loss))
-                f.write('average_polar_accuracy: {}\n'.format(polar_accuracy))
-                f.write('average_avg_price_change: {}\n'.format(avg_price_change))
-                f.write('average_mres: {}\n'.format(mres))
-                f.write('var: {} std: {}\n'.format(var, std))
+        # ==============================================================================================================
+        # avg_pc
+        # ==============================================================================================================
 
-        print("Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(key, path))
+
+
+        # # TODO ignore var and std for a while
+        # _var_list = [[y[0] for y in x] for x in self.cv_var_std_list] # cv_var_std_list : [[(0.1,0.2), ...], [(0.3,0.4), ...], ...]
+        # _var_list = [np.average(x) for x in _var_list]
+        # _std_list = [[y[1] for y in x] for x in self.cv_var_std_list] # cv_var_std_list : [[(0.1,0.2), ...], [(0.3,0.4), ...], ...]
+        # _std_list = [np.average(x) for x in _std_list]
+        #
+
+
+
 
 
         # ==============================================================================================================
@@ -1074,7 +1197,7 @@ class MlpClassifier:
         # cv_iteration_loss_list = [[y[1] for y in x] for x in self.cv_iteration_loss_list]
         # cv_iteration_loss_list = [np.average(x) for x in cv_iteration_loss_list]
         # cv_polar_accuracy_list = [np.average(x) for x in self.cv_polar_accuracy_list]
-        cv_avg_price_change_list = [np.average(x) for x in self.cv_avg_price_change_list]
+        # cv_avg_price_change_list = [np.average(x) for x in self.cv_avg_price_change_list]
         # cv_mres_list = [np.average(x) for x in self.cv_mres_list]
         # _var_list = [[y[0] for y in x] for x in self.cv_var_std_list] # cv_var_std_list : [[(0.1,0.2), ...], [(0.3,0.4), ...], ...]
         # _var_list = [np.average(x) for x in _var_list]
@@ -1082,18 +1205,24 @@ class MlpClassifier:
         # _std_list = [np.average(x) for x in _std_list]
 
 
-        topology_list = list(zip(self.feature_switch_list, self.feature_selected_list,
-                                            self.hidden_size_list, cv_avg_price_change_list))
-        sorted_topology_list = sorted(topology_list,
-                               key=lambda x: x[-1], reverse=True)
+        for i, include_top in enumerate(self.include_top_list):
 
-        top_feature_switch = sorted_topology_list[0][0]
-        top_hidden_size = sorted_topology_list[0][2]
-        top_cv_avg_price_change = sorted_topology_list[0][3]
+            # get the cv_avg_price_change_list for a particular strategy
+            top_n_pc_list = [[y[i] for y in x] for x in self.cv_avg_price_change_list]
+            cv_avg_price_change_list = [np.average(x) for x in top_n_pc_list]
 
-        print ("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-        print ("Best topology and feature selection so far!")
-        print ("feature_switch: ", top_feature_switch)
-        print ("hidden_size: ", top_hidden_size)
-        print ("cv_avg_price_change: ", top_cv_avg_price_change)
-        print ("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+
+            topology_list = list(zip(self.feature_switch_list, self.feature_selected_list,
+                                                self.hidden_size_list, cv_avg_price_change_list))
+            sorted_topology_list = sorted(topology_list,
+                                   key=lambda x: x[-1], reverse=True)
+
+            top_feature_switch = sorted_topology_list[0][0]
+            top_hidden_size = sorted_topology_list[0][2]
+            top_cv_avg_price_change = sorted_topology_list[0][3]
+
+            print ("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+            print ("{}-TOP-BEST".format(include_top))
+            print ("cv_avg_price_change: ", top_cv_avg_price_change)
+            print ("feature_switch: ", top_feature_switch)
+            print ("hidden_size: ", top_hidden_size)
