@@ -1,6 +1,7 @@
 import datetime
 import math
 import numpy as np
+import random
 from sklearn.metrics import mean_squared_error
 
 def daterange(start_date, end_date):
@@ -54,3 +55,18 @@ def calculate_mrse_PJS(golden_value_array, pred_value_array):
     rmse = rmse / sample_count
     rmse = np.sqrt(rmse)
     return rmse
+
+def list_by_index(list1, index_list):
+    new_list = [list1[index] for index in index_list]
+    return new_list
+
+def create_random_sub_set_list(set1, sub_set_size, random_seed = 1):
+
+    sub_set_list = []
+    while (len(set1)) >= sub_set_size:
+        random.seed(random_seed)
+        set1_list = sorted(list(set1))
+        sub_set = set(random.sample(set1_list, sub_set_size))
+        set1 -= sub_set
+        sub_set_list.append(sub_set)
+    return sub_set_list

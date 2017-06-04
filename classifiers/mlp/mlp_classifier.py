@@ -3,6 +3,7 @@ import os
 import numpy as np
 import collections
 import re
+import random
 import pickle
 import math
 import datetime
@@ -26,6 +27,8 @@ sys.path.append(path2)
 # local package import
 # ==========================================================================================================
 from general_funcs import calculate_mrse
+from general_funcs import list_by_index
+from general_funcs import create_random_sub_set_list
 from a_share_strategy import top_n_avg_strategy
 # ==========================================================================================================
 
@@ -50,6 +53,10 @@ class MlpClassifier:
         self.avg_price_change_list = []
         self.polar_accuracy_list = []
         self.include_top_list = []
+
+
+        # create validation_dict, store all the cross validation data
+        self.validation_dict = collections.defaultdict(lambda :collections.defaultdict(lambda :{}))
 
         # cross validation list for classification
         self.cv_average_average_f1_list = []
@@ -697,9 +704,66 @@ class MlpClassifier:
     #   CROSS VALIDATION FUNCTIONS FOR REGRESSION
     #   ====================================================================================================================
 
+
+    def create_validation_dict(self, samples_feature_list, samples_value_list,
+                                          date_str_list, stock_id_list, date_random_subset_list, random_seed):
+        # get the date set and count the number of unique dates
+
+        for i, dev_date_set in enumerate(date_random_subset_list):
+            all_date_set = set(date_str_list)
+            training_date_set = all_date_set - dev_date_set
+
+            # get the dev index
+            dev_index_list = []
+            for j, date_str in enumerate(date_str_list):
+                if date_str in dev_date_set:
+                    dev_index_list.append(j)
+            #
+
+            # get the training index
+            training_index_list = []
+            for k, date_str in enumerate(date_str_list):
+                if date_str in training_date_set:
+                    training_index_list.append(k)
+            #
+
+            r_training_set = list_by_index(samples_feature_list, training_index_list)
+            r_training_value_set = list_by_index(samples_value_list, training_index_list)
+            r_dev_set = list_by_index(samples_feature_list, dev_index_list)
+            r_dev_value_set = list_by_index(samples_value_list, dev_index_list)
+            r_dev_date_set = list_by_index(date_str_list, dev_index_list)
+            r_dev_stock_id_set = list_by_index(stock_id_list, dev_index_list)
+
+            self.validation_dict[random_seed][i]['r_training_set'] = r_training_set
+            self.validation_dict[random_seed][i]['r_training_value_set'] = r_training_value_set
+            self.validation_dict[random_seed][i]['r_dev_set'] = r_dev_set
+            self.validation_dict[random_seed][i]['r_dev_value_set'] = r_dev_value_set
+            self.validation_dict[random_seed][i]['r_dev_date_set'] = r_dev_date_set
+            self.validation_dict[random_seed][i]['r_dev_stock_id_set'] = r_dev_stock_id_set
+
+        validation_num = len(date_random_subset_list)
+        print ("Create validation_dict sucessfully! {}-fold cross validation".format(validation_num))
+
+
+
+    def cv_r_read_cv_dict_data(self, random_seed, cv_index):
+
+        self.r_training_set = self.validation_dict[random_seed][cv_index]['r_training_set']
+        self.r_training_value_set = self.validation_dict[random_seed][cv_index]['r_training_value_set']
+        self.r_dev_set = self.validation_dict[random_seed][cv_index]['r_dev_set']
+        self.r_dev_value_set = self.validation_dict[random_seed][cv_index]['r_dev_value_set']
+        self.r_dev_date_set = self.validation_dict[random_seed][cv_index]['r_dev_date_set']
+        self.r_dev_stock_id_set = self.validation_dict[random_seed][cv_index]['r_dev_stock_id_set']
+
+        print ("Read cross validation dict for random seed {} complete! Index: {}".format(random_seed, cv_index))
+
+
+
+
+
     def cv_r_feed_data_train_test(self, validation_index, samples_feature_list, samples_value_list,
                                   date_str_list, stock_id_list, is_random = False, feature_switch_tuple=None,
-                                  is_print = False):
+                                  is_print = False, random_seed = 1):
         '''10 cross validation split data'''
         data_per = 1.0
         dev_per = 0.1
@@ -772,15 +836,12 @@ class MlpClassifier:
         date_str_random_box = []
         stock_id_random_box = []
         random_seed_list = other_config_dict['random_seed_list']
-        for random_seed in random_seed_list:
-            samples_feature_list, samples_value_list, \
-            date_str_list, stock_id_list = self._r_feed_data(input_folder, data_per = 1.0,
-                                                             feature_switch_tuple=feature_switch_tuple,
-                                                             is_random = True, random_seed = random_seed)
-            samples_feature_random_box.append(samples_feature_list)
-            samples_value_random_box.append(samples_value_list)
-            date_str_random_box.append(date_str_list)
-            stock_id_random_box.append(stock_id_list)
+        date_per = other_config_dict['date_per']
+        dev_per = other_config_dict['dev_per']
+        samples_feature_list, samples_value_list, \
+        date_str_list, stock_id_list = self._r_feed_data(input_folder, data_per = date_per,
+                                                         feature_switch_tuple=feature_switch_tuple,
+                                                         is_random = False)
         # --------------------------------------------------------------------------------------------------------------
 
         # (2.) construct hidden layer size list
@@ -798,6 +859,22 @@ class MlpClassifier:
 
         # --------------------------------------------------------------------------------------------------------------
 
+
+        # --------------------------------------------------------------------------------------------------------------
+        # create create_validation_dict
+        # --------------------------------------------------------------------------------------------------------------
+        for random_seed in random_seed_list:
+            # create the random sub set list
+            dev_date_num = math.floor(len(set(date_str_list)) * dev_per)
+            date_random_subset_list = \
+                create_random_sub_set_list(set(date_str_list), dev_date_num, random_seed=random_seed)
+            print ("-----------------------------------------------------------------------------")
+            print("random_seed: {}, date_random_subset_list: {}".format(random_seed, date_random_subset_list))
+            self.create_validation_dict(samples_feature_list, samples_value_list,date_str_list, stock_id_list,
+                                        date_random_subset_list, random_seed)
+        # --------------------------------------------------------------------------------------------------------------
+
+
         # (4.) test the performance of different topology of MLP by 10-cross validation
         for i, hidden_layer_sizes in enumerate(hidden_layer_sizes_list):
             print ("====================================================================")
@@ -814,21 +891,16 @@ class MlpClassifier:
             self.polar_accuracy_list = []
             self.var_std_list = []
 
-
-            #
-
             # (b.) 10-cross-validation train and test
             self.set_regressor(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol=tol)
 
-            for k, (samples_feature_list, samples_value_list, date_str_list, stock_id_list) in enumerate(zip(samples_feature_random_box
-                    , samples_value_random_box, date_str_random_box, stock_id_random_box)):
-                print ("Random seed now: {}".format(random_seed_list[k]))
-                for validation_index in range(10):
-                    self.cv_r_feed_data_train_test(validation_index, samples_feature_list, samples_value_list,
-                                          date_str_list, stock_id_list)
+            # random inside, make sure each date has all the
+            for random_seed in random_seed_list:
+                for cv_index in self.validation_dict[random_seed].keys():
+                    self.cv_r_read_cv_dict_data(random_seed, cv_index)
                     self.regressor_train(save_clsfy_path=clf_path, is_cv = True)
                     self.regressor_dev(save_clsfy_path=clf_path, is_cv = True, include_top_list= include_top_list)
-                #
+            #
 
             # (c.) save the 10-cross-valiation evaluate result for each topology
             self.cv_iteration_loss_list.append(self.iteration_loss_list)
@@ -860,7 +932,7 @@ class MlpClassifier:
             print ("Completeness: {:.5f}".format((i+1)/hidden_layer_sizes_combination))
             print ("====================================================================")
 
-            if i % 10 == 0:
+            if i != 0 and i % 10 == 0:
                 self.print_real_time_best_result()
             #
         # ==============================================================================================================

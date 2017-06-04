@@ -62,6 +62,8 @@ data_folder = os.path.join(parent_folder, 'data', data_folder)
 # ----------------------------------------------------------------------------------------------------------------------
 other_config_dict = {}
 # (1.) learning_rate
+other_config_dict['date_per'] = 1.0
+other_config_dict['dev_per'] = 0.2
 other_config_dict['learning_rate_init'] = 0.0001
 other_config_dict['tol'] = 1e-6
 include_top_list = [1, 3, 5, 7, 9]
