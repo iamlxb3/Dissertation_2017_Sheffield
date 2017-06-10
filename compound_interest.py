@@ -32,12 +32,12 @@ def compute_sigma(date_folder):
 
 initial_capital = 50000
 trading_percent = 0.004
-avg_profit = 0.0125
+avg_profit = 0.029
 avg_profit -= trading_percent
 
 mu = avg_profit
 sigma = 0.075 # mean and standard deviation
-week_num = 5
+week_num = 20
 run_loop = 1000
 capital_all_list = []
 

@@ -755,7 +755,7 @@ class MlpClassifier:
         self.r_dev_date_set = self.validation_dict[random_seed][cv_index]['r_dev_date_set']
         self.r_dev_stock_id_set = self.validation_dict[random_seed][cv_index]['r_dev_stock_id_set']
 
-        print ("Read cross validation dict for random seed {} complete! Index: {}".format(random_seed, cv_index))
+        #print ("Read cross validation dict for random seed {} complete! Index: {}".format(random_seed, cv_index))
 
 
 
