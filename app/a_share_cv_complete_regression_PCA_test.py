@@ -18,13 +18,15 @@ import itertools
 # ==========================================================================================================
 parent_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 mlp_path = os.path.join(parent_folder, 'classifiers','mlp')
+path2 = os.path.join(parent_folder, 'general_functions')
 sys.path.append(mlp_path)
 # ==========================================================================================================
 
 # ==========================================================================================================
 # local package import
 # ==========================================================================================================
-from mlp_classifier import MlpClassifier
+from mlp_trade_regressor import MlpTradeRegressor
+from trade_general_funcs import get_full_feature_switch_tuple
 # ==========================================================================================================
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -36,7 +38,7 @@ from mlp_classifier import MlpClassifier
 # Build MLP classifier for a-share data, save the mlp to local
 # ==========================================================================================================
 # (1.) build classifer
-mlp_regressor1 = MlpClassifier()
+mlp_regressor1 = MlpTradeRegressor()
 
 # # TODO ADD SOME REGRESSION TESTING DATA
 # data_folder = os.path.join('a_share','a_share_regression_PCA_data')
@@ -90,7 +92,7 @@ cv_f_t_t_save_path_polar = os.path.join(parent_folder, 'topology_feature_test',
 # decreasing the number of features for PCA 1 by 1
 # ----------------------------------------------------------------------------------------------------------------------
 # get_full_feature_switch_tuple, (1,1,1,1,1,1,....)
-feature_switch_tuple_all_1 = mlp_regressor1.get_full_feature_switch_tuple(data_folder)
+feature_switch_tuple_all_1 = get_full_feature_switch_tuple(data_folder)
 feature_switch_tuple_list = []
 feature_switch_tuple_list.append(feature_switch_tuple_all_1)
 for i in range(len(feature_switch_tuple_all_1)):
@@ -130,6 +132,13 @@ for feature_switch_tuple in feature_switch_tuple_list:
     hidden_layer_node_step = 1
     hidden_layer_depth_min = 3
     hidden_layer_depth_max = 12
+
+    hidden_layer_node_min = 139
+    hidden_layer_node_max = 139
+    hidden_layer_node_step = 1
+    hidden_layer_depth_min = 6
+    hidden_layer_depth_max = 6
+
     hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,
                                  hidden_layer_depth_max)
     # ----------------------------------------------------------------------------------------------------------------------

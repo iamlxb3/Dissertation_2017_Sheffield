@@ -17,7 +17,7 @@ sys.path.append(path1)
 # ==========================================================================================================
 # local package import
 # ==========================================================================================================
-from general_funcs import daterange, split_list_by_percentage
+from trade_general_funcs import daterange, split_list_by_percentage
 from pjslib.logger import logger1
 # ==========================================================================================================
 

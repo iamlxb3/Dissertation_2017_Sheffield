@@ -51,7 +51,7 @@ mlp_regressor1.set_regressor(hidden_layer_sizes, learning_rate_init = learning_r
 data_per = 1.0  # the percentage of data using for training and testing
 data_folder = os.path.join('a_share','a_share_regression_data')
 data_folder = os.path.join(parent_folder, 'data', data_folder)
-mlp_regressor1.r_feed_and_seperate_data(data_folder, data_per = data_per, is_production = True)
+mlp_regressor1.r_feed_and_separate_data(data_folder, data_per = data_per, is_production = True)
 
 
 # (3.) train and test

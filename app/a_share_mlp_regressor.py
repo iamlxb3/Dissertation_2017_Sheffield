@@ -23,7 +23,7 @@ sys.path.append(mlp_path)
 # ==========================================================================================================
 # local package import
 # ==========================================================================================================
-from mlp_classifier import MlpClassifier
+from mlp_trade_regressor import MlpTradeRegressor
 # ==========================================================================================================
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -37,7 +37,7 @@ from mlp_classifier import MlpClassifier
 # ==========================================================================================================
 print ("Build MLP classifier for a-share data!")
 # (1.) build classifer
-mlp_regressor1 = MlpClassifier()
+mlp_regressor1 = MlpTradeRegressor()
 hidden_layer_sizes = (139, 6)
 learning_rate_init = 0.0001
 print ("hidden_layer_sizes: ", hidden_layer_sizes)
@@ -49,7 +49,7 @@ data_per = 1.0  # the percentage of data using for training and testing
 dev_per = 0.1 # the percentage of data using for developing
 data_folder = os.path.join('a_share','a_share_regression_PCA_data')
 data_folder = os.path.join(parent_folder, 'data', data_folder)
-mlp_regressor1.r_feed_and_seperate_data(data_folder, dev_per = dev_per, data_per = data_per)
+mlp_regressor1.r_feed_and_separate_data(data_folder, dev_per = dev_per, data_per = data_per)
 
 
 # (3.) train and test
