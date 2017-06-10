@@ -469,39 +469,30 @@ class MlpClassifier:
 
         return samples_feature_list, samples_value_list, date_str_list, stock_id_list
 
-    def r_feed_and_seperate_data(self, folder, dev_per=0.2, data_per=1.0, feature_switch_tuple=None, is_production = False):
-        print("start feeding data......")
-        if feature_switch_tuple:
-            print("feature_switch_tuple: ", feature_switch_tuple)
+    def r_feed_and_seperate_data(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
+                                 is_production = False, random_seed = 'normal'):
 
-        # clear training_set, dev_set
-        self.r_training_set = []
-        self.r_training_value_set = []
-        self.r_dev_set = []
-        self.r_dev_value_set = []
+        samples_feature_list, samples_value_list, \
+        date_str_list, stock_id_list = self._r_feed_data(folder, data_per = data_per,
+                                                                   feature_switch_tuple=feature_switch_tuple,
+                                                                   is_random=False)
 
-        # cut the number of training sample
-        samples_feature_list, samples_value_list, date_str_list, stock_id_list = self._r_feed_data(folder, data_per,
-                                                                                                   feature_switch_tuple=feature_switch_tuple)
-        if is_production:
-            self.r_training_set = samples_feature_list[:]
-            self.r_training_value_set = samples_value_list[:]
-            self.r_dev_set = samples_feature_list[-1000:]
-            self.r_dev_value_set = samples_value_list[-1000:]
-            self.r_dev_date_set = date_str_list[-1000:]
-            self.r_dev_stock_id_set = stock_id_list[-1000:]
+        dev_date_num = math.floor(len(set(date_str_list)) * dev_per)
 
-        else:
-            sample_number = len(samples_feature_list)
-            dev_sample_num = math.floor(sample_number * dev_per) * -1
-            self.r_training_set = samples_feature_list[0:dev_sample_num]
-            self.r_training_value_set = samples_value_list[0:dev_sample_num]
-            self.r_dev_set = samples_feature_list[dev_sample_num:]
-            self.r_dev_value_set = samples_value_list[dev_sample_num:]
-            self.r_dev_date_set = date_str_list[dev_sample_num:]
-            self.r_dev_stock_id_set = stock_id_list[dev_sample_num:]
+        date_random_subset_list = [set(sorted(list(set(date_str_list)))[-1*dev_date_num:])]
 
-        print("r_training_set_size: {}, r_dev_set_size: {}".format(len(self.r_training_set), len(self.r_dev_set)))
+        # date_random_subset_list = \
+        #     create_random_sub_set_list(set(date_str_list), dev_date_num, random_seed=random_seed)
+
+        print ("date_random_subset_list: ", date_random_subset_list)
+
+        self.create_train_dev_dict(samples_feature_list, samples_value_list, date_str_list, stock_id_list,
+                                   date_random_subset_list, random_seed)
+        self.load_train_dev_data(random_seed, 0)
+        print ("Load train, dev data complete! Train size: {}, dev size: {}".
+               format(len(self.r_training_value_set), len(self.r_dev_value_set)))
+
+
 
     def regressor_train(self, save_clsfy_path="mlp_regressor", is_cv = False, is_production = False):
         self.mlp_regressor.fit(self.r_training_set, self.r_training_value_set)
@@ -705,8 +696,8 @@ class MlpClassifier:
     #   ====================================================================================================================
 
 
-    def create_validation_dict(self, samples_feature_list, samples_value_list,
-                                          date_str_list, stock_id_list, date_random_subset_list, random_seed):
+    def create_train_dev_dict(self, samples_feature_list, samples_value_list,
+                              date_str_list, stock_id_list, date_random_subset_list, random_seed):
         # get the date set and count the number of unique dates
 
         for i, dev_date_set in enumerate(date_random_subset_list):
@@ -746,7 +737,7 @@ class MlpClassifier:
 
 
 
-    def cv_r_read_cv_dict_data(self, random_seed, cv_index):
+    def load_train_dev_data(self, random_seed, cv_index):
 
         self.r_training_set = self.validation_dict[random_seed][cv_index]['r_training_set']
         self.r_training_value_set = self.validation_dict[random_seed][cv_index]['r_training_value_set']
@@ -870,8 +861,8 @@ class MlpClassifier:
                 create_random_sub_set_list(set(date_str_list), dev_date_num, random_seed=random_seed)
             print ("-----------------------------------------------------------------------------")
             print("random_seed: {}, date_random_subset_list: {}".format(random_seed, date_random_subset_list))
-            self.create_validation_dict(samples_feature_list, samples_value_list,date_str_list, stock_id_list,
-                                        date_random_subset_list, random_seed)
+            self.create_train_dev_dict(samples_feature_list, samples_value_list, date_str_list, stock_id_list,
+                                       date_random_subset_list, random_seed)
         # --------------------------------------------------------------------------------------------------------------
 
 
@@ -897,7 +888,7 @@ class MlpClassifier:
             # random inside, make sure each date has all the
             for random_seed in random_seed_list:
                 for cv_index in self.validation_dict[random_seed].keys():
-                    self.cv_r_read_cv_dict_data(random_seed, cv_index)
+                    self.load_train_dev_data(random_seed, cv_index)
                     self.regressor_train(save_clsfy_path=clf_path, is_cv = True)
                     self.regressor_dev(save_clsfy_path=clf_path, is_cv = True, include_top_list= include_top_list)
             #

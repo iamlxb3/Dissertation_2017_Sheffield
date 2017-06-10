@@ -130,11 +130,6 @@ for feature_switch_tuple in feature_switch_tuple_list:
     hidden_layer_node_step = 1
     hidden_layer_depth_min = 3
     hidden_layer_depth_max = 12
-    hidden_layer_node_min = 139
-    hidden_layer_node_max = 139
-    hidden_layer_node_step = 1
-    hidden_layer_depth_min = 6
-    hidden_layer_depth_max = 6
     hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,
                                  hidden_layer_depth_max)
     # ----------------------------------------------------------------------------------------------------------------------
