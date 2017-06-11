@@ -139,7 +139,7 @@ class MlpTrade(MultilayerPerceptron):
             if mode == 'reg':
                 regression_value = float(re.findall(r'#([0-9\.\+\-e]+)#', f_name)[0])
             elif mode == 'clf':
-                regression_value = float(re.findall(r'_([A-Za-z]+).txt', f_name)[0])
+                regression_value = re.findall(r'_([A-Za-z]+).txt', f_name)[0]
             else:
                 print("Please enter the correct mode!")
                 sys.exit()

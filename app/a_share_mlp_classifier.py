@@ -38,7 +38,7 @@ from mlp_trade_classifier import MlpTradeClassifier
 print ("Build MLP classifier for a-share data!")
 # (1.) build classifer
 mlp_classifier1 = MlpTradeClassifier()
-hidden_layer_sizes = (1,1)
+hidden_layer_sizes = (33,3)
 learning_rate_init = 0.0001
 print ("hidden_layer_sizes: ", hidden_layer_sizes)
 mlp_classifier1.set_mlp_clf(hidden_layer_sizes, learning_rate_init = learning_rate_init)
@@ -47,7 +47,7 @@ mlp_classifier1.set_mlp_clf(hidden_layer_sizes, learning_rate_init = learning_ra
 # (2.) feed data
 data_per = 1.0  # the percentage of data using for training and testing
 dev_per = 0.1 # the percentage of data using for developing
-data_folder = os.path.join('a_share','a_share_labeled_data_[PCA]')
+data_folder = os.path.join('a_share','a_share_labeled_PCA_data')
 data_folder = os.path.join(parent_folder, 'data', data_folder)
 mlp_classifier1.feed_and_separate_data(data_folder, dev_per = dev_per, data_per = data_per, mode = 'clf')
 

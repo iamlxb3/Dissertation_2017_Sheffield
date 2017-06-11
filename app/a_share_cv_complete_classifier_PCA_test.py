@@ -25,7 +25,7 @@ sys.path.append(mlp_path)
 # ==========================================================================================================
 # local package import
 # ==========================================================================================================
-from mlp_trade_regressor import MlpTradeRegressor
+from mlp_trade_classifier import MlpTradeClassifier
 from trade_general_funcs import get_full_feature_switch_tuple
 # ==========================================================================================================
 
@@ -38,17 +38,17 @@ from trade_general_funcs import get_full_feature_switch_tuple
 # Build MLP classifier for a-share data, save the mlp to local
 # ==========================================================================================================
 # (1.) build classifer
-mlp_regressor1 = MlpTradeRegressor()
+mlp_classifier1 = MlpTradeClassifier()
 
-# # TODO ADD SOME REGRESSION TESTING DATA
-# data_folder = os.path.join('a_share','a_share_regression_PCA_data')
+# # TODO ADD SOME classifier TESTING DATA
+# data_folder = os.path.join('a_share','a_share_classifier_PCA_data')
 # data_folder = os.path.join(parent_folder, 'data', data_folder)
 # #
 
 
 
 # a share data
-data_folder = os.path.join('a_share','a_share_regression_PCA_data')
+data_folder = os.path.join('a_share','a_share_labeled_PCA_data')
 data_folder = os.path.join(parent_folder, 'data', data_folder)
 #
 
@@ -74,16 +74,14 @@ other_config_dict['include_top_list'] = include_top_list
 other_config_dict['random_seed_list'] = [1,99,299]
 
 # (2.) clf_path
-clsfy_name = 'a_share_mlp_cv_PCA_regressor'
+clsfy_name = 'a_share_mlp_cv_PCA_classifier'
 other_config_dict['clf_path'] = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
 
 # (3.) topology_result_path
-cv_f_t_t_save_path_mres = os.path.join(parent_folder, 'topology_feature_test',
-                                       'ashare_cv_regression_PCA_mres.txt')
-cv_f_t_t_save_path_avg_pc = os.path.join(parent_folder, 'topology_feature_test',
-                                         'ashare_cv_regression_PCA_avg_pc.txt')
-cv_f_t_t_save_path_polar = os.path.join(parent_folder, 'topology_feature_test',
-                                        'ashare_cv_regression_PCA_polar.txt')
+cv_f_t_t_save_path_f_measure = os.path.join(parent_folder, 'topology_feature_test',
+                                       'ashare_cv_classifier_PCA_f_measure.txt')
+cv_f_t_t_save_path_accuracy = os.path.join(parent_folder, 'topology_feature_test',
+                                       'ashare_cv_classifier_PCA_accuracy.txt')
 # ----------------------------------------------------------------------------------------------------------------------
 
 
@@ -104,7 +102,7 @@ for i in range(len(feature_switch_tuple_all_1)):
     feature_switch_tuple_list.append(feature_switch_tuple)
 
 # >>>>>>>>>DEBUG
-#feature_switch_tuple_list = [feature_switch_tuple_list[1]]
+feature_switch_tuple_list = [feature_switch_tuple_list[1]]
 #
 
 print ("feature_switch_tuple_list: ", feature_switch_tuple_list)
@@ -119,7 +117,7 @@ print("====================================================================")
 
 # testing the performance of classifier under different number of PCA features
 for feature_switch_tuple in feature_switch_tuple_list:
-    mlp_regressor1.read_selected_feature_list(data_folder, feature_switch_tuple)
+    mlp_classifier1.read_selected_feature_list(data_folder, feature_switch_tuple)
 
 
     # ----------------------------------------------------------------------------------------------------------------------
@@ -127,12 +125,6 @@ for feature_switch_tuple in feature_switch_tuple_list:
     # ----------------------------------------------------------------------------------------------------------------------
     # config hidden layer size
     # ----------------------------------------------------------------------------------------------------------------------
-    hidden_layer_node_min = 20
-    hidden_layer_node_max = 200
-    hidden_layer_node_step = 1
-    hidden_layer_depth_min = 3
-    hidden_layer_depth_max = 12
-
     hidden_layer_node_min = 1
     hidden_layer_node_max = 2
     hidden_layer_node_step = 1
@@ -143,16 +135,15 @@ for feature_switch_tuple in feature_switch_tuple_list:
                                  hidden_layer_depth_max)
     # ----------------------------------------------------------------------------------------------------------------------
     print("====================================================================")
-    print("Start testing for MLP's topology for regression!")
+    print("Start testing for MLP's topology for classification!")
     print("====================================================================")
 
     # run topology test
-    mlp_regressor1.cv_r_topology_test(data_folder, feature_switch_tuple, other_config_dict, hidden_layer_config_tuple)
+    mlp_classifier1.cv_cls_topology_test(data_folder, feature_switch_tuple, other_config_dict, hidden_layer_config_tuple)
     # ======================================================================================================================
 
-mlp_regressor1.cv_r_save_feature_topology_result(cv_f_t_t_save_path_mres, key = 'mres')
-mlp_regressor1.cv_r_save_feature_topology_result(cv_f_t_t_save_path_avg_pc, key = 'avg_pc')
-mlp_regressor1.cv_r_save_feature_topology_result(cv_f_t_t_save_path_polar, key = 'polar')
+mlp_classifier1.cv_cls_save_feature_topology_result(cv_f_t_t_save_path_f_measure, key ='f_m')
+mlp_classifier1.cv_cls_save_feature_topology_result(cv_f_t_t_save_path_accuracy, key ='acc')
 # ==========================================================================================================
 # ==========================================================================================================
 # ==========================================================================================================

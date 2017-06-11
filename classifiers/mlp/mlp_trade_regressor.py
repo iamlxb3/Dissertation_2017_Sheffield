@@ -84,13 +84,11 @@ class MlpTradeRegressor(MlpTrade):
                                           max_iter=1000, random_state=1)
 
 
-
-
     # ------------------------------------------------------------------------------------------------------------------
 
 
     # ------------------------------------------------------------------------------------------------------------------
-    # [C.2] Train and Dev
+    # [C.1] Train and Dev
     # ------------------------------------------------------------------------------------------------------------------
     def regressor_train(self, save_clsfy_path="mlp_trade_regressor", is_production=False):
         self.mlp_regressor.fit(self.training_set, self.training_value_set)
@@ -143,7 +141,7 @@ class MlpTradeRegressor(MlpTrade):
 
 
     # ------------------------------------------------------------------------------------------------------------------
-    # [C.3] Topology Test
+    # [C.2] Topology Test
     # ------------------------------------------------------------------------------------------------------------------
     def cv_r_topology_test(self, input_folder, feature_switch_tuple, other_config_dict,
                            hidden_layer_config_tuple):
@@ -161,10 +159,10 @@ class MlpTradeRegressor(MlpTrade):
         # cut the number of training sample
         # create list under different random seed
         random_seed_list = other_config_dict['random_seed_list']
-        date_per = other_config_dict['date_per']
+        data_per = other_config_dict['data_per']
         dev_per = other_config_dict['dev_per']
         samples_feature_list, samples_value_list, \
-        date_str_list, stock_id_list = self._feed_data(input_folder, data_per=date_per,
+        date_str_list, stock_id_list = self._feed_data(input_folder, data_per=data_per,
                                                        feature_switch_tuple=feature_switch_tuple,
                                                        is_random=False)
         # --------------------------------------------------------------------------------------------------------------

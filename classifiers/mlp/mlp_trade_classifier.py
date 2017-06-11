@@ -36,6 +36,7 @@ sys.path.append(path2)
 from mlp_trade import MlpTrade
 from trade_general_funcs import compute_average_f1
 from trade_general_funcs import build_hidden_layer_sizes_list
+from trade_general_funcs import create_random_sub_set_list
 # ==========================================================================================================
 
 
@@ -120,10 +121,15 @@ class MlpTradeClassifier(MlpTrade):
         accuracy = correct / len(self.dev_value_set)
         #
 
-        # (5.) count the occurance for each label
+        # (5.) count the occurrence for each label
         dev_label_dict = collections.defaultdict(lambda: 0)
         for dev_label in self.dev_value_set:
             dev_label_dict[dev_label] += 1
+        #
+
+        # (6.) save result for 1-fold
+        self.average_f1_list.append(average_f1)
+        self.accuracy_list.append(accuracy)
         #
 
         # print
@@ -209,8 +215,12 @@ class MlpTradeClassifier(MlpTrade):
 
         # (1.) read the whole data set
         # cut the number of training sample
-        data_per = 1.0
-        samples_feature_list, samples_label_list = self._feed_data(input_folder, data_per, is_random=is_random)
+        data_per = other_config_dict['data_per']
+        dev_per = other_config_dict['dev_per']
+        samples_feature_list, samples_value_list, date_str_list, stock_id_list = \
+            self._feed_data(input_folder, data_per=data_per,
+                                                       feature_switch_tuple=feature_switch_tuple,
+                                                       is_random=False, mode = 'clf')
         # --------------------------------------------------------------------------------------------------------------
 
         # (2.) construct hidden layer size list
@@ -223,6 +233,21 @@ class MlpTradeClassifier(MlpTrade):
         learning_rate_init = other_config_dict['learning_rate_init']
         clf_path = other_config_dict['clf_path']
         tol = other_config_dict['tol']
+        random_seed_list = other_config_dict['random_seed_list']
+        # --------------------------------------------------------------------------------------------------------------
+
+        # --------------------------------------------------------------------------------------------------------------
+        # (4.) create validation_dict
+        # --------------------------------------------------------------------------------------------------------------
+        for random_seed in random_seed_list:
+            # create the random sub set list
+            dev_date_num = math.floor(len(set(date_str_list)) * dev_per)
+            date_random_subset_list = \
+                create_random_sub_set_list(set(date_str_list), dev_date_num, random_seed=random_seed)
+            print("-----------------------------------------------------------------------------")
+            print("random_seed: {}, date_random_subset_list: {}".format(random_seed, date_random_subset_list))
+            self.create_train_dev_vdict(samples_feature_list, samples_value_list, date_str_list, stock_id_list,
+                                        date_random_subset_list, random_seed)
         # --------------------------------------------------------------------------------------------------------------
 
         # (4.) test the performance of different topology of MLP by 10-cross validation
@@ -239,13 +264,15 @@ class MlpTradeClassifier(MlpTrade):
             self.accuracy_list = []
             #
 
-            # (b.) 10-cross-validation train and test
+            # (b.) train and dev
             self.set_mlp_clf(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol=tol)
-            for validation_index in range(10):
-                self.cv_feed_and_seperate_data(validation_index, samples_feature_list, samples_label_list,
-                                               dev_per=0.1, is_print=False)
-                self.clf_train(save_clsfy_path=clf_path, is_cv=True)
-                self.clf_dev(save_clsfy_path=clf_path, is_cv=True)
+
+            # random inside, make sure each date has all the
+            for random_seed in random_seed_list:
+                for cv_index in self.validation_dict[random_seed].keys():
+                    self.rs_cv_load_train_dev_data(random_seed, cv_index)
+                    self.clf_train(save_clsfy_path=clf_path)
+                    self.clf_dev(save_clsfy_path=clf_path, is_cv=True)
             #
 
             # (c.) save the 10-cross-valiation evaluate result for each topology
@@ -269,18 +296,28 @@ class MlpTradeClassifier(MlpTrade):
 
             # --------------------------------------------------------------------------------------------------------------
 
-    def cv_cls_save_feature_topology_result(self, path):
+    def cv_cls_save_feature_topology_result(self, path, key = 'f_m'):
 
         # compute the average for each list
         self.tp_cv_iteration_loss_list = [np.average(x) for x in self.tp_cv_iteration_loss_list]
         self.tp_cv_average_accuracy_list = [np.average(x) for x in self.tp_cv_average_accuracy_list]
         self.tp_cv_average_average_f1_list = [np.average(x) for x in self.tp_cv_average_average_f1_list]
 
-        topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
-                                        self.hidden_size_list, self.tp_cv_iteration_loss_list,
-                                        self.tp_cv_average_accuracy_list,
-                                        self.tp_cv_average_average_f1_list)),
-                               key=lambda x: x[-1], reverse=True)
+        if key == 'f_m':
+            topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
+                                            self.hidden_size_list, self.tp_cv_iteration_loss_list,
+                                            self.tp_cv_average_accuracy_list,
+                                            self.tp_cv_average_average_f1_list)),
+                                   key=lambda x: x[-1], reverse=True)
+        elif key == 'acc':
+            topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
+                                            self.hidden_size_list, self.tp_cv_iteration_loss_list,
+                                            self.tp_cv_average_accuracy_list,
+                                            self.tp_cv_average_average_f1_list)),
+                                   key=lambda x: x[-2], reverse=True)
+        else:
+            print ("Please type the right key!")
+            sys.exit()
 
         with open(path, 'w', encoding='utf-8') as f:
             for tuple1 in topology_list:
