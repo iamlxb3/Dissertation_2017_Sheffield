@@ -1,5 +1,5 @@
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# The complete CV test for a share MLP regressor
+# The complete PCA CV test for a share MLP regressor
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # (c) 2017 PJS, University of Sheffield, iamlxb3@gmail.com
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -104,7 +104,7 @@ for i in range(len(feature_switch_tuple_all_1)):
     feature_switch_tuple_list.append(feature_switch_tuple)
 
 # >>>>>>>>>DEBUG
-feature_switch_tuple_list = [feature_switch_tuple_list[1]]
+#feature_switch_tuple_list = [feature_switch_tuple_list[1]]
 #
 
 print ("feature_switch_tuple_list: ", feature_switch_tuple_list)

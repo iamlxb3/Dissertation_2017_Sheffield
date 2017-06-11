@@ -33,11 +33,9 @@ sys.path.append(path2)
 # local package import
 # ==========================================================================================================
 from mlp_trade import MlpTrade
-from trade_general_funcs import feature_degradation
 from trade_general_funcs import calculate_mrse
 from trade_general_funcs import get_avg_price_change
 from trade_general_funcs import create_random_sub_set_list
-from trade_general_funcs import list_by_index
 from trade_general_funcs import build_hidden_layer_sizes_list
 # ==========================================================================================================
 
@@ -67,18 +65,6 @@ class MlpTradeRegressor(MlpTrade):
 
 
         # --------------------------------------------------------------------------------------------------------------
-        # container for 1-fold validation training and dev data
-        # --------------------------------------------------------------------------------------------------------------
-        self.r_training_set = []
-        self.r_training_value_set = []
-        self.r_dev_set = []
-        self.r_dev_value_set = []
-        self.r_dev_date_set = []
-        self.r_dev_stock_id_set = []
-        # --------------------------------------------------------------------------------------------------------------
-
-
-        # --------------------------------------------------------------------------------------------------------------
         # container for n-fold validation for different hidden layer, tp is topology, cv is cross-validation
         # --------------------------------------------------------------------------------------------------------------
         self.tp_cv_mres_list = []
@@ -98,129 +84,7 @@ class MlpTradeRegressor(MlpTrade):
                                           max_iter=1000, random_state=1)
 
 
-    # ------------------------------------------------------------------------------------------------------------------
-    # [C.1] read, feed and load data
-    # ------------------------------------------------------------------------------------------------------------------
-    def _r_feed_data(self, folder, data_per, feature_switch_tuple=None, is_random=False, random_seed=1):
-        # feature_switch_tuple : (0,1,1,0,1,1,0,...) ?
-        if feature_switch_tuple:
-            self.feature_switch_list.append(feature_switch_tuple)
-        # ::: _feed_data :::
-        # TODO test the folder exists
-        file_name_list = os.listdir(folder)
-        file_path_list = [os.path.join(folder, x) for x in file_name_list]
-        file_total_number = len(file_name_list)
-        file_used_number = math.floor(data_per * file_total_number)  # restrict the number of training sample
-        file_path_list = file_path_list[0:file_used_number]
-        samples_feature_list = []
-        samples_value_list = []
-        date_str_list = []
-        stock_id_list = []
-        for f_path in file_path_list:
-            f_name = os.path.basename(f_path)
-            regression_value = float(re.findall(r'#([0-9\.\+\-e]+)#', f_name)[0])
-            date_str = re.findall(r'([0-9]+-[0-9]+-[0-9]+)_', f_name)[0]
-            stock_id = re.findall(r'_([0-9]{6})_', f_name)[0]
-            with open(f_path, 'r') as f:
-                features_list = f.readlines()[0].split(',')
-                features_list = features_list[1::2]
-                features_list = [float(x) for x in features_list]
-                if feature_switch_tuple:
-                    features_list = feature_degradation(features_list, feature_switch_tuple)
-                features_array = np.array(features_list)
-                # features_array = features_array.reshape(-1,1)
-                samples_feature_list.append(features_array)
-                samples_value_list.append(regression_value)
-                date_str_list.append(date_str)
-                stock_id_list.append(stock_id)
-        print("read feature list and regression_value list for {} successful!".format(folder))
 
-        # random by random seed
-        if is_random:
-            print("Start shuffling the data...")
-            import random
-            combind_list = list(zip(samples_feature_list, samples_value_list, date_str_list, stock_id_list))
-            random_seed = random_seed
-            random.seed(random_seed)
-            random.shuffle(combind_list)
-            samples_feature_list, samples_value_list, date_str_list, stock_id_list = zip(*combind_list)
-            print("Data set shuffling complete! Random Seed: {}".format(random_seed))
-        #
-
-        return samples_feature_list, samples_value_list, date_str_list, stock_id_list
-
-    def r_feed_and_separate_data(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
-                                 is_production=False, random_seed='normal'):
-        '''feed and seperate data in the normal order
-        '''
-        # (1.) read all the data, feature customizable
-        samples_feature_list, samples_value_list, \
-        date_str_list, stock_id_list = self._r_feed_data(folder, data_per=data_per,
-                                                         feature_switch_tuple=feature_switch_tuple, is_random=False)
-
-        # (2.) compute the dev part index
-        dev_date_num = math.floor(len(set(date_str_list)) * dev_per)
-        date_random_subset_list = [set(sorted(list(set(date_str_list)))[-1 * dev_date_num:])]
-        print("date_random_subset_list: ", date_random_subset_list)
-
-        # (3.) split the data into training and developing into validation dict
-        self.r_create_train_dev_vdict(samples_feature_list, samples_value_list, date_str_list, stock_id_list,
-                                      date_random_subset_list, random_seed)
-
-        # (4.) load the data for training and dev
-        self.rs_cv_r_load_train_dev_data(random_seed, 0)
-        print("Load train, dev data complete! Train size: {}, dev size: {}".
-              format(len(self.r_training_value_set), len(self.r_dev_value_set)))
-
-
-    def r_create_train_dev_vdict(self, samples_feature_list, samples_value_list,
-                                 date_str_list, stock_id_list, date_random_subset_list, random_seed):
-        # get the date set and count the number of unique dates
-
-        for i, dev_date_set in enumerate(date_random_subset_list):
-            all_date_set = set(date_str_list)
-            training_date_set = all_date_set - dev_date_set
-
-            # get the dev index
-            dev_index_list = []
-            for j, date_str in enumerate(date_str_list):
-                if date_str in dev_date_set:
-                    dev_index_list.append(j)
-            #
-
-            # get the training index
-            training_index_list = []
-            for k, date_str in enumerate(date_str_list):
-                if date_str in training_date_set:
-                    training_index_list.append(k)
-            #
-
-            r_training_set = list_by_index(samples_feature_list, training_index_list)
-            r_training_value_set = list_by_index(samples_value_list, training_index_list)
-            r_dev_set = list_by_index(samples_feature_list, dev_index_list)
-            r_dev_value_set = list_by_index(samples_value_list, dev_index_list)
-            r_dev_date_set = list_by_index(date_str_list, dev_index_list)
-            r_dev_stock_id_set = list_by_index(stock_id_list, dev_index_list)
-
-            self.validation_dict[random_seed][i]['r_training_set'] = r_training_set
-            self.validation_dict[random_seed][i]['r_training_value_set'] = r_training_value_set
-            self.validation_dict[random_seed][i]['r_dev_set'] = r_dev_set
-            self.validation_dict[random_seed][i]['r_dev_value_set'] = r_dev_value_set
-            self.validation_dict[random_seed][i]['r_dev_date_set'] = r_dev_date_set
-            self.validation_dict[random_seed][i]['r_dev_stock_id_set'] = r_dev_stock_id_set
-
-        validation_num = len(date_random_subset_list)
-        print("Create validation_dict sucessfully! {}-fold cross validation".format(validation_num))
-
-    def rs_cv_r_load_train_dev_data(self, random_seed, cv_index):
-        self.r_training_set = self.validation_dict[random_seed][cv_index]['r_training_set']
-        self.r_training_value_set = self.validation_dict[random_seed][cv_index]['r_training_value_set']
-        self.r_dev_set = self.validation_dict[random_seed][cv_index]['r_dev_set']
-        self.r_dev_value_set = self.validation_dict[random_seed][cv_index]['r_dev_value_set']
-        self.r_dev_date_set = self.validation_dict[random_seed][cv_index]['r_dev_date_set']
-        self.r_dev_stock_id_set = self.validation_dict[random_seed][cv_index]['r_dev_stock_id_set']
-
-        # print ("Read cross validation dict for random seed {} complete! Index: {}".format(random_seed, cv_index))
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -228,8 +92,8 @@ class MlpTradeRegressor(MlpTrade):
     # ------------------------------------------------------------------------------------------------------------------
     # [C.2] Train and Dev
     # ------------------------------------------------------------------------------------------------------------------
-    def regressor_train(self, save_clsfy_path="mlp_regressor", is_cv=False, is_production=False):
-        self.mlp_regressor.fit(self.r_training_set, self.r_training_value_set)
+    def regressor_train(self, save_clsfy_path="mlp_trade_regressor", is_production=False):
+        self.mlp_regressor.fit(self.training_set, self.training_value_set)
         self.iteration_loss_list.append((self.mlp_regressor.n_iter_, self.mlp_regressor.loss_))
         pickle.dump(self.mlp_regressor, open(save_clsfy_path, "wb"))
 
@@ -237,13 +101,13 @@ class MlpTradeRegressor(MlpTrade):
             print("classifier for production saved to {} successfully!".format(save_clsfy_path))
 
 
-    def regressor_dev(self, save_clsfy_path="mlp_regressor", is_cv=False, include_top_list=[1]):
+    def regressor_dev(self, save_clsfy_path="mlp_trade_regressor", is_cv=False, include_top_list=[1]):
         mlp_regressor = pickle.load(open(save_clsfy_path, "rb"))
-        pred_value_list = np.array(mlp_regressor.predict(self.r_dev_set))
-        actual_value_list = np.array(self.r_dev_value_set)
+        pred_value_list = np.array(mlp_regressor.predict(self.dev_set))
+        actual_value_list = np.array(self.dev_value_set)
         mrse = calculate_mrse(actual_value_list, pred_value_list)
-        date_list = self.r_dev_date_set
-        stock_id_list = self.r_dev_stock_id_set
+        date_list = self.dev_date_set
+        stock_id_list = self.dev_stock_id_set
         avg_price_change_tuple, var_tuple, std_tuple = get_avg_price_change(pred_value_list, actual_value_list,
                                                                                   date_list, stock_id_list,
                                                                                   include_top_list=
@@ -300,9 +164,9 @@ class MlpTradeRegressor(MlpTrade):
         date_per = other_config_dict['date_per']
         dev_per = other_config_dict['dev_per']
         samples_feature_list, samples_value_list, \
-        date_str_list, stock_id_list = self._r_feed_data(input_folder, data_per=date_per,
-                                                         feature_switch_tuple=feature_switch_tuple,
-                                                         is_random=False)
+        date_str_list, stock_id_list = self._feed_data(input_folder, data_per=date_per,
+                                                       feature_switch_tuple=feature_switch_tuple,
+                                                       is_random=False)
         # --------------------------------------------------------------------------------------------------------------
 
         # (2.) construct hidden layer size list
@@ -331,8 +195,8 @@ class MlpTradeRegressor(MlpTrade):
                 create_random_sub_set_list(set(date_str_list), dev_date_num, random_seed=random_seed)
             print("-----------------------------------------------------------------------------")
             print("random_seed: {}, date_random_subset_list: {}".format(random_seed, date_random_subset_list))
-            self.r_create_train_dev_vdict(samples_feature_list, samples_value_list, date_str_list, stock_id_list,
-                                          date_random_subset_list, random_seed)
+            self.create_train_dev_vdict(samples_feature_list, samples_value_list, date_str_list, stock_id_list,
+                                        date_random_subset_list, random_seed)
         # --------------------------------------------------------------------------------------------------------------
 
 
@@ -357,7 +221,7 @@ class MlpTradeRegressor(MlpTrade):
             # random inside, make sure each date has all the
             for random_seed in random_seed_list:
                 for cv_index in self.validation_dict[random_seed].keys():
-                    self.rs_cv_r_load_train_dev_data(random_seed, cv_index)
+                    self.rs_cv_load_train_dev_data(random_seed, cv_index)
                     self.regressor_train(save_clsfy_path=clf_path, is_cv=True)
                     self.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
             #

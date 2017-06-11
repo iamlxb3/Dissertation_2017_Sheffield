@@ -73,9 +73,11 @@ class MlpTradeClassifier(MlpTrade):
                                      tol=tol, learning_rate_init=learning_rate_init,
                                      max_iter=2000, random_state=1, verbose=verbose)
 
-    def clf_train(self, save_clsfy_path="mlp_classifier", is_cv=False):
 
-        self.mlp_clf.fit(self.training_set, self.training_label)
+
+    def clf_train(self, save_clsfy_path="mlp_trade_classifier", is_production=False):
+
+        self.mlp_clf.fit(self.training_set, self.training_value_set)
         self.iteration_loss_list.append((self.mlp_clf.n_iter_, self.mlp_clf.loss_))
 
         # try:
@@ -87,43 +89,58 @@ class MlpTradeClassifier(MlpTrade):
 
         pickle.dump(self.mlp_clf, open(save_clsfy_path, "wb"))
 
-    def clf_dev(self, save_clsfy_path="mlp_classifier", is_cv=False):
+
+
+
+    def clf_dev(self, save_clsfy_path="mlp_trade_classifier", is_cv=False):
+
+        # (1.) read classifier
         mlp = pickle.load(open(save_clsfy_path, "rb"))
+        #
 
+        # (2.) get pred label list
         pred_label_list = mlp.predict(self.dev_set)
+        #
 
+        # (3.) compute f1 for each class
         pred_label_dict = collections.defaultdict(lambda: 0)
         for pred_label in pred_label_list:
             pred_label_dict[pred_label] += 1
-
-        label_tp_fp_tn_dict = compute_average_f1(pred_label_list, self.dev_label)
-        self.label_tp_fp_tn_dict = label_tp_fp_tn_dict
+        label_tp_fp_tn_dict = compute_average_f1(pred_label_list, self.dev_value_set)
         label_f1_list = sorted([(key, x[3]) for key, x in label_tp_fp_tn_dict.items()])
         f1_list = [x[1] for x in label_f1_list]
         average_f1 = np.average(f1_list)
-        self.average_f1_list.append(average_f1)
+        #
 
+        # (4.) compute accuracy
         correct = 0
         for i, pred_label in enumerate(pred_label_list):
-            if pred_label == self.dev_label[i]:
+            if pred_label == self.dev_value_set[i]:
                 correct += 1
+        accuracy = correct / len(self.dev_value_set)
+        #
 
-        accuracy = correct / len(self.dev_label)
-        self.accuracy_list.append(accuracy)
-
+        # (5.) count the occurance for each label
         dev_label_dict = collections.defaultdict(lambda: 0)
-        for dev_label in self.dev_label:
+        for dev_label in self.dev_value_set:
             dev_label_dict[dev_label] += 1
+        #
 
-            # print("\n=================================================================")
-            # print("Dev set result!")
-            # print("=================================================================")
-            # print("dev_label_dict: {}".format(list(dev_label_dict.items())))
-            # print("pred_label_dict: {}".format(list(pred_label_dict.items())))
-            # print("label_f1_list: {}".format(label_f1_list))
-            # print("average_f1: ", average_f1)
-            # print("accuracy: ", accuracy)
-            # print("=================================================================")
+        # print
+        if not is_cv:
+            print("\n=================================================================")
+            print("Dev set result!")
+            print("=================================================================")
+            print("dev_label_dict: {}".format(list(dev_label_dict.items())))
+            print("pred_label_dict: {}".format(list(pred_label_dict.items())))
+            print("label_f1_list: {}".format(label_f1_list))
+            print("average_f1: ", average_f1)
+            print("accuracy: ", accuracy)
+            print("=================================================================")
+        #
+
+
+
 
     #   ====================================================================================================================
     #   CROSS VALIDATION FUNCTIONS FOR CLASSIFICATION
@@ -135,7 +152,7 @@ class MlpTradeClassifier(MlpTrade):
         self.training_set = []
         self.training_label = []
         self.dev_set = []
-        self.dev_label = []
+        self.dev_value_set = []
         #
 
 
@@ -154,11 +171,11 @@ class MlpTradeClassifier(MlpTrade):
         self.training_label = samples_label_list[0:dev_start_index] + samples_label_list[
                                                                       dev_end_index:sample_last_index]
         self.dev_set = samples_feature_list[dev_start_index:dev_end_index]
-        self.dev_label = samples_label_list[dev_start_index:dev_end_index]
+        self.dev_value_set = samples_label_list[dev_start_index:dev_end_index]
 
         # count the label in traning and testing data
         dev_label_dict = collections.defaultdict(lambda: 0)
-        for label in self.dev_label:
+        for label in self.dev_value_set:
             dev_label_dict[label] += 1
 
         training_label_dict = collections.defaultdict(lambda: 0)
