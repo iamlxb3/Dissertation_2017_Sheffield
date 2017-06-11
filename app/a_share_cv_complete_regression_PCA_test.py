@@ -104,7 +104,7 @@ for i in range(len(feature_switch_tuple_all_1)):
     feature_switch_tuple_list.append(feature_switch_tuple)
 
 # >>>>>>>>>DEBUG
-#feature_switch_tuple_list = [feature_switch_tuple_list[1]]
+feature_switch_tuple_list = [feature_switch_tuple_list[1]]
 #
 
 print ("feature_switch_tuple_list: ", feature_switch_tuple_list)
@@ -133,11 +133,11 @@ for feature_switch_tuple in feature_switch_tuple_list:
     hidden_layer_depth_min = 3
     hidden_layer_depth_max = 12
 
-    hidden_layer_node_min = 139
-    hidden_layer_node_max = 139
+    hidden_layer_node_min = 1
+    hidden_layer_node_max = 2
     hidden_layer_node_step = 1
-    hidden_layer_depth_min = 6
-    hidden_layer_depth_max = 6
+    hidden_layer_depth_min = 1
+    hidden_layer_depth_max = 1
 
     hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,
                                  hidden_layer_depth_max)

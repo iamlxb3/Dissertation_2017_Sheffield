@@ -86,6 +86,7 @@ class MlpTradeRegressor(MlpTrade):
         # (#) is 1-fold validation avg. List could be 10 or 30 long, based on random seed list).
         self.tp_cv_avg_price_change_list = []
         self.tp_cv_polar_accuracy_list = []
+        self.tp_cv_pc_pos_percent_list = [] # how many positive price change values for one topology
         # --------------------------------------------------------------------------------------------------------------
 
 
@@ -335,7 +336,7 @@ class MlpTradeRegressor(MlpTrade):
         # --------------------------------------------------------------------------------------------------------------
 
 
-        # (4.) test the performance of different topology of MLP by 10-cross validation
+        # (5.) test the performance of different topology of MLP by 10-cross validation
         for i, hidden_layer_sizes in enumerate(hidden_layer_sizes_list):
             print("====================================================================")
             print("Topology: {} starts training and testing".format(hidden_layer_sizes))
@@ -367,6 +368,24 @@ class MlpTradeRegressor(MlpTrade):
             self.tp_cv_avg_price_change_list.append(self.avg_price_change_list)
             self.tp_cv_polar_accuracy_list.append(self.polar_accuracy_list)
 
+            # **********************************************************************************************************
+            # self.avg_price_change_list: [(vaset1_top1_pc, vaset1_top2_pc ,..., vaset1_topn_pc),
+            # (vaset2_top1_pc, vaset2_top2_pc ,..., vaset2_topn_pc), ..., (vasetm_top1_pc, vasetm_top2_pc ,...,
+            # vasetm_topn_pc)]
+            # length(m) is equal to the number of validation set
+            # **********************************************************************************************************
+
+            # tp_cv_pc_pos_percent_list
+            pos_percent_list = []
+            for j, top in enumerate(include_top_list):
+                n_top_pc_list = [x[j] for x in self.avg_price_change_list]
+                pos_count = list((np.array(n_top_pc_list) > 0)).count(True)
+                all_count = len(n_top_pc_list)
+                pos_percent = float("{:.5f}".format(pos_count/all_count))
+                pos_percent_list.append(pos_percent)
+            self.tp_cv_pc_pos_percent_list.append(tuple(pos_percent_list))
+            #
+
             # TODO ignore var and std for a while
             # self.cv_var_std_list.append(self.var_std_list)
             #
@@ -380,6 +399,7 @@ class MlpTradeRegressor(MlpTrade):
             for j, top in enumerate(include_top_list):
                 n_top_list = [x[j] for x in self.avg_price_change_list]
                 print("Top: {} Average price change: {}".format(top, np.average(n_top_list)))
+                print("Positive percent: {}".format(pos_percent_list[j]))
 
             # TODO ignore var,std for a while
             # print ("Average var: {}, Average std: {}".format(np.average([x[0] for x in self.var_std_list]),
@@ -429,8 +449,8 @@ class MlpTradeRegressor(MlpTrade):
                     f.write('average_iteration_loss: {}\n'.format(iteration_loss))
                     f.write('average_polar_accuracy: {}\n'.format(polar_accuracy))
                     f.write('average_mres: {}\n'.format(mres))
-                    print("Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(
-                        key, path))
+            print("Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(
+                key, path))
                     #
 
         elif key == 'polar':
@@ -455,8 +475,8 @@ class MlpTradeRegressor(MlpTrade):
                     f.write('average_iteration_loss: {}\n'.format(iteration_loss))
                     f.write('average_polar_accuracy: {}\n'.format(polar_accuracy))
                     f.write('average_mres: {}\n'.format(mres))
-                    print("Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(
-                        key, path))
+            print("Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(
+                key, path))
                     #
 
         elif key == 'avg_pc':
@@ -466,11 +486,18 @@ class MlpTradeRegressor(MlpTrade):
                 # get the cv_avg_price_change_list for a particular strategy
                 top_n_pc_list = [[y[i] for y in x] for x in self.tp_cv_avg_price_change_list]
                 cv_avg_price_change_list = [np.average(x) for x in top_n_pc_list]
+                #
+
+                #
+                cv_top_n_pp_list = [x[i] for x in self.tp_cv_pc_pos_percent_list]
+                #
+
+                #
                 topology_list = list(zip(self.feature_switch_list, self.feature_selected_list,
-                                         self.hidden_size_list, cv_iteration_loss_list,
-                                         cv_polar_accuracy_list, cv_avg_price_change_list, cv_mres_list))
+                                         self.hidden_size_list, cv_iteration_loss_list,cv_polar_accuracy_list,
+                                         cv_avg_price_change_list, cv_mres_list, cv_top_n_pp_list))
                 topology_list = sorted(topology_list,
-                                       key=lambda x: x[-2], reverse=True)
+                                       key=lambda x: x[-3], reverse=True)
                 #
 
                 # modify the path according to how many top N stocks are traded each week
@@ -491,6 +518,7 @@ class MlpTradeRegressor(MlpTrade):
                         polar_accuracy = str(tuple1[4])
                         avg_price_change = str(tuple1[5])
                         mres = str(tuple1[6])
+                        pos_percent = str(tuple1[7])
                         # TODO ignore var and std for a while
                         # var = str(tuple1[7])
                         # std = str(tuple1[8])
@@ -502,10 +530,11 @@ class MlpTradeRegressor(MlpTrade):
                         f.write('average_polar_accuracy: {}\n'.format(polar_accuracy))
                         f.write('average_avg_price_change: {}\n'.format(avg_price_change))
                         f.write('average_mres: {}\n'.format(mres))
+                        f.write('pos_percent: {}\n'.format(pos_percent))
                         # # TODO ignore var and std for a while
-                        print(
-                            "Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(
-                                key, new_path))
+                print(
+                    "Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(
+                        key, new_path))
                         # save file
 
         else:
