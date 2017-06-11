@@ -175,9 +175,12 @@ class MlpTrade(MultilayerPerceptron):
 
 
     def load_train_dev_data_for_1_validation(self, samples_feature_list, samples_value_list,
-                               date_str_list, stock_id_list, dev_date_set):
+                               date_str_list, stock_id_list, dev_date_set, is_production = False):
         all_date_set = set(date_str_list)
-        training_date_set = all_date_set - dev_date_set
+        if is_production:
+            training_date_set = all_date_set
+        else:
+            training_date_set = all_date_set - dev_date_set
 
         # get the dev index
         dev_index_list = []
@@ -192,6 +195,8 @@ class MlpTrade(MultilayerPerceptron):
             if date_str in training_date_set:
                 training_index_list.append(k)
         #
+
+
         self.training_set = list_by_index(samples_feature_list, training_index_list)
         self.training_value_set = list_by_index(samples_value_list, training_index_list)
         self.dev_set = list_by_index(samples_feature_list, dev_index_list)
@@ -207,7 +212,7 @@ class MlpTrade(MultilayerPerceptron):
     # [C.2] read, feed and load data for cross validation and random seed
     # ------------------------------------------------------------------------------------------------------------------
     def feed_and_separate_data(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
-                               is_production=False, random_seed='normal', mode='reg'):
+                               random_seed='normal', mode='reg',  is_production = False):
         '''feed and seperate data in the normal order
         '''
         # (1.) read all the data, feature customizable
@@ -218,12 +223,19 @@ class MlpTrade(MultilayerPerceptron):
 
         # (2.) compute the dev part index
         dev_date_num = math.floor(len(set(date_str_list)) * dev_per)
-        dev_date_set = set(sorted(list(set(date_str_list)))[-1 * dev_date_num:])
+        if dev_date_num == 0.0:
+            dev_date_set = set()
+            print ("WARNING!! dev_date_num = 0, data set or dev_per may be too small!")
+        else:
+            dev_date_set = set(sorted(list(set(date_str_list)))[-1 * dev_date_num:])
         print("dev_date_set: ", dev_date_set)
 
         # (3.) load_train_dev_data_for_1_validation
         self.load_train_dev_data_for_1_validation(samples_feature_list, samples_value_list,
-                               date_str_list, stock_id_list, dev_date_set)
+                               date_str_list, stock_id_list, dev_date_set, is_production = is_production)
+
+
+
 
     def create_train_dev_vdict(self, samples_feature_list, samples_value_list,
                                date_str_list, stock_id_list, date_random_subset_list, random_seed, is_cv=True):
