@@ -10,6 +10,11 @@
 # ==========================================================================================================
 import os
 import sys
+import random
+import numpy as np
+import math
+import re
+import collections
 # ==========================================================================================================
 
 
@@ -75,3 +80,115 @@ class MultilayerPerceptron:
             self.feature_switch_list.append(self.feature_switch_list[-1])
             self.feature_selected_list.append(self.feature_selected_list[-1])
             # --------------------------------------------------------------------------
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # [C.1] read, feed and load data for general data set, mainly for testing
+    # ------------------------------------------------------------------------------------------------------------------
+    def _general_feed_data(self, folder, data_per, feature_switch_tuple=None, is_random=False, random_seed=1, mode='reg'):
+        # feature_switch_tuple : (0,1,1,0,1,1,0,...) ?
+        if feature_switch_tuple:
+            self.feature_switch_list.append(feature_switch_tuple)
+        # ::: _feed_data :::
+        # TODO test the folder exists
+        file_name_list = os.listdir(folder)
+        file_path_list = [os.path.join(folder, x) for x in file_name_list]
+        file_total_number = len(file_name_list)
+        file_used_number = math.floor(data_per * file_total_number)  # restrict the number of training sample
+        file_path_list = file_path_list[0:file_used_number]
+        samples_feature_list = []
+        samples_value_list = []
+
+        for f_path in file_path_list:
+            f_name = os.path.basename(f_path)
+            if mode == 'reg':
+                regression_value = float(re.findall(r'#([0-9\.\+\-e]+)#', f_name)[0])
+            elif mode == 'clf':
+                regression_value = re.findall(r'_([A-Za-z\-0-9]+).txt', f_name)[0]
+            else:
+                print("Please enter the correct mode!")
+                sys.exit()
+            with open(f_path, 'r') as f:
+                features_list = f.readlines()[0].split(',')
+                features_list = features_list[1::2]
+                features_list = [float(x) for x in features_list]
+                if feature_switch_tuple:
+                    features_list = feature_degradation(features_list, feature_switch_tuple)
+                features_array = np.array(features_list)
+                # features_array = features_array.reshape(-1,1)
+                samples_feature_list.append(features_array)
+                samples_value_list.append(regression_value)
+        print("read feature list and {}_value list for {} successful!".format(mode, folder))
+
+        return samples_feature_list, samples_value_list
+
+
+    def load_train_dev_general_data_for_1_validation(self, samples_feature_list, samples_value_list, data_per = 1.0,
+                                                     dev_per = 0.1, random_seed = 1, n_fold_index = 0, is_print = True):
+        '''for normal data, regardless of date restrictions'''
+        # (0.) tailor the data set if necessary
+        if data_per != 1.0:
+            total_sample_number = len(samples_feature_list)
+            tailored_sample_number = math.floor(data_per*total_sample_number)
+            samples_feature_list = samples_feature_list[0:tailored_sample_number]
+            samples_value_list = samples_value_list[0:tailored_sample_number]
+        #
+
+        # (1.) do the random for feature and value at the same order
+        random.seed(random_seed)
+        random_zip = list(zip(samples_feature_list, samples_value_list))
+        random.shuffle(random_zip)
+        random_samples_feature_list, random_samples_value_list = zip(*random_zip)
+        #
+
+        # (2.) get the dev start, end index
+        total_sample_number = len(samples_feature_list)
+        dev_sample_number = math.floor(total_sample_number*dev_per)
+        sample_end_index = total_sample_number - 1
+        dev_start_index = n_fold_index*dev_sample_number
+        if dev_start_index >= total_sample_number - 1:
+            print ("Please check dev_per or n_fold_index, too big!")
+            sys.exit()
+        dev_end_index = dev_start_index + dev_sample_number
+        if dev_end_index > sample_end_index - 1:
+            dev_end_index = dev_end_index
+        #
+
+        # (3.) push the value to training and dev index
+        self.dev_set = random_samples_feature_list[dev_start_index:dev_end_index]
+        self.dev_value_set = random_samples_value_list[dev_start_index:dev_end_index]
+        self.training_set = random_samples_feature_list[0:dev_start_index] + \
+                       random_samples_feature_list[dev_end_index:sample_end_index]
+        self.training_value_set = random_samples_value_list[0:dev_start_index] + \
+                                  random_samples_value_list[dev_end_index:sample_end_index]
+        #
+
+        # (4.) count each label
+        # count the label in traning and testing data
+        dev_label_dict = collections.defaultdict(lambda: 0)
+        for label in self.dev_value_set:
+            dev_label_dict[label] += 1
+
+        training_label_dict = collections.defaultdict(lambda: 0)
+        for label in self.training_value_set:
+            training_label_dict[label] += 1
+
+        if is_print:
+            print("-------------------------------------------------------------------------\n")
+            print("Set dev data range for cross validation : {}-{}".format(dev_start_index, dev_end_index))
+            print ("Training Label: {}".format(dict(training_label_dict.items())))
+            print("Dev Label: {}".format(dict(dev_label_dict.items())))
+            print("-------------------------------------------------------------------------")
+        #
+
+    def general_feed_and_separate_data(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
+                               random_seed = 1, mode='reg',  is_production = False):
+        # (1.) read all the data, feature customizable
+        samples_feature_list, samples_value_list = self._general_feed_data(folder, data_per=data_per,
+                                                       feature_switch_tuple=feature_switch_tuple,
+                                                       is_random=False, mode=mode)
+
+        # (2.) load_train_dev_data_for_1_validation
+        self.load_train_dev_general_data_for_1_validation(samples_feature_list, samples_value_list, data_per = data_per,
+                                                     dev_per = dev_per, random_seed = random_seed, n_fold_index = 0)
+
+

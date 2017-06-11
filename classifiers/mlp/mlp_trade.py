@@ -16,6 +16,7 @@ import os
 import re
 import sys
 import math
+import random
 import numpy as np
 
 # ==========================================================================================================
@@ -139,7 +140,7 @@ class MlpTrade(MultilayerPerceptron):
             if mode == 'reg':
                 regression_value = float(re.findall(r'#([0-9\.\+\-e]+)#', f_name)[0])
             elif mode == 'clf':
-                regression_value = re.findall(r'_([A-Za-z]+).txt', f_name)[0]
+                regression_value = re.findall(r'_([A-Za-z\-0-9]+).txt', f_name)[0]
             else:
                 print("Please enter the correct mode!")
                 sys.exit()
@@ -172,8 +173,6 @@ class MlpTrade(MultilayerPerceptron):
         #
 
         return samples_feature_list, samples_value_list, date_str_list, stock_id_list
-
-
     def load_train_dev_data_for_1_validation(self, samples_feature_list, samples_value_list,
                                date_str_list, stock_id_list, dev_date_set, is_production = False):
         all_date_set = set(date_str_list)
@@ -207,6 +206,11 @@ class MlpTrade(MultilayerPerceptron):
         print("Load train, dev data complete! Train size: {}, dev size: {}".
               format(len(self.training_value_set), len(self.dev_value_set)))
     # ------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
 
     # ------------------------------------------------------------------------------------------------------------------
     # [C.2] read, feed and load data for cross validation and random seed

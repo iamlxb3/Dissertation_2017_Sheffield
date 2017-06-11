@@ -10,12 +10,9 @@
 # ==========================================================================================================
 import math
 import collections
-import itertools
-import pickle
 import numpy as np
 import sys
 import os
-from sklearn.neural_network import MLPClassifier
 # ==========================================================================================================
 
 
@@ -34,7 +31,7 @@ sys.path.append(path2)
 # local package import
 # ==========================================================================================================
 from mlp_trade import MlpTrade
-from trade_general_funcs import compute_average_f1
+from mlp_classifier import MlpClassifier_P
 from trade_general_funcs import build_hidden_layer_sizes_list
 from trade_general_funcs import create_random_sub_set_list
 # ==========================================================================================================
@@ -46,106 +43,10 @@ from trade_general_funcs import create_random_sub_set_list
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-class MlpTradeClassifier(MlpTrade):
+class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
 
     def __init__(self):
         super().__init__()
-
-        # --------------------------------------------------------------------------------------------------------------
-        # container for evaluation
-        # --------------------------------------------------------------------------------------------------------------
-        self.accuracy_list = []
-        self.average_f1_list = []
-        self.label_tp_fp_tn_dict = {}
-        # --------------------------------------------------------------------------------------------------------------
-
-
-        # --------------------------------------------------------------------------------------------------------------
-        # container for n-fold validation for different hidden layer, tp is topology, cv is cross-validation
-        # --------------------------------------------------------------------------------------------------------------
-        self.tp_cv_average_average_f1_list = []
-        self.tp_cv_average_accuracy_list = []
-        # --------------------------------------------------------------------------------------------------------------
-
-    def set_mlp_clf(self, hidden_layer_sizes, tol=1e-6, learning_rate_init=0.001, verbose=False):
-        self.hidden_size_list.append(hidden_layer_sizes)
-        self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
-        self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
-                                     tol=tol, learning_rate_init=learning_rate_init,
-                                     max_iter=2000, random_state=1, verbose=verbose)
-
-
-
-    def clf_train(self, save_clsfy_path="mlp_trade_classifier", is_production=False):
-
-        self.mlp_clf.fit(self.training_set, self.training_value_set)
-        self.iteration_loss_list.append((self.mlp_clf.n_iter_, self.mlp_clf.loss_))
-
-        # try:
-        #     self.mlp_clf.fit(self.training_set, self.training_label)
-        # except ValueError:
-        #     print ("feature_switch_list: ", self.feature_switch_list)
-        #     #logger2.error("training_set: {}".format(self.training_set))
-        #     sys.exit()
-
-        pickle.dump(self.mlp_clf, open(save_clsfy_path, "wb"))
-
-
-
-
-    def clf_dev(self, save_clsfy_path="mlp_trade_classifier", is_cv=False):
-
-        # (1.) read classifier
-        mlp = pickle.load(open(save_clsfy_path, "rb"))
-        #
-
-        # (2.) get pred label list
-        pred_label_list = mlp.predict(self.dev_set)
-        #
-
-        # (3.) compute the average f-measure
-        pred_label_dict = collections.defaultdict(lambda: 0)
-        for pred_label in pred_label_list:
-            pred_label_dict[pred_label] += 1
-        label_tp_fp_tn_dict = compute_average_f1(pred_label_list, self.dev_value_set)
-        label_f1_list = sorted([(key, x[3]) for key, x in label_tp_fp_tn_dict.items()])
-        f1_list = [x[1] for x in label_f1_list]
-        average_f1 = np.average(f1_list)
-        #
-
-        # (4.) compute accuracy
-        correct = 0
-        for i, pred_label in enumerate(pred_label_list):
-            if pred_label == self.dev_value_set[i]:
-                correct += 1
-        accuracy = correct / len(self.dev_value_set)
-        #
-
-        # (5.) count the occurrence for each label
-        dev_label_dict = collections.defaultdict(lambda: 0)
-        for dev_label in self.dev_value_set:
-            dev_label_dict[dev_label] += 1
-        #
-
-        # (6.) save result for 1-fold
-        self.average_f1_list.append(average_f1)
-        self.accuracy_list.append(accuracy)
-        #
-
-        # print
-        if not is_cv:
-            print("\n=================================================================")
-            print("Dev set result!")
-            print("=================================================================")
-            print("dev_label_dict: {}".format(list(dev_label_dict.items())))
-            print("pred_label_dict: {}".format(list(pred_label_dict.items())))
-            print("label_f1_list: {}".format(label_f1_list))
-            print("average_f1: ", average_f1)
-            print("accuracy: ", accuracy)
-            print("=================================================================")
-        #
-
-
 
 
     #   ====================================================================================================================
@@ -196,6 +97,7 @@ class MlpTradeClassifier(MlpTrade):
             # print ("Training Label: {}".format(training_label_dict.items()))
             print("Dev Label: {}".format(dict(dev_label_dict.items())))
             print("-------------------------------------------------------------------------")
+
 
     def cv_cls_topology_test(self, input_folder, feature_switch_tuple, other_config_dict,
                              hidden_layer_config_tuple, is_random=False):
@@ -283,6 +185,8 @@ class MlpTradeClassifier(MlpTrade):
 
             # (d.) real-time print
             print("====================================================================")
+            print("Feature selected: {}, Total number: {}".format(self.feature_selected_list[-1],
+                                                                  self.feature_switch_list[-1].count(1)))
             print("Average avg f1: {}".format(np.average(self.average_f1_list)))
             print("Average accuracy: {}".format(np.average(self.accuracy_list)))
             print("Average iteration_loss: {}".format(np.average([x[1] for x in self.iteration_loss_list])))
@@ -293,7 +197,8 @@ class MlpTradeClassifier(MlpTrade):
             # ==============================================================================================================
             # Cross Validation Train And Test END
             # ==============================================================================================================
-
+            if i != 0 and i % 10 == 0:
+                self._c_print_real_time_best_result()
             # --------------------------------------------------------------------------------------------------------------
 
     def cv_cls_save_feature_topology_result(self, path, key = 'f_m'):
@@ -341,6 +246,34 @@ class MlpTradeClassifier(MlpTrade):
     #   CROSS VALIDATION FUNCTIONS FOR CLASSIFICATION END
     #   ====================================================================================================================
 
+    def _c_print_real_time_best_result(self):
+        # get the cv_avg_price_change_list for a particular strategy
+        self.tp_cv_iteration_loss_list = [np.average(x) for x in self.tp_cv_iteration_loss_list]
+        self.tp_cv_average_accuracy_list = [np.average(x) for x in self.tp_cv_average_accuracy_list]
+        self.tp_cv_average_average_f1_list = [np.average(x) for x in self.tp_cv_average_average_f1_list]
+
+        sorted_topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
+                                        self.hidden_size_list, self.tp_cv_iteration_loss_list,
+                                        self.tp_cv_average_accuracy_list,
+                                        self.tp_cv_average_average_f1_list)),
+                               key=lambda x: x[-1], reverse=True)
+
+
+        top_feature_switch = sorted_topology_list[0][0]
+        top_hidden_size = sorted_topology_list[0][2]
+        top_iteration_loss = sorted_topology_list[0][3]
+        top_accuracy = sorted_topology_list[0][4]
+        top_f1 = sorted_topology_list[0][5]
+
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        print("BEST RESULT BY AVERAGE F-MEASURE SO FAR!")
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        print("feature_switch: ", top_feature_switch)
+        print("hidden_size: ", top_hidden_size)
+        print("iteration_loss: ", top_iteration_loss)
+        print("accuracy: ", top_accuracy)
+        print("f-measure: ", top_f1)
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 
 
 

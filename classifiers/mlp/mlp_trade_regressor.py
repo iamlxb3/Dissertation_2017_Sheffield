@@ -33,6 +33,7 @@ sys.path.append(path2)
 # local package import
 # ==========================================================================================================
 from mlp_trade import MlpTrade
+from mlp_regressor import MlpRegressor_P
 from trade_general_funcs import calculate_mrse
 from trade_general_funcs import get_avg_price_change
 from trade_general_funcs import create_random_sub_set_list
@@ -46,7 +47,7 @@ from trade_general_funcs import build_hidden_layer_sizes_list
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-class MlpTradeRegressor(MlpTrade):
+class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
 
     def __init__(self):
         super().__init__()
@@ -57,7 +58,6 @@ class MlpTradeRegressor(MlpTrade):
         # config
         self.include_top_list = []
         # eva
-        self.mres_list = []
         self.var_std_list = []
         self.avg_price_change_list = []
         self.polar_accuracy_list = []
@@ -67,7 +67,6 @@ class MlpTradeRegressor(MlpTrade):
         # --------------------------------------------------------------------------------------------------------------
         # container for n-fold validation for different hidden layer, tp is topology, cv is cross-validation
         # --------------------------------------------------------------------------------------------------------------
-        self.tp_cv_mres_list = []
         # (#) cv_avg_price_change_list eg. [[0.1,0.2,0.3,..0.99], ...](each list represent one topology, each element
         # (#) is 1-fold validation avg. List could be 10 or 30 long, based on random seed list).
         self.tp_cv_avg_price_change_list = []
@@ -76,30 +75,18 @@ class MlpTradeRegressor(MlpTrade):
         # --------------------------------------------------------------------------------------------------------------
 
 
-    def set_regressor(self, hidden_layer_sizes, tol=1e-8, learning_rate_init=0.001):
-        self.hidden_size_list.append(hidden_layer_sizes)
-        self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
-        self.mlp_regressor = MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
-                                          tol=tol, learning_rate_init=learning_rate_init,
-                                          max_iter=1000, random_state=1)
+
 
 
     # ------------------------------------------------------------------------------------------------------------------
 
-
     # ------------------------------------------------------------------------------------------------------------------
-    # [C.1] Train and Dev
+    # [C.1]  Dev
     # ------------------------------------------------------------------------------------------------------------------
-    def regressor_train(self, save_clsfy_path="mlp_trade_regressor", is_production=False):
-        self.mlp_regressor.fit(self.training_set, self.training_value_set)
-        self.iteration_loss_list.append((self.mlp_regressor.n_iter_, self.mlp_regressor.loss_))
-        pickle.dump(self.mlp_regressor, open(save_clsfy_path, "wb"))
 
-        if is_production:
-            print("classifier for production saved to {} successfully!".format(save_clsfy_path))
-
-
-    def regressor_dev(self, save_clsfy_path="mlp_trade_regressor", is_cv=False, include_top_list=[1]):
+    def regressor_dev(self, save_clsfy_path="mlp_trade_regressor", is_cv=False, include_top_list = None):
+        if not include_top_list:
+            include_top_list = [1]
         mlp_regressor = pickle.load(open(save_clsfy_path, "rb"))
         pred_value_list = np.array(mlp_regressor.predict(self.dev_set))
         actual_value_list = np.array(self.dev_value_set)

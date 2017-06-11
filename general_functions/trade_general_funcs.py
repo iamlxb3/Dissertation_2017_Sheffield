@@ -87,8 +87,8 @@ def list_by_index(list1, index_list):
 def create_random_sub_set_list(set1, sub_set_size, random_seed=1):
     sub_set_list = []
     while (len(set1)) >= sub_set_size:
-        random.seed(random_seed)
         set1_list = sorted(list(set1))
+        random.seed(random_seed)
         sub_set = set(random.sample(set1_list, sub_set_size))
         set1 -= sub_set
         sub_set_list.append(sub_set)
