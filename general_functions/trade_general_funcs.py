@@ -115,7 +115,7 @@ def feature_degradation(features_list, feature_switch_tuple):
             new_feature_list.append(features_list[i])
     return new_feature_list
 
-def compute_average_f1(self, pred_label_list, gold_label_list):
+def compute_average_f1(pred_label_list, gold_label_list):
     label_tp_fp_tn_dict = collections.defaultdict(lambda: [0, 0, 0, 0])  # tp,fp,fn,f1
     label_set = set(gold_label_list)
 

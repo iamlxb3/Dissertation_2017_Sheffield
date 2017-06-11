@@ -102,7 +102,7 @@ class MlpTradeClassifier(MlpTrade):
         pred_label_list = mlp.predict(self.dev_set)
         #
 
-        # (3.) compute f1 for each class
+        # (3.) compute the average f-measure
         pred_label_dict = collections.defaultdict(lambda: 0)
         for pred_label in pred_label_list:
             pred_label_dict[pred_label] += 1

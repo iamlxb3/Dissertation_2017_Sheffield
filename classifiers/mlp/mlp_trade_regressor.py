@@ -222,7 +222,7 @@ class MlpTradeRegressor(MlpTrade):
             for random_seed in random_seed_list:
                 for cv_index in self.validation_dict[random_seed].keys():
                     self.rs_cv_load_train_dev_data(random_seed, cv_index)
-                    self.regressor_train(save_clsfy_path=clf_path, is_cv=True)
+                    self.regressor_train(save_clsfy_path=clf_path)
                     self.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
             #
 

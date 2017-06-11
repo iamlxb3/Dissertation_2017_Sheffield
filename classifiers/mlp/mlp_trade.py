@@ -17,6 +17,7 @@ import re
 import sys
 import math
 import numpy as np
+
 # ==========================================================================================================
 
 
@@ -37,6 +38,8 @@ sys.path.append(path2)
 from mlp_general import MultilayerPerceptron
 from trade_general_funcs import feature_degradation
 from trade_general_funcs import list_by_index
+
+
 # ==========================================================================================================
 
 
@@ -45,7 +48,6 @@ from trade_general_funcs import list_by_index
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 class MlpTrade(MultilayerPerceptron):
-
     def __init__(self):
         super().__init__()
 
@@ -62,7 +64,6 @@ class MlpTrade(MultilayerPerceptron):
         self.dev_date_set = []
         self.dev_stock_id_set = []
         # --------------------------------------------------------------------------------------------------------------
-
 
     def weekly_predict(self, input_folder, classifier_path, prediction_save_path):
         '''weekly predict could be based on regression or classification
@@ -115,12 +116,10 @@ class MlpTrade(MultilayerPerceptron):
         #
         print("Prediction result save to {} successful!".format(prediction_save_path))
 
-
-
     # ------------------------------------------------------------------------------------------------------------------
-    # [C.1] read, feed and load data
+    # [C.1] read, feed and load data for 1 validation
     # ------------------------------------------------------------------------------------------------------------------
-    def _feed_data(self, folder, data_per, feature_switch_tuple=None, is_random=False, random_seed=1, mode = 'reg'):
+    def _feed_data(self, folder, data_per, feature_switch_tuple=None, is_random=False, random_seed=1, mode='reg'):
         # feature_switch_tuple : (0,1,1,0,1,1,0,...) ?
         if feature_switch_tuple:
             self.feature_switch_list.append(feature_switch_tuple)
@@ -142,7 +141,7 @@ class MlpTrade(MultilayerPerceptron):
             elif mode == 'clf':
                 regression_value = float(re.findall(r'_([A-Za-z]+).txt', f_name)[0])
             else:
-                print ("Please enter the correct mode!")
+                print("Please enter the correct mode!")
                 sys.exit()
             date_str = re.findall(r'([0-9]+-[0-9]+-[0-9]+)_', f_name)[0]
             stock_id = re.findall(r'_([0-9]{6})_', f_name)[0]
@@ -175,8 +174,59 @@ class MlpTrade(MultilayerPerceptron):
         return samples_feature_list, samples_value_list, date_str_list, stock_id_list
 
 
+    def load_train_dev_data_for_1_validation(self, samples_feature_list, samples_value_list,
+                               date_str_list, stock_id_list, dev_date_set):
+        all_date_set = set(date_str_list)
+        training_date_set = all_date_set - dev_date_set
+
+        # get the dev index
+        dev_index_list = []
+        for j, date_str in enumerate(date_str_list):
+            if date_str in dev_date_set:
+                dev_index_list.append(j)
+        #
+
+        # get the training index
+        training_index_list = []
+        for k, date_str in enumerate(date_str_list):
+            if date_str in training_date_set:
+                training_index_list.append(k)
+        #
+        self.training_set = list_by_index(samples_feature_list, training_index_list)
+        self.training_value_set = list_by_index(samples_value_list, training_index_list)
+        self.dev_set = list_by_index(samples_feature_list, dev_index_list)
+        self.dev_value_set = list_by_index(samples_value_list, dev_index_list)
+        self.dev_date_set = list_by_index(date_str_list, dev_index_list)
+        self.dev_stock_id_set = list_by_index(stock_id_list, dev_index_list)
+
+        print("Load train, dev data complete! Train size: {}, dev size: {}".
+              format(len(self.training_value_set), len(self.dev_value_set)))
+    # ------------------------------------------------------------------------------------------------------------------
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # [C.2] read, feed and load data for cross validation and random seed
+    # ------------------------------------------------------------------------------------------------------------------
+    def feed_and_separate_data(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
+                               is_production=False, random_seed='normal', mode='reg'):
+        '''feed and seperate data in the normal order
+        '''
+        # (1.) read all the data, feature customizable
+        samples_feature_list, samples_value_list, \
+        date_str_list, stock_id_list = self._feed_data(folder, data_per=data_per,
+                                                       feature_switch_tuple=feature_switch_tuple,
+                                                       is_random=False, mode=mode)
+
+        # (2.) compute the dev part index
+        dev_date_num = math.floor(len(set(date_str_list)) * dev_per)
+        dev_date_set = set(sorted(list(set(date_str_list)))[-1 * dev_date_num:])
+        print("dev_date_set: ", dev_date_set)
+
+        # (3.) load_train_dev_data_for_1_validation
+        self.load_train_dev_data_for_1_validation(samples_feature_list, samples_value_list,
+                               date_str_list, stock_id_list, dev_date_set)
+
     def create_train_dev_vdict(self, samples_feature_list, samples_value_list,
-                               date_str_list, stock_id_list, date_random_subset_list, random_seed):
+                               date_str_list, stock_id_list, date_random_subset_list, random_seed, is_cv=True):
         # get the date set and count the number of unique dates
 
         for i, dev_date_set in enumerate(date_random_subset_list):
@@ -197,78 +247,28 @@ class MlpTrade(MultilayerPerceptron):
                     training_index_list.append(k)
             #
 
-            r_training_set = list_by_index(samples_feature_list, training_index_list)
-            r_training_value_set = list_by_index(samples_value_list, training_index_list)
-            r_dev_set = list_by_index(samples_feature_list, dev_index_list)
-            r_dev_value_set = list_by_index(samples_value_list, dev_index_list)
-            r_dev_date_set = list_by_index(date_str_list, dev_index_list)
-            r_dev_stock_id_set = list_by_index(stock_id_list, dev_index_list)
+            training_set = list_by_index(samples_feature_list, training_index_list)
+            training_value_set = list_by_index(samples_value_list, training_index_list)
+            dev_set = list_by_index(samples_feature_list, dev_index_list)
+            dev_value_set = list_by_index(samples_value_list, dev_index_list)
+            dev_date_set = list_by_index(date_str_list, dev_index_list)
+            dev_stock_id_set = list_by_index(stock_id_list, dev_index_list)
 
-            self.validation_dict[random_seed][i]['r_training_set'] = r_training_set
-            self.validation_dict[random_seed][i]['r_training_value_set'] = r_training_value_set
-            self.validation_dict[random_seed][i]['r_dev_set'] = r_dev_set
-            self.validation_dict[random_seed][i]['r_dev_value_set'] = r_dev_value_set
-            self.validation_dict[random_seed][i]['r_dev_date_set'] = r_dev_date_set
-            self.validation_dict[random_seed][i]['r_dev_stock_id_set'] = r_dev_stock_id_set
+            self.validation_dict[random_seed][i]['training_set'] = training_set
+            self.validation_dict[random_seed][i]['training_value_set'] = training_value_set
+            self.validation_dict[random_seed][i]['dev_set'] = dev_set
+            self.validation_dict[random_seed][i]['dev_value_set'] = dev_value_set
+            self.validation_dict[random_seed][i]['dev_date_set'] = dev_date_set
+            self.validation_dict[random_seed][i]['dev_stock_id_set'] = dev_stock_id_set
 
         validation_num = len(date_random_subset_list)
         print("Create validation_dict sucessfully! {}-fold cross validation".format(validation_num))
 
     def rs_cv_load_train_dev_data(self, random_seed, cv_index):
-        self.training_set = self.validation_dict[random_seed][cv_index]['r_training_set']
-        self.training_value_set = self.validation_dict[random_seed][cv_index]['r_training_value_set']
-        self.dev_set = self.validation_dict[random_seed][cv_index]['r_dev_set']
-        self.dev_value_set = self.validation_dict[random_seed][cv_index]['r_dev_value_set']
-        self.dev_date_set = self.validation_dict[random_seed][cv_index]['r_dev_date_set']
-        self.dev_stock_id_set = self.validation_dict[random_seed][cv_index]['r_dev_stock_id_set']
-
-    def feed_and_separate_data(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
-                               is_production=False, random_seed='normal', mode = 'reg'):
-        '''feed and seperate data in the normal order
-        '''
-        # (1.) read all the data, feature customizable
-        samples_feature_list, samples_value_list, \
-        date_str_list, stock_id_list = self._feed_data(folder, data_per=data_per,
-                                                       feature_switch_tuple=feature_switch_tuple,
-                                                       is_random=False, mode = mode)
-
-        # (2.) compute the dev part index
-        dev_date_num = math.floor(len(set(date_str_list)) * dev_per)
-        date_random_subset_list = [set(sorted(list(set(date_str_list)))[-1 * dev_date_num:])]
-        print("date_random_subset_list: ", date_random_subset_list)
-
-        # (3.) split the data into training and developing into validation dict
-        self.create_train_dev_vdict(samples_feature_list, samples_value_list, date_str_list, stock_id_list,
-                                    date_random_subset_list, random_seed)
-
-        # (4.) load the data for training and dev
-        self.rs_cv_load_train_dev_data(random_seed, 0)
-        print("Load train, dev data complete! Train size: {}, dev size: {}".
-              format(len(self.training_value_set), len(self.dev_value_set)))
+        self.training_set = self.validation_dict[random_seed][cv_index]['training_set']
+        self.training_value_set = self.validation_dict[random_seed][cv_index]['training_value_set']
+        self.dev_set = self.validation_dict[random_seed][cv_index]['dev_set']
+        self.dev_value_set = self.validation_dict[random_seed][cv_index]['dev_value_set']
+        self.dev_date_set = self.validation_dict[random_seed][cv_index]['dev_date_set']
+        self.dev_stock_id_set = self.validation_dict[random_seed][cv_index]['dev_stock_id_set']
     # ------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
