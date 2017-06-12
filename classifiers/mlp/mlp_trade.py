@@ -280,6 +280,76 @@ class MlpTrade(MultilayerPerceptron):
         validation_num = len(date_random_subset_list)
         print("Create validation_dict sucessfully! {}-fold cross validation".format(validation_num))
 
+    def create_train_dev_vdict_window_shift(self, samples_feature_list, samples_value_list,
+                               date_str_list, stock_id_list, is_cv=True, shifting_size_percent = 0.1, shift_num = 5):
+        # (.) window size
+        window_size_percent = 1 - shifting_size_percent*shift_num
+        sorted_date_list = sorted(list(set(date_str_list)))
+        window_size = math.floor(len(sorted_date_list) * window_size_percent)
+        shifting_size = math.floor(len(sorted_date_list) * shifting_size_percent)
+        print ("window_size: ", window_size)
+        print ("shifting_size: ", shifting_size)
+        random_seed = 'window_shift'
+
+
+        for shift in range(shift_num):
+
+            # (1.) get the training and dev date
+            training_date_start_index = shift*shifting_size
+            training_date_end_index = training_date_start_index + window_size
+            dev_date_end_index = training_date_end_index + shifting_size
+            if dev_date_end_index > len(sorted_date_list) - 1:
+                print ("Error! dev_date_end_index exceed! Please check shift_num or shifting_size_percent!")
+            training_date_list = sorted_date_list[training_date_start_index:training_date_end_index]
+            dev_date_list = sorted_date_list[training_date_end_index:dev_date_end_index]
+            print ("---------------------------------------------------------------------")
+            print ("shift_index: {}".format(shift))
+            print ("training_date_list: ", training_date_list)
+            print ("dev_date_list: ", dev_date_list)
+
+            #
+
+            # (2.) get the dev index
+            dev_index_list = []
+            for j, date_str in enumerate(date_str_list):
+                if date_str in dev_date_list:
+                    dev_index_list.append(j)
+            #
+
+            # (3.) get the training index
+            training_index_list = []
+            for k, date_str in enumerate(date_str_list):
+                if date_str in training_date_list:
+                    training_index_list.append(k)
+            #
+
+            # (4.) load the training and dev data
+            training_set = list_by_index(samples_feature_list, training_index_list)
+            training_value_set = list_by_index(samples_value_list, training_index_list)
+            dev_set = list_by_index(samples_feature_list, dev_index_list)
+            dev_value_set = list_by_index(samples_value_list, dev_index_list)
+            dev_date_set = list_by_index(date_str_list, dev_index_list)
+            dev_stock_id_set = list_by_index(stock_id_list, dev_index_list)
+
+            print ("Training_set_size: {}".format(len(training_set)))
+            print ("dev_set: {}".format(len(dev_set)))
+
+            self.validation_dict[random_seed][shift]['training_set'] = training_set
+            self.validation_dict[random_seed][shift]['training_value_set'] = training_value_set
+            self.validation_dict[random_seed][shift]['dev_set'] = dev_set
+            self.validation_dict[random_seed][shift]['dev_value_set'] = dev_value_set
+            self.validation_dict[random_seed][shift]['dev_date_set'] = dev_date_set
+            self.validation_dict[random_seed][shift]['dev_stock_id_set'] = dev_stock_id_set
+            #
+
+        print("Create window-shifting validation_dict sucessfully! {}-fold window shifting".format(shift_num))
+
+
+
+
+
+
+
     def rs_cv_load_train_dev_data(self, random_seed, cv_index):
         self.training_set = self.validation_dict[random_seed][cv_index]['training_set']
         self.training_value_set = self.validation_dict[random_seed][cv_index]['training_value_set']
@@ -288,3 +358,4 @@ class MlpTrade(MultilayerPerceptron):
         self.dev_date_set = self.validation_dict[random_seed][cv_index]['dev_date_set']
         self.dev_stock_id_set = self.validation_dict[random_seed][cv_index]['dev_stock_id_set']
     # ------------------------------------------------------------------------------------------------------------------
+

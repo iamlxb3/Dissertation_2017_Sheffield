@@ -13,6 +13,7 @@ import pickle
 import numpy as np
 import sys
 import os
+import math
 from sklearn.neural_network import MLPClassifier
 # ==========================================================================================================
 
@@ -178,6 +179,11 @@ class MlpClassifier_P(MultilayerPerceptron):
         clf_path = other_config_dict['clf_path']
         tol = other_config_dict['tol']
         random_seed_list = other_config_dict['random_seed_list']
+        n_fold_range = int(math.floor(1 / dev_per))
+
+
+        print ("Random_seed_list: {}".format(random_seed_list))
+        print ("{}-fold-validation".format(n_fold_range))
         # --------------------------------------------------------------------------------------------------------------
 
 
@@ -199,7 +205,10 @@ class MlpClassifier_P(MultilayerPerceptron):
             self.set_mlp_clf(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol=tol)
 
             # random inside, make sure each date has all the
-            n_fold_range = 10
+
+            if n_fold_range <= 1:
+                print ("dev_per too big!")
+                sys.exit()
             for random_seed in random_seed_list:
                 for n_fold_index in range(n_fold_range):
                     self.load_train_dev_general_data_for_1_validation(samples_feature_list, samples_value_list,

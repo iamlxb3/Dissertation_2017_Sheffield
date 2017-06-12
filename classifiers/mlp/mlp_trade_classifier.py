@@ -99,11 +99,10 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
             print("-------------------------------------------------------------------------")
 
 
+
     def cv_cls_topology_test(self, input_folder, feature_switch_tuple, other_config_dict,
-                             hidden_layer_config_tuple, is_random=False):
+                             hidden_layer_config_tuple, is_random=False, is_window_shift = False):
         '''10 cross validation test for mlp classifier'''
-
-
         # :::topology_test:::
 
 
@@ -118,7 +117,6 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
         # (1.) read the whole data set
         # cut the number of training sample
         data_per = other_config_dict['data_per']
-        dev_per = other_config_dict['dev_per']
         samples_feature_list, samples_value_list, date_str_list, stock_id_list = \
             self._feed_data(input_folder, data_per=data_per,
                                                        feature_switch_tuple=feature_switch_tuple,
@@ -136,19 +134,28 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
         clf_path = other_config_dict['clf_path']
         tol = other_config_dict['tol']
         random_seed_list = other_config_dict['random_seed_list']
+        if is_window_shift:
+            shifting_size_percent = other_config_dict['shifting_size_percent']
+            shift_num = other_config_dict['shift_num']
         # --------------------------------------------------------------------------------------------------------------
 
         # --------------------------------------------------------------------------------------------------------------
         # (4.) create validation_dict
         # --------------------------------------------------------------------------------------------------------------
-        for random_seed in random_seed_list:
-            # create the random sub set list
-            dev_date_num = math.floor(len(set(date_str_list)) * dev_per)
-            date_random_subset_list = \
-                create_random_sub_set_list(set(date_str_list), dev_date_num, random_seed=random_seed)
-            print("-----------------------------------------------------------------------------")
-            print("random_seed: {}, date_random_subset_list: {}".format(random_seed, date_random_subset_list))
-            self.create_train_dev_vdict(samples_feature_list, samples_value_list, date_str_list, stock_id_list,
+        if is_window_shift:
+            self.create_train_dev_vdict_window_shift(samples_feature_list, samples_value_list,
+                           date_str_list, stock_id_list, is_cv=True, shifting_size_percent = shifting_size_percent,
+                                                     shift_num = shift_num)
+        else:
+            dev_per = other_config_dict['dev_per']
+            for random_seed in random_seed_list:
+                # create the random sub set list
+                dev_date_num = math.floor(len(set(date_str_list)) * dev_per)
+                date_random_subset_list = \
+                    create_random_sub_set_list(set(date_str_list), dev_date_num, random_seed=random_seed)
+                print("-----------------------------------------------------------------------------")
+                print("random_seed: {}, date_random_subset_list: {}".format(random_seed, date_random_subset_list))
+                self.create_train_dev_vdict(samples_feature_list, samples_value_list, date_str_list, stock_id_list,
                                         date_random_subset_list, random_seed)
         # --------------------------------------------------------------------------------------------------------------
 
@@ -169,12 +176,20 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
             # (b.) train and dev
             self.set_mlp_clf(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol=tol)
 
-            # random inside, make sure each date has all the
-            for random_seed in random_seed_list:
-                for cv_index in self.validation_dict[random_seed].keys():
-                    self.rs_cv_load_train_dev_data(random_seed, cv_index)
+            if is_window_shift:
+                # (b.1) [window-shifting-n-fold]
+                random_seed = 'window_shift'
+                for shift in self.validation_dict[random_seed].keys():
+                    self.rs_cv_load_train_dev_data(random_seed, shift)
                     self.clf_train(save_clsfy_path=clf_path)
                     self.clf_dev(save_clsfy_path=clf_path, is_cv=True)
+            else:
+                # (b.2) [random-n-fold]-random inside, make sure each date has all the
+                for random_seed in random_seed_list:
+                    for cv_index in self.validation_dict[random_seed].keys():
+                        self.rs_cv_load_train_dev_data(random_seed, cv_index)
+                        self.clf_train(save_clsfy_path=clf_path)
+                        self.clf_dev(save_clsfy_path=clf_path, is_cv=True)
             #
 
             # (c.) save the 10-cross-valiation evaluate result for each topology
@@ -274,39 +289,5 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
         print("accuracy: ", top_accuracy)
         print("f-measure: ", top_f1)
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
