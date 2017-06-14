@@ -49,9 +49,10 @@ mlp_regressor1 = MlpTradeRegressor()
 
 # a share data
 data_folder = os.path.join('a_share','a_share_regression_PCA_data')
+#data_folder = os.path.join('a_share','a_share_regression_PCA_data_fake')
 data_folder = os.path.join(parent_folder, 'data', data_folder)
 #
-
+print ("Test data folder: {}".format(data_folder))
 # ======================================================================================================================
 # ======================================================================================================================
 # ======================================================================================================================
@@ -133,11 +134,11 @@ for feature_switch_tuple in feature_switch_tuple_list:
     hidden_layer_depth_min = 3
     hidden_layer_depth_max = 12
 
-    hidden_layer_node_min = 1
-    hidden_layer_node_max = 2
-    hidden_layer_node_step = 1
-    hidden_layer_depth_min = 1
-    hidden_layer_depth_max = 1
+    # hidden_layer_node_min = 1
+    # hidden_layer_node_max = 2
+    # hidden_layer_node_step = 1
+    # hidden_layer_depth_min = 1
+    # hidden_layer_depth_max = 1
 
     hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,
                                  hidden_layer_depth_max)

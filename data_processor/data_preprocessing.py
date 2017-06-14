@@ -107,7 +107,7 @@ class DataPp():
         print ("Fill in nan succesful! nan sample count: {}, nan count: {}".format(sample_count, nan_count))
 
     def scale_data(self, input_folder, save_folder, features_scale_list,
-                   scaler_save_folder, scaler_save_name, mode = "min_max"):
+                   scaler_save_folder, scaler_save_name, mode = "min_max", data_set = 'a_share'):
 
 
 
@@ -125,7 +125,12 @@ class DataPp():
             # fetch all the features for z-score
             with open (file_path_list[0], 'r', encoding = 'utf-8') as f:
                 feature_list = f.readlines()[0].strip().split(',')[::2]
-                feature_list.remove('priceChange')
+                if data_set == 'a_share':
+                    feature_list.remove('priceChange')
+                elif data_set == 'dow_jones':
+                    feature_list.remove('percent_change_next_weeks_price')
+                else:
+                    print("Please check your data_set input!")
                 features_scale1 = [tuple(feature_list)]
                 features_scale1.append((1,1)) # random tuple, just for consistency
             features_scale_list = [features_scale1]

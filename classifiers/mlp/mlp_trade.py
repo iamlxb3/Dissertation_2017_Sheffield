@@ -145,7 +145,7 @@ class MlpTrade(MultilayerPerceptron):
                 print("Please enter the correct mode!")
                 sys.exit()
             date_str = re.findall(r'([0-9]+-[0-9]+-[0-9]+)_', f_name)[0]
-            stock_id = re.findall(r'_([0-9]{6})_', f_name)[0]
+            stock_id = re.findall(r'_([A-Za-z0-9]{1,6})_', f_name)[0]
             with open(f_path, 'r') as f:
                 features_list = f.readlines()[0].split(',')
                 features_list = features_list[1::2]
@@ -281,16 +281,38 @@ class MlpTrade(MultilayerPerceptron):
         print("Create validation_dict sucessfully! {}-fold cross validation".format(validation_num))
 
     def create_train_dev_vdict_window_shift(self, samples_feature_list, samples_value_list,
-                               date_str_list, stock_id_list, is_cv=True, shifting_size_percent = 0.1, shift_num = 5):
+                               date_str_list, stock_id_list, is_cv=True, shifting_size_percent = 0.1, shift_num = 5,
+                                            priority = 'training_set'):
         # (.) window size
-        window_size_percent = 1 - shifting_size_percent*shift_num
-        sorted_date_list = sorted(list(set(date_str_list)))
-        window_size = math.floor(len(sorted_date_list) * window_size_percent)
-        shifting_size = math.floor(len(sorted_date_list) * shifting_size_percent)
-        print ("window_size: ", window_size)
-        print ("shifting_size: ", shifting_size)
         random_seed = 'window_shift'
+        sorted_date_list = sorted(list(set(date_str_list)))
+        date_num = len(sorted_date_list)
 
+        shifting_size_floor = math.floor(date_num * shifting_size_percent)
+        shifting_size_ceil = math.ceil(date_num * shifting_size_percent)
+
+
+        if priority == 'dev_set':
+            shifting_size = shifting_size_ceil
+        elif priority == 'training_set':
+            shifting_size = shifting_size_floor
+
+        if shifting_size*shift_num >= date_num:
+            print ("TOO BIG shift_num or shifting_size!")
+            sys.exit()
+
+
+        window_size = date_num - shifting_size*shift_num
+
+        if shifting_size*shift_num >= window_size:
+            print("Training set too small!!")
+            sys.exit()
+        #
+
+        print("date_num: ", date_num)
+        print("shift_num: ", shift_num)
+        print("window_size: ", window_size)
+        print("shifting_size: ", shifting_size)
 
         for shift in range(shift_num):
 

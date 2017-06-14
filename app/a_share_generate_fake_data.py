@@ -56,6 +56,17 @@ rgd_1 = RandomGaussianData()
 # ----------------------------------------------------------------------------------------------------------------------
 # write the fake data for regression
 # ----------------------------------------------------------------------------------------------------------------------
+
+# (0.) delete reg files
+old_reg_file_name = os.listdir(reg_data_save_folder_path)
+remove_count = 0
+for file in old_reg_file_name:
+    file = os.path.join(reg_data_save_folder_path, file)
+    os.remove(file)
+    remove_count += 1
+print ("Remove {} files from {}".format(remove_count, reg_data_save_folder_path))
+
+
 reg_file_name_list = os.listdir(reg_data_folder_path)
 reg_file_path_list = [os.path.join(reg_data_folder_path, x) for x in reg_file_name_list]
 reg_file_save_path_list = [os.path.join(reg_data_save_folder_path, x) for x in reg_file_name_list]

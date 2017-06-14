@@ -133,7 +133,8 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
         learning_rate_init = other_config_dict['learning_rate_init']
         clf_path = other_config_dict['clf_path']
         tol = other_config_dict['tol']
-        random_seed_list = other_config_dict['random_seed_list']
+        if not is_window_shift:
+            random_seed_list = other_config_dict['random_seed_list']
         if is_window_shift:
             shifting_size_percent = other_config_dict['shifting_size_percent']
             shift_num = other_config_dict['shift_num']

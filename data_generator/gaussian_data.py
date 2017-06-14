@@ -81,8 +81,9 @@ class RandomGaussianData:
                 else:
                     new_price_change += value_list[i]
 
-            # standard logistic function
-            new_price_change = 1 / (1 + math.e ** -new_price_change)
+            # standard Sigmoid function
+            #new_price_change = 1 / (1 + math.e ** -new_price_change)
+
 
             new_output_path = output_path.replace(price_change, "{:.5f}".format(new_price_change))
 

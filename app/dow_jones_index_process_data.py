@@ -61,21 +61,53 @@ from dow_jones_index import DowJonesIndex
 # # ==========================================================================================================
 
 
-# ==========================================================================================================
-# [3.] feature engineering
-# ==========================================================================================================
-dow_jones_index1 = DowJonesIndex()
-input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_fill_nan')
-save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered')
-dow_jones_index1.feature_engineering(input_file, save_folder)
-# ==========================================================================================================
+# # ==========================================================================================================
+# # [3.] feature engineering
+# # ==========================================================================================================
+# dow_jones_index1 = DowJonesIndex()
+# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_fill_nan')
+# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered')
+# dow_jones_index1.feature_engineering(input_file, save_folder)
+# # ==========================================================================================================
 
 
-# ==========================================================================================================
-# [6.] data labeling
-# ==========================================================================================================
-dow_jones_index1 = DowJonesIndex()
-input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered')
-save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_labeled')
-dow_jones_index1.label_data(input_file, save_folder)
-# ==========================================================================================================
+# # # ==========================================================================================================
+# # # [4.] scaling, z-score
+# # # ==========================================================================================================
+# data_cleaner = DataPp()
+# input_folder = 'dow_jones_index_f_engineered'
+# input_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', input_folder)
+# save_folder = 'dow_jones_scaled_data'
+# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', save_folder)
+#
+#
+# features_scale_list = ''
+#
+# # scale data and save scaler
+# trained_classifiers_folder = os.path.join(parent_folder, 'trained_data_processor')
+# scaler_name = 'a_share_z_score_scaler'
+#
+# data_cleaner.scale_data(input_folder, save_folder,  features_scale_list,
+#                         trained_classifiers_folder, scaler_name, mode = 'z_score', data_set = 'dow_jones')
+# # # ==========================================================================================================
+
+
+# # ==========================================================================================================
+# # [5.] data labeling
+# # ==========================================================================================================
+# dow_jones_index1 = DowJonesIndex()
+# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_scaled_data')
+# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_labeled')
+# dow_jones_index1.label_data(input_file, save_folder)
+# # ==========================================================================================================
+
+
+# # ==========================================================================================================
+# # [4.a] PCA-clf
+# # ==========================================================================================================
+# total n_components for a share: 29, without price change 28
+stock_pca1 = StockPca(n_components = 12)
+input_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_labeled')
+save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_labeled_PCA')
+stock_pca1.transfrom_data_by_pca(input_folder, save_folder)
+# # ==========================================================================================================
