@@ -215,3 +215,37 @@ class MultilayerPerceptron:
         trans_fit, trans_obj = self.mlp_data_pre_processing(self.training_set, self.dev_set, is_standardisation
                                                             , is_PCA)
         self._update_train_dev_value_set(trans_fit, trans_obj)
+
+    def save_data_image_PCA(self, target_feature_set, target_value_set, title, save_path, is_show = False):
+        '''1st and 2nd component of PCA'''
+        import matplotlib.pyplot as plt
+        label_set = set(target_value_set)
+
+        f1, ax1 = plt.subplots(1)
+        ax1.set_xlabel('1st-component')
+        ax1.set_ylabel('2nd-component')
+
+        for label in label_set:
+            x_list = []
+            y_list = []
+            for i, sample in enumerate(target_feature_set):
+                if target_value_set[i] == label:
+                    first_component = sample[0]
+                    second_component = sample[1]
+                    x_list.append(first_component)
+                    y_list.append(second_component)
+                else:
+                    continue
+
+            ax1.plot(x_list, y_list,'x',label = label)
+            ax1.set_title(title)
+
+        ax1.legend()
+        if is_show:
+            plt.show()
+            sys.exit()
+
+        # save
+        f1.savefig(save_path)
+        print ("save figure to {} successfully!".format(save_path))
+        # save
