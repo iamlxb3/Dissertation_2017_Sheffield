@@ -51,24 +51,24 @@ from dow_jones_index import DowJonesIndex
 # # ==========================================================================================================
 
 
-# # ==========================================================================================================
-# # [2.] fill in nan data
-# # ==========================================================================================================
-# dp1 = DataPp()
-# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index','dow_jones_index_raw')
-# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_fill_nan')
-# dp1.fill_in_nan_data(input_file, save_folder)
-# # ==========================================================================================================
+# ==========================================================================================================
+# [2.] fill in nan data
+# ==========================================================================================================
+dp1 = DataPp()
+input_file = os.path.join(parent_folder, 'data', 'dow_jones_index','dow_jones_index_raw')
+save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_fill_nan')
+dp1.fill_in_nan_data(input_file, save_folder)
+# ==========================================================================================================
 
 
-# # ==========================================================================================================
-# # [3.] feature engineering
-# # ==========================================================================================================
-# dow_jones_index1 = DowJonesIndex()
-# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_fill_nan')
-# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered')
-# dow_jones_index1.feature_engineering(input_file, save_folder)
-# # ==========================================================================================================
+# ==========================================================================================================
+# [3.] feature engineering
+# ==========================================================================================================
+dow_jones_index1 = DowJonesIndex()
+input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_fill_nan')
+save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered')
+dow_jones_index1.feature_engineering(input_file, save_folder)
+# ==========================================================================================================
 
 
 # # # ==========================================================================================================

@@ -191,6 +191,7 @@ class MultilayerPerceptron:
             trans_fit, trans_obj = data_dp.standardisation_fit_transfrom(trans_fit, trans_obj)
         if is_PCA:
             trans_fit, trans_obj = data_dp.PCA_fit_transfrom(trans_fit, trans_obj, pca_n_component = pca_n_component)
+        print ("Data pre-processing done! is_standardisation: {}, is_PCA: {}".format(is_standardisation, is_PCA))
         return trans_fit, trans_obj
 
     def _update_train_dev_value_set(self, updated_train, updated_dev):

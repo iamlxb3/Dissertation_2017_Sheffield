@@ -91,7 +91,7 @@ class MlpClassifier_P(MultilayerPerceptron):
 
 
 
-    def clf_dev(self, save_clsfy_path="mlp_trade_classifier", is_cv=False):
+    def clf_dev(self, save_clsfy_path="mlp_trade_classifier", is_cv=False, is_return = False):
 
         # (1.) read classifier
         mlp = pickle.load(open(save_clsfy_path, "rb"))
@@ -142,6 +142,64 @@ class MlpClassifier_P(MultilayerPerceptron):
             print("accuracy: ", accuracy)
             print("=================================================================")
         #
+
+        if is_return:
+            return average_f1, accuracy
+
+    def baseline_clf_dev(self, target_folder):
+        file1 = os.listdir(target_folder)[0]
+        file1_path = os.path.join(target_folder, file1)
+        with open(file1_path, 'r') as f:
+            feature_list = f.readlines()[0].strip().split(',')[::2]
+
+        key_index = feature_list.index('percent_change_price')
+        print ("key_index: ", key_index)
+
+        pred_label_list = []
+        for dev_sample in self.dev_set:
+            percent_change_price = float(dev_sample[key_index])
+            if percent_change_price >= 0:
+                pred_label_list.append('pos')
+            else:
+                pred_label_list.append('neg')
+
+
+        # (3.) compute the average f-measure
+        pred_label_dict = collections.defaultdict(lambda: 0)
+        for pred_label in pred_label_list:
+            pred_label_dict[pred_label] += 1
+        label_tp_fp_tn_dict = compute_average_f1(pred_label_list, self.dev_value_set)
+        label_f1_list = sorted([(key, x[3]) for key, x in label_tp_fp_tn_dict.items()])
+        f1_list = [x[1] for x in label_f1_list]
+        average_f1 = np.average(f1_list)
+        #
+
+        # (4.) compute accuracy
+        correct = 0
+        for i, pred_label in enumerate(pred_label_list):
+            if pred_label == self.dev_value_set[i]:
+                correct += 1
+        accuracy = correct / len(self.dev_value_set)
+        #
+
+        # (5.) count the occurrence for each label
+        dev_label_dict = collections.defaultdict(lambda: 0)
+        for dev_label in self.dev_value_set:
+            dev_label_dict[dev_label] += 1
+        #
+
+
+        print("\n=================================================================")
+        print("Dev set result!")
+        print("=================================================================")
+        print("dev_label_dict: {}".format(list(dev_label_dict.items())))
+        print("pred_label_dict: {}".format(list(pred_label_dict.items())))
+        print("label_f1_list: {}".format(label_f1_list))
+        print("average_f1: ", average_f1)
+        print("accuracy: ", accuracy)
+        print("=================================================================")
+        #
+        return average_f1, accuracy
 
     def general_cv_cls_topology_test(self, input_folder, feature_switch_tuple, other_config_dict,
                              hidden_layer_config_tuple, is_random=False):

@@ -395,9 +395,19 @@ class MlpTrade(MultilayerPerceptron):
 
         print("Create window-shifting validation_dict sucessfully! {}-fold window shifting".format(shift_num))
 
-
-
-
+    def trade_feed_and_separate_data_window_shift(self, folder, data_per=1.0, feature_switch_tuple=None,
+                                                  shifting_size_percent = 0.1, shift_num = 5, mode = 'reg',
+                                     is_standardisation = True, is_PCA = True, pca_n_component = None):
+        samples_feature_list, samples_value_list, \
+        date_str_list, stock_id_list = self._feed_data(folder, data_per=data_per,
+                                                       feature_switch_tuple=feature_switch_tuple,
+                                                       is_random=False, mode = mode)
+        self.create_train_dev_vdict_window_shift(samples_feature_list, samples_value_list,
+                                                 date_str_list, stock_id_list, is_cv=True,
+                                                 shifting_size_percent=shifting_size_percent,
+                                                 shift_num=shift_num,
+                                                 is_standardisation=is_standardisation, is_PCA=is_PCA,
+                                                 pca_n_component=pca_n_component)
 
 
 
