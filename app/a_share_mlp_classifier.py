@@ -49,7 +49,7 @@ data_per = 1.0  # the percentage of data using for training and testing
 dev_per = 0.1 # the percentage of data using for developing
 data_folder = os.path.join('a_share','a_share_labeled_PCA_data')
 data_folder = os.path.join(parent_folder, 'data', data_folder)
-mlp_classifier1.feed_and_separate_data(data_folder, dev_per = dev_per, data_per = data_per, mode = 'clf')
+mlp_classifier1.trade_feed_and_separate_data(data_folder, dev_per = dev_per, data_per = data_per, mode ='clf')
 
 
 # (3.) train and test

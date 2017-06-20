@@ -52,7 +52,7 @@ data_per = 1.0  # the percentage of data using for training and testing
 dev_per = 0.2  # the percentage of data using for training and testing
 data_folder = os.path.join('a_share','a_share_regression_PCA_data')
 data_folder = os.path.join(parent_folder, 'data', data_folder)
-mlp_regressor1.feed_and_separate_data(data_folder, data_per = data_per, dev_per = dev_per, is_production = True)
+mlp_regressor1.trade_feed_and_separate_data(data_folder, data_per = data_per, dev_per = dev_per, is_production = True)
 
 
 # (3.) train and test

@@ -75,9 +75,6 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
         # --------------------------------------------------------------------------------------------------------------
 
 
-
-
-
     # ------------------------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -93,6 +90,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
         mrse = calculate_mrse(actual_value_list, pred_value_list)
         date_list = self.dev_date_set
         stock_id_list = self.dev_stock_id_set
+
         avg_price_change_tuple, var_tuple, std_tuple = get_avg_price_change(pred_value_list, actual_value_list,
                                                                                   date_list, stock_id_list,
                                                                                   include_top_list=
@@ -131,7 +129,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
     # [C.2] Topology Test
     # ------------------------------------------------------------------------------------------------------------------
     def cv_r_topology_test(self, input_folder, feature_switch_tuple, other_config_dict,
-                           hidden_layer_config_tuple):
+                           hidden_layer_config_tuple, is_window_shift = False):
         '''10 cross validation test for mlp regressor'''
 
 
@@ -145,9 +143,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
         # (1.) read the whole data set
         # cut the number of training sample
         # create list under different random seed
-        random_seed_list = other_config_dict['random_seed_list']
         data_per = other_config_dict['data_per']
-        dev_per = other_config_dict['dev_per']
         samples_feature_list, samples_value_list, \
         date_str_list, stock_id_list = self._feed_data(input_folder, data_per=data_per,
                                                        feature_switch_tuple=feature_switch_tuple,
@@ -167,22 +163,45 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
         include_top_list = other_config_dict['include_top_list']
         self.include_top_list = include_top_list
 
+        # (4.) Data Pre-processing
+        is_standardisation = other_config_dict['is_standardisation']
+        is_PCA = other_config_dict['is_PCA']
+        pca_n_component = other_config_dict['pca_n_component']
+
+
+
+        # (5.) data split mode
+        if not is_window_shift:
+            random_seed_list = other_config_dict['random_seed_list']
+        else:
+            shifting_size_percent = other_config_dict['shifting_size_percent']
+            shift_num = other_config_dict['shift_num']
         # --------------------------------------------------------------------------------------------------------------
 
 
         # --------------------------------------------------------------------------------------------------------------
         # (4.) create validation_dict
         # --------------------------------------------------------------------------------------------------------------
-        for random_seed in random_seed_list:
-            # create the random sub set list
-            dev_date_num = math.floor(len(set(date_str_list)) * dev_per)
-            date_random_subset_list = \
-                create_random_sub_set_list(set(date_str_list), dev_date_num, random_seed=random_seed)
-            print("-----------------------------------------------------------------------------")
-            print("random_seed: {}, date_random_subset_list: {}".format(random_seed, date_random_subset_list))
-            self.create_train_dev_vdict(samples_feature_list, samples_value_list, date_str_list, stock_id_list,
-                                        date_random_subset_list, random_seed)
-        # --------------------------------------------------------------------------------------------------------------
+        if is_window_shift:
+            self.create_train_dev_vdict_window_shift(samples_feature_list, samples_value_list,
+                           date_str_list, stock_id_list, is_cv=True, shifting_size_percent = shifting_size_percent,
+                                                     shift_num = shift_num,
+                                                     is_standardisation = is_standardisation, is_PCA = is_PCA,
+                                                     pca_n_component = pca_n_component)
+        else:
+            dev_per = other_config_dict['dev_per']
+            for random_seed in random_seed_list:
+                # create the random sub set list
+                dev_date_num = math.floor(len(set(date_str_list)) * dev_per)
+                date_random_subset_list = \
+                    create_random_sub_set_list(set(date_str_list), dev_date_num, random_seed=random_seed)
+                print("-----------------------------------------------------------------------------")
+                print("random_seed: {}, date_random_subset_list: {}".format(random_seed, date_random_subset_list))
+                self.create_train_dev_vdict(samples_feature_list, samples_value_list, date_str_list, stock_id_list,
+                                            date_random_subset_list, random_seed,
+                                            is_standardisation = is_standardisation, is_PCA = is_PCA,
+                                            pca_n_component = pca_n_component)
+            # --------------------------------------------------------------------------------------------------------------
 
 
         # (5.) test the performance of different topology of MLP by 10-cross validation
@@ -204,11 +223,19 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
             self.set_regressor(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol=tol)
 
             # random inside, make sure each date has all the
-            for random_seed in random_seed_list:
-                for cv_index in self.validation_dict[random_seed].keys():
-                    self.rs_cv_load_train_dev_data(random_seed, cv_index)
+            if is_window_shift:
+                # (b.1) [window-shifting-n-fold]
+                random_seed = 'window_shift'
+                for shift in self.validation_dict[random_seed].keys():
+                    self.rs_cv_load_train_dev_data(random_seed, shift)
                     self.regressor_train(save_clsfy_path=clf_path)
                     self.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
+            else:
+                for random_seed in random_seed_list:
+                    for cv_index in self.validation_dict[random_seed].keys():
+                        self.rs_cv_load_train_dev_data(random_seed, cv_index)
+                        self.regressor_train(save_clsfy_path=clf_path)
+                        self.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
             #
 
             # (c.) save the 10-cross-valiation evaluate result for each topology
@@ -216,6 +243,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
             self.tp_cv_mres_list.append(self.mres_list)
             self.tp_cv_avg_price_change_list.append(self.avg_price_change_list)
             self.tp_cv_polar_accuracy_list.append(self.polar_accuracy_list)
+            self.tp_cv_pca_n_component_list.append(pca_n_component)
 
             # **********************************************************************************************************
             # self.avg_price_change_list: [(vaset1_top1_pc, vaset1_top2_pc ,..., vaset1_topn_pc),
@@ -244,6 +272,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
             print("====================================================================")
             print("Feature selected: {}, Total number: {}".format(self.feature_selected_list[-1],
                                                                   self.feature_switch_list[-1].count(1)))
+            print("PCA-n-component: {}".format(pca_n_component))
             print("Average mres: {} len: {}".format(np.average(self.mres_list), len(self.mres_list)))
             for j, top in enumerate(include_top_list):
                 n_top_list = [x[j] for x in self.avg_price_change_list]
@@ -264,71 +293,32 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                 self._r_print_real_time_best_result()
 
 
-    def cv_r_save_feature_topology_result(self, path, key='mres'):
+    def cv_r_save_feature_topology_result(self, path, key='rmse'):
         # compute the average for each list
         cv_iteration_loss_list = [[y[1] for y in x] for x in self.tp_cv_iteration_loss_list]
         cv_iteration_loss_list = [np.average(x) for x in cv_iteration_loss_list]
         cv_polar_accuracy_list = [np.average(x) for x in self.tp_cv_polar_accuracy_list]
-        # cv_avg_price_change_list = [np.average(x) for x in self.cv_avg_price_change_list]
+
+        # get the avg_price_change for top_n
+        cv_avg_price_change_list = []
+        for y in self.tp_cv_avg_price_change_list:
+            y_avg_price_change_list = []
+            for i, include_top in enumerate(self.include_top_list):
+                top_i_avg_price_change_list = [x[i] for x in y]
+                top_i_avg_price_change = np.average(top_i_avg_price_change_list)
+                y_avg_price_change_list.append(top_i_avg_price_change)
+            cv_avg_price_change_list.append(tuple(y_avg_price_change_list))
+        #
+
         cv_mres_list = [np.average(x) for x in self.tp_cv_mres_list]
+        pca_n_component_list = [x for x in self.tp_cv_pca_n_component_list]
 
         topology_list = list(zip(self.feature_switch_list, self.feature_selected_list,
                                  self.hidden_size_list, cv_iteration_loss_list,
-                                 cv_polar_accuracy_list, cv_mres_list))
+                                 cv_polar_accuracy_list, cv_mres_list, pca_n_component_list, cv_avg_price_change_list))
 
-        if key == 'mres':
-            topology_list = sorted(topology_list,
-                                   key=lambda x: x[-1])
-            # write to file
-            with open(path, 'w', encoding='utf-8') as f:
-                for tuple1 in topology_list:
-                    feature_switch = str(tuple1[0])
-                    feature_selected = str(tuple1[1])
-                    hidden_size = str(tuple1[2])
-                    iteration_loss = str(tuple1[3])
-                    polar_accuracy = str(tuple1[4])
-                    mres = str(tuple1[5])
-                    # TODO ignore var and std for a while
-                    # var = str(tuple1[7])
-                    # std = str(tuple1[8])
-                    f.write('----------------------------------------------------\n')
-                    f.write('feature_switch: {}\n'.format(feature_switch))
-                    f.write('feature_selected: {}\n'.format(feature_selected))
-                    f.write('hidden_size: {}\n'.format(hidden_size))
-                    f.write('average_iteration_loss: {}\n'.format(iteration_loss))
-                    f.write('average_polar_accuracy: {}\n'.format(polar_accuracy))
-                    f.write('average_mres: {}\n'.format(mres))
-            print("Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(
-                key, path))
-                    #
 
-        elif key == 'polar':
-            topology_list = sorted(topology_list,
-                                   key=lambda x: x[-2], reverse=True)
-            # write to file
-            with open(path, 'w', encoding='utf-8') as f:
-                for tuple1 in topology_list:
-                    feature_switch = str(tuple1[0])
-                    feature_selected = str(tuple1[1])
-                    hidden_size = str(tuple1[2])
-                    iteration_loss = str(tuple1[3])
-                    polar_accuracy = str(tuple1[4])
-                    mres = str(tuple1[5])
-                    # TODO ignore var and std for a while
-                    # var = str(tuple1[7])
-                    # std = str(tuple1[8])
-                    f.write('----------------------------------------------------\n')
-                    f.write('feature_switch: {}\n'.format(feature_switch))
-                    f.write('feature_selected: {}\n'.format(feature_selected))
-                    f.write('hidden_size: {}\n'.format(hidden_size))
-                    f.write('average_iteration_loss: {}\n'.format(iteration_loss))
-                    f.write('average_polar_accuracy: {}\n'.format(polar_accuracy))
-                    f.write('average_mres: {}\n'.format(mres))
-            print("Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(
-                key, path))
-                    #
-
-        elif key == 'avg_pc':
+        if key == 'avg_pc':
             # write the best result under different trading strategy
             for i, include_top in enumerate(self.include_top_list):
 
@@ -343,10 +333,10 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
 
                 #
                 topology_list = list(zip(self.feature_switch_list, self.feature_selected_list,
-                                         self.hidden_size_list, cv_iteration_loss_list,cv_polar_accuracy_list,
-                                         cv_avg_price_change_list, cv_mres_list, cv_top_n_pp_list))
+                                         self.hidden_size_list, cv_iteration_loss_list, cv_polar_accuracy_list,
+                                         cv_avg_price_change_list, cv_mres_list, cv_top_n_pp_list, pca_n_component_list))
                 topology_list = sorted(topology_list,
-                                       key=lambda x: x[-3], reverse=True)
+                                       key=lambda x: x[-4], reverse=True)
                 #
 
                 # modify the path according to how many top N stocks are traded each week
@@ -368,6 +358,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                         avg_price_change = str(tuple1[5])
                         mres = str(tuple1[6])
                         pos_percent = str(tuple1[7])
+                        pca_n_component = str(tuple1[8])
                         # TODO ignore var and std for a while
                         # var = str(tuple1[7])
                         # std = str(tuple1[8])
@@ -380,11 +371,72 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                         f.write('average_avg_price_change: {}\n'.format(avg_price_change))
                         f.write('average_mres: {}\n'.format(mres))
                         f.write('pos_percent: {}\n'.format(pos_percent))
+                        f.write('pca_n_component: {}\n'.format(pca_n_component))
                         # # TODO ignore var and std for a while
                 print(
                     "Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(
                         key, new_path))
-                        # save file
+                # save file
+
+        elif key == 'rmse':
+            topology_list = sorted(topology_list,
+                                   key=lambda x: x[-3])
+            # write to file
+            with open(path, 'w', encoding='utf-8') as f:
+                for tuple1 in topology_list:
+                    feature_switch = str(tuple1[0])
+                    feature_selected = str(tuple1[1])
+                    hidden_size = str(tuple1[2])
+                    iteration_loss = str(tuple1[3])
+                    polar_accuracy = str(tuple1[4])
+                    mres = str(tuple1[5])
+                    pca_n_component = str(tuple1[6])
+                    avg_price_change = str(tuple1[7])
+                    # TODO ignore var and std for a while
+                    # var = str(tuple1[7])
+                    # std = str(tuple1[8])
+                    f.write('----------------------------------------------------\n')
+                    f.write('feature_switch: {}\n'.format(feature_switch))
+                    f.write('feature_selected: {}\n'.format(feature_selected))
+                    f.write('hidden_size: {}\n'.format(hidden_size))
+                    f.write('average_iteration_loss: {}\n'.format(iteration_loss))
+                    f.write('average_polar_accuracy: {}\n'.format(polar_accuracy))
+                    f.write('average_mres: {}\n'.format(mres))
+                    f.write('pca_n_component: {}\n'.format(pca_n_component))
+                    f.write('avg_price_change: {}\n'.format(avg_price_change))
+
+            print("Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(
+                key, path))
+
+        elif key == 'polar':
+            topology_list = sorted(topology_list,
+                               key=lambda x: x[-4], reverse=True)
+            # write to file
+            with open(path, 'w', encoding='utf-8') as f:
+                for tuple1 in topology_list:
+                    feature_switch = str(tuple1[0])
+                    feature_selected = str(tuple1[1])
+                    hidden_size = str(tuple1[2])
+                    iteration_loss = str(tuple1[3])
+                    polar_accuracy = str(tuple1[4])
+                    mres = str(tuple1[5])
+                    pca_n_component = str(tuple1[6])
+                    avg_price_change = str(tuple1[7])
+                    # TODO ignore var and std for a while
+                    # var = str(tuple1[7])
+                    # std = str(tuple1[8])
+                    f.write('----------------------------------------------------\n')
+                    f.write('feature_switch: {}\n'.format(feature_switch))
+                    f.write('feature_selected: {}\n'.format(feature_selected))
+                    f.write('hidden_size: {}\n'.format(hidden_size))
+                    f.write('average_iteration_loss: {}\n'.format(iteration_loss))
+                    f.write('average_polar_accuracy: {}\n'.format(polar_accuracy))
+                    f.write('average_mres: {}\n'.format(mres))
+                    f.write('pca_n_component: {}\n'.format(pca_n_component))
+                    f.write('avg_price_change: {}\n'.format(avg_price_change))
+            print("Regression! Save 10-cross-validation topology test result by {} to {} sucessfully!".format(
+                key, path))
+                    #
 
         else:
             print("Key should be mres or avg_pc, key: {}".format(key))
@@ -410,21 +462,24 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
             # get the cv_avg_price_change_list for a particular strategy
             top_n_pc_list = [[y[i] for y in x] for x in self.tp_cv_avg_price_change_list]
             cv_avg_price_change_list = [np.average(x) for x in top_n_pc_list]
+            pca_n_component_list = [x for x in self.tp_cv_pca_n_component_list]
 
             topology_list = list(zip(self.feature_switch_list, self.feature_selected_list,
-                                     self.hidden_size_list, cv_avg_price_change_list))
+                                     self.hidden_size_list, cv_avg_price_change_list, pca_n_component_list))
             sorted_topology_list = sorted(topology_list,
-                                          key=lambda x: x[-1], reverse=True)
+                                          key=lambda x: x[-2], reverse=True)
 
             top_feature_switch = sorted_topology_list[0][0]
             top_hidden_size = sorted_topology_list[0][2]
             top_cv_avg_price_change = sorted_topology_list[0][3]
+            top_pca_n_component = sorted_topology_list[0][4]
 
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             print("{}-TOP-BEST".format(include_top))
             print("cv_avg_price_change: ", top_cv_avg_price_change)
             print("feature_switch: ", top_feature_switch)
             print("hidden_size: ", top_hidden_size)
+            print("pca_n_component: ", top_pca_n_component)
 
     # ------------------------------------------------------------------------------------------------------------------
 

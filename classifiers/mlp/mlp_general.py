@@ -24,8 +24,10 @@ import collections
 parent_folder = os.path.dirname((os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 path1 = os.path.join(parent_folder, 'general_functions')
 path2 = os.path.join(parent_folder, 'strategy')
+path3 = os.path.join(parent_folder, 'data_processor')
 sys.path.append(path1)
 sys.path.append(path2)
+sys.path.append(path3)
 # ==========================================================================================================
 
 
@@ -33,6 +35,7 @@ sys.path.append(path2)
 # local package import
 # ==========================================================================================================
 from trade_general_funcs import feature_degradation
+from data_preprocessing import DataPp
 # ==========================================================================================================
 
 
@@ -58,6 +61,7 @@ class MultilayerPerceptron:
         # iteration_loss
         self.iteration_loss_list = []
         self.tp_cv_iteration_loss_list = []
+        self.tp_cv_pca_n_component_list = []
         #
 
 
@@ -180,8 +184,23 @@ class MultilayerPerceptron:
             print("-------------------------------------------------------------------------")
         #
 
+    def mlp_data_pre_processing(self, fit_data, obj_data, is_standardisation, is_PCA, pca_n_component = None):
+        trans_fit, trans_obj = fit_data, obj_data
+        data_dp = DataPp()
+        if is_standardisation:
+            trans_fit, trans_obj = data_dp.standardisation_fit_transfrom(trans_fit, trans_obj)
+        if is_PCA:
+            trans_fit, trans_obj = data_dp.PCA_fit_transfrom(trans_fit, trans_obj, pca_n_component = pca_n_component)
+        return trans_fit, trans_obj
+
+    def _update_train_dev_value_set(self, updated_train, updated_dev):
+        self.training_value_set = updated_train
+        self.dev_value_set = updated_dev
+
+
     def general_feed_and_separate_data(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
-                               random_seed = 1, mode='reg',  is_production = False):
+                               random_seed = 1, mode='reg',  is_production = False, is_standardisation = True,
+                                       is_PCA = True):
         # (1.) read all the data, feature customizable
         samples_feature_list, samples_value_list = self._general_feed_data(folder, data_per=data_per,
                                                        feature_switch_tuple=feature_switch_tuple,
@@ -191,4 +210,7 @@ class MultilayerPerceptron:
         self.load_train_dev_general_data_for_1_validation(samples_feature_list, samples_value_list, data_per = data_per,
                                                      dev_per = dev_per, random_seed = random_seed, n_fold_index = 0)
 
-
+        # (3.) standardisation, PCA
+        trans_fit, trans_obj = self.mlp_data_pre_processing(self.training_set, self.dev_set, is_standardisation
+                                                            , is_PCA)
+        self._update_train_dev_value_set(trans_fit, trans_obj)

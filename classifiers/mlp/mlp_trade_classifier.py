@@ -52,54 +52,6 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
     #   ====================================================================================================================
     #   CROSS VALIDATION FUNCTIONS FOR CLASSIFICATION
     #   ====================================================================================================================
-    def cv_feed_and_seperate_data(self, validation_index, samples_feature_list, samples_label_list,
-                                  dev_per=0.1, is_print=False):
-
-        # clear training_set, dev_set
-        self.training_set = []
-        self.training_label = []
-        self.dev_set = []
-        self.dev_value_set = []
-        #
-
-
-        sample_number = len(samples_feature_list)
-        sample_last_index = sample_number - 1
-        dev_sample_num = math.floor(sample_number * dev_per)
-        validation_split_list = [[i * dev_sample_num, (i + 1) * dev_sample_num] for i in range(10)]
-        validation_split_list[-1][1] = sample_last_index
-
-        # print ("validation_split_list: ", validation_split_list)
-        dev_start_index = validation_split_list[validation_index][0]
-        dev_end_index = validation_split_list[validation_index][1]
-
-        self.training_set = samples_feature_list[0:dev_start_index] + samples_feature_list[
-                                                                      dev_end_index:sample_last_index]
-        self.training_label = samples_label_list[0:dev_start_index] + samples_label_list[
-                                                                      dev_end_index:sample_last_index]
-        self.dev_set = samples_feature_list[dev_start_index:dev_end_index]
-        self.dev_value_set = samples_label_list[dev_start_index:dev_end_index]
-
-        # count the label in traning and testing data
-        dev_label_dict = collections.defaultdict(lambda: 0)
-        for label in self.dev_value_set:
-            dev_label_dict[label] += 1
-
-        training_label_dict = collections.defaultdict(lambda: 0)
-        for label in self.training_label:
-            training_label_dict[label] += 1
-
-        if is_print:
-            print("-------------------------------------------------------------------------\n")
-            print("-------------------------------------------------------------------------")
-            print("Set data for validation index: {}, range: ({}, {})".format(validation_index,
-                                                                              dev_start_index, dev_end_index))
-            # print ("Training Label: {}".format(training_label_dict.items()))
-            print("Dev Label: {}".format(dict(dev_label_dict.items())))
-            print("-------------------------------------------------------------------------")
-
-
-
     def cv_cls_topology_test(self, input_folder, feature_switch_tuple, other_config_dict,
                              hidden_layer_config_tuple, is_random=False, is_window_shift = False):
         '''10 cross validation test for mlp classifier'''
@@ -133,6 +85,13 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
         learning_rate_init = other_config_dict['learning_rate_init']
         clf_path = other_config_dict['clf_path']
         tol = other_config_dict['tol']
+
+        # (4.) Data Pre-processing
+        is_standardisation = other_config_dict['is_standardisation']
+        is_PCA = other_config_dict['is_PCA']
+        pca_n_component = other_config_dict['pca_n_component']
+
+        # (5.) Data split mode
         if not is_window_shift:
             random_seed_list = other_config_dict['random_seed_list']
         if is_window_shift:
@@ -146,7 +105,9 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
         if is_window_shift:
             self.create_train_dev_vdict_window_shift(samples_feature_list, samples_value_list,
                            date_str_list, stock_id_list, is_cv=True, shifting_size_percent = shifting_size_percent,
-                                                     shift_num = shift_num)
+                                                     shift_num = shift_num,
+                                                     is_standardisation = is_standardisation, is_PCA = is_PCA,
+                                                     pca_n_component = pca_n_component)
         else:
             dev_per = other_config_dict['dev_per']
             for random_seed in random_seed_list:
@@ -157,7 +118,9 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
                 print("-----------------------------------------------------------------------------")
                 print("random_seed: {}, date_random_subset_list: {}".format(random_seed, date_random_subset_list))
                 self.create_train_dev_vdict(samples_feature_list, samples_value_list, date_str_list, stock_id_list,
-                                        date_random_subset_list, random_seed)
+                                        date_random_subset_list, random_seed,
+                                            is_standardisation = is_standardisation, is_PCA = is_PCA,
+                                            pca_n_component = pca_n_component)
         # --------------------------------------------------------------------------------------------------------------
 
         # (4.) test the performance of different topology of MLP by 10-cross validation
@@ -198,11 +161,14 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
             self.tp_cv_iteration_loss_list.append([x[1] for x in self.iteration_loss_list])
             self.tp_cv_average_average_f1_list.append(self.average_f1_list)
             self.tp_cv_average_accuracy_list.append(self.accuracy_list)
+            self.tp_cv_pca_n_component_list.append(pca_n_component)
+
 
             # (d.) real-time print
             print("====================================================================")
             print("Feature selected: {}, Total number: {}".format(self.feature_selected_list[-1],
                                                                   self.feature_switch_list[-1].count(1)))
+            print("PCA-n-component: {}".format(pca_n_component))
             print("Average avg f1: {}".format(np.average(self.average_f1_list)))
             print("Average accuracy: {}".format(np.average(self.accuracy_list)))
             print("Average iteration_loss: {}".format(np.average([x[1] for x in self.iteration_loss_list])))
@@ -224,18 +190,21 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
         self.tp_cv_average_accuracy_list = [np.average(x) for x in self.tp_cv_average_accuracy_list]
         self.tp_cv_average_average_f1_list = [np.average(x) for x in self.tp_cv_average_average_f1_list]
 
+
         if key == 'f_m':
             topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
                                             self.hidden_size_list, self.tp_cv_iteration_loss_list,
                                             self.tp_cv_average_accuracy_list,
-                                            self.tp_cv_average_average_f1_list)),
-                                   key=lambda x: x[-1], reverse=True)
+                                            self.tp_cv_average_average_f1_list,
+                                            self.tp_cv_pca_n_component_list)),
+                                   key=lambda x: x[-2], reverse=True)
         elif key == 'acc':
             topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
                                             self.hidden_size_list, self.tp_cv_iteration_loss_list,
                                             self.tp_cv_average_accuracy_list,
-                                            self.tp_cv_average_average_f1_list)),
-                                   key=lambda x: x[-2], reverse=True)
+                                            self.tp_cv_average_average_f1_list,
+                                            self.tp_cv_pca_n_component_list)),
+                                   key=lambda x: x[-3], reverse=True)
         else:
             print ("Please type the right key!")
             sys.exit()
@@ -248,6 +217,7 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
                 iteration_loss = str(tuple1[3])
                 avg_accuracy = str(tuple1[4])
                 avg_avg_f1 = str(tuple1[5])
+                pca_n_component = str(tuple1[6])
                 f.write('----------------------------------------------------\n')
                 f.write('feature_switch: {}\n'.format(feature_switch))
                 f.write('feature_selected: {}\n'.format(feature_selected))
@@ -255,6 +225,8 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
                 f.write('average_iteration_loss: {}\n'.format(iteration_loss))
                 f.write('average_accuracy: {}\n'.format(avg_accuracy))
                 f.write('average_avg_f1: {}\n'.format(avg_avg_f1))
+                f.write('pca_n_component: {}\n'.format(pca_n_component))
+
 
         print("Classification! Save 10-cross-validation topology test result by to {} sucessfully!".format(path))
 
@@ -271,15 +243,16 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
         sorted_topology_list = sorted(list(zip(self.feature_switch_list, self.feature_selected_list,
                                         self.hidden_size_list, self.tp_cv_iteration_loss_list,
                                         self.tp_cv_average_accuracy_list,
-                                        self.tp_cv_average_average_f1_list)),
-                               key=lambda x: x[-1], reverse=True)
-
+                                        self.tp_cv_average_average_f1_list,
+                                        self.tp_cv_pca_n_component_list)),
+                               key=lambda x: x[-2], reverse=True)
 
         top_feature_switch = sorted_topology_list[0][0]
         top_hidden_size = sorted_topology_list[0][2]
         top_iteration_loss = sorted_topology_list[0][3]
         top_accuracy = sorted_topology_list[0][4]
         top_f1 = sorted_topology_list[0][5]
+        top_pca_n_component = sorted_topology_list[0][6]
 
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         print("BEST RESULT BY AVERAGE F-MEASURE SO FAR!")
@@ -289,6 +262,7 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
         print("iteration_loss: ", top_iteration_loss)
         print("accuracy: ", top_accuracy)
         print("f-measure: ", top_f1)
+        print("top_pca_n_component: ", top_pca_n_component)
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 
 

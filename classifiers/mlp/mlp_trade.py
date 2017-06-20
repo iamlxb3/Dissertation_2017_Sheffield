@@ -173,8 +173,9 @@ class MlpTrade(MultilayerPerceptron):
         #
 
         return samples_feature_list, samples_value_list, date_str_list, stock_id_list
-    def load_train_dev_data_for_1_validation(self, samples_feature_list, samples_value_list,
-                               date_str_list, stock_id_list, dev_date_set, is_production = False):
+
+    def load_train_dev_trade_data_for_1_validation(self, samples_feature_list, samples_value_list,
+                                                   date_str_list, stock_id_list, dev_date_set, is_production = False):
         all_date_set = set(date_str_list)
         if is_production:
             training_date_set = all_date_set
@@ -215,8 +216,9 @@ class MlpTrade(MultilayerPerceptron):
     # ------------------------------------------------------------------------------------------------------------------
     # [C.2] read, feed and load data for cross validation and random seed
     # ------------------------------------------------------------------------------------------------------------------
-    def feed_and_separate_data(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
-                               random_seed='normal', mode='reg',  is_production = False):
+    def trade_feed_and_separate_data(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
+                                     random_seed='normal', mode='reg', is_production = False,
+                                     is_standardisation = True, is_PCA = True):
         '''feed and seperate data in the normal order
         '''
         # (1.) read all the data, feature customizable
@@ -235,14 +237,23 @@ class MlpTrade(MultilayerPerceptron):
         print("dev_date_set: ", dev_date_set)
 
         # (3.) load_train_dev_data_for_1_validation
-        self.load_train_dev_data_for_1_validation(samples_feature_list, samples_value_list,
-                               date_str_list, stock_id_list, dev_date_set, is_production = is_production)
+        self.load_train_dev_trade_data_for_1_validation(samples_feature_list, samples_value_list,
+                                                        date_str_list, stock_id_list, dev_date_set,
+                                                        is_production = is_production)
 
+        # (4.) data pre_processing
+        trans_fit, trans_obj = self.mlp_data_pre_processing(self.training_set, self.dev_set, is_standardisation
+                                                            , is_PCA)
+        self._update_train_dev_value_set(trans_fit, trans_obj)
 
 
 
     def create_train_dev_vdict(self, samples_feature_list, samples_value_list,
-                               date_str_list, stock_id_list, date_random_subset_list, random_seed, is_cv=True):
+                               date_str_list, stock_id_list, date_random_subset_list, random_seed, is_cv=True,
+                               is_standardisation = True, is_PCA = True):
+        # (0.) reset validation_dict
+        self.validation_dict = collections.defaultdict(lambda: collections.defaultdict(lambda: {}))
+
         # get the date set and count the number of unique dates
 
         for i, dev_date_set in enumerate(date_random_subset_list):
@@ -270,6 +281,12 @@ class MlpTrade(MultilayerPerceptron):
             dev_date_set = list_by_index(date_str_list, dev_index_list)
             dev_stock_id_set = list_by_index(stock_id_list, dev_index_list)
 
+            # data pre-processing
+            # (.) standardisation, PCA
+            training_set, dev_set = self.mlp_data_pre_processing(training_set, dev_set, is_standardisation
+                                                                 , is_PCA)
+            #
+
             self.validation_dict[random_seed][i]['training_set'] = training_set
             self.validation_dict[random_seed][i]['training_value_set'] = training_value_set
             self.validation_dict[random_seed][i]['dev_set'] = dev_set
@@ -282,7 +299,12 @@ class MlpTrade(MultilayerPerceptron):
 
     def create_train_dev_vdict_window_shift(self, samples_feature_list, samples_value_list,
                                date_str_list, stock_id_list, is_cv=True, shifting_size_percent = 0.1, shift_num = 5,
-                                            priority = 'training_set'):
+                                            priority = 'training_set', is_standardisation = True, is_PCA = True,
+                                            pca_n_component = None):
+
+        # (0.) reset validation_dict
+        self.validation_dict = collections.defaultdict(lambda: collections.defaultdict(lambda: {}))
+
         # (.) window size
         random_seed = 'window_shift'
         sorted_date_list = sorted(list(set(date_str_list)))
@@ -353,8 +375,15 @@ class MlpTrade(MultilayerPerceptron):
             dev_date_set = list_by_index(date_str_list, dev_index_list)
             dev_stock_id_set = list_by_index(stock_id_list, dev_index_list)
 
+
+            # data pre-processing
+            # (.) standardisation, PCA
+            training_set, dev_set = self.mlp_data_pre_processing(training_set, dev_set, is_standardisation
+                                                                 , is_PCA, pca_n_component = pca_n_component)
+            #
+
             print ("Training_set_size: {}".format(len(training_set)))
-            print ("dev_set: {}".format(len(dev_set)))
+            print ("Dev_set_size: {}".format(len(dev_set)))
 
             self.validation_dict[random_seed][shift]['training_set'] = training_set
             self.validation_dict[random_seed][shift]['training_value_set'] = training_value_set

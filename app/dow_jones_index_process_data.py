@@ -92,22 +92,42 @@ from dow_jones_index import DowJonesIndex
 # # # ==========================================================================================================
 
 
-# # ==========================================================================================================
-# # [5.] data labeling
-# # ==========================================================================================================
-# dow_jones_index1 = DowJonesIndex()
-# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_scaled_data')
-# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_labeled')
-# dow_jones_index1.label_data(input_file, save_folder)
-# # ==========================================================================================================
+# ==========================================================================================================
+# [5.] data labeling
+# ==========================================================================================================
+dow_jones_index1 = DowJonesIndex()
+input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered')
+save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_labeled')
+dow_jones_index1.label_data(input_file, save_folder)
+# ==========================================================================================================
+
+# # # ==========================================================================================================
+# # # PCA-clf
+# # # ==========================================================================================================
+# stock_pca1 = StockPca(n_components = 12)
+# input_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_labeled')
+# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_labeled_PCA')
+# stock_pca1.transfrom_data_by_pca(input_folder, save_folder)
+# # # ==========================================================================================================
 
 
-# # ==========================================================================================================
-# # [4.a] PCA-clf
-# # ==========================================================================================================
-# total n_components for a share: 29, without price change 28
-stock_pca1 = StockPca(n_components = 12)
-input_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_labeled')
-save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_labeled_PCA')
-stock_pca1.transfrom_data_by_pca(input_folder, save_folder)
-# # ==========================================================================================================
+# ==========================================================================================================
+# [5.] data regression
+# ==========================================================================================================
+dow_jones_index1 = DowJonesIndex()
+input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered')
+save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_regression')
+dow_jones_index1.price_change_regression(input_file, save_folder)
+# ==========================================================================================================
+
+# # # ==========================================================================================================
+# # # PCA-regression
+# # # ==========================================================================================================
+# stock_pca1 = StockPca(n_components = 12)
+# input_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_regression')
+# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_regression_PCA')
+# stock_pca1.transfrom_data_by_pca(input_folder, save_folder)
+# # # ==========================================================================================================
+
+
+

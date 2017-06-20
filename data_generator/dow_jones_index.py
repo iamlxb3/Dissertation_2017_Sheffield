@@ -231,5 +231,33 @@ class DowJonesIndex:
             feature_str = ','.join(feature_list)
             with open (file_path, 'w', encoding = 'utf-8') as f:
                 f.write(feature_str)
+    print("label data successfully")
+    #print ("label data successfully, label_dict: {}".format(list(label_dict.items()))
 
-        print ("label data successfully, label_dict: {}".format(list(label_dict.items())))
+
+    def price_change_regression(self, input_folder, save_folder, key = 'percent_change_next_weeks_price'):
+
+        raw_data_file_name_list = os.listdir(input_folder)
+        for raw_data_file_name in raw_data_file_name_list:
+
+            # read percent_change_next_weeks_price
+            short_file_name = raw_data_file_name[0:-4]
+            raw_data_file_path = os.path.join(input_folder, raw_data_file_name)
+            with open(raw_data_file_path, 'r', encoding = 'utf-8') as f:
+                sample_feature_list = f.readlines()[0].split(',')
+                price_change_index = sample_feature_list.index(key)
+                sample_price_change = float(sample_feature_list[price_change_index + 1]) * 0.01
+                del sample_feature_list[price_change_index: price_change_index+2]
+            #
+
+            # modify file name and save
+            short_file_name = short_file_name.replace('_1', '')
+            short_file_name = short_file_name.replace('_2', '')
+            save_file_name = short_file_name + "_#{:.5f}#".format(sample_price_change) + '.txt'
+            save_file_folder = os.path.join(save_folder, save_file_name)
+            with open (save_file_folder, 'w', encoding='utf-8') as f:
+                f.write(','.join(sample_feature_list))
+            #
+
+        print ("save regression data of dow_jones, total: {}, save_folder: {}\n".
+               format(len(raw_data_file_name_list), save_folder))

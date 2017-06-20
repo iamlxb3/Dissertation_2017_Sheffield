@@ -211,3 +211,13 @@ def build_hidden_layer_sizes_list(hidden_layer_config_tuple):
     #
     hidden_layer_sizes_list = list(itertools.product(hidden_layer_unit_list, hidden_layer_layer_list))
     return hidden_layer_sizes_list
+
+def read_pca_component(folder_path):
+    file_name_list = os.listdir(folder_path)
+    file_name1 = file_name_list[0]
+    file_name1_path = os.path.join(folder_path, file_name1)
+    with open (file_name1_path, 'r', encoding = 'utf-8') as f:
+        feature_list = f.readlines()[0].strip().split(',')[::2]
+        feature_num = len(feature_list)
+    print ("Read PCA n-component {}".format(feature_num))
+    return feature_num

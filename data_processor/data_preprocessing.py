@@ -4,6 +4,8 @@ import sys
 import pickle
 import numpy as np
 import copy
+from sklearn import preprocessing
+
 
 class DataPp():
     def __init__(self):
@@ -266,3 +268,26 @@ class DataPp():
                 f.write(feature_write_str)
 
         print ("Scaling data for prediction succesful!")
+
+
+    def standardisation_fit_transfrom(self, fit_data, obj_data):
+
+        # intialize sk-learn preprocessing
+        scaler = preprocessing.StandardScaler()
+        scaler.fit(fit_data)
+        trans_fit = scaler.transform(fit_data)
+        trans_obj = scaler.transform(obj_data)
+        return trans_fit, trans_obj
+        #
+
+    def PCA_fit_transfrom(self, fit_data, obj_data, pca_n_component = None):
+        if not pca_n_component:
+            pca_n_component = len(fit_data[0])
+        from sklearn.decomposition import PCA
+        # intialize sk-learn preprocessing
+        PCAer = PCA(n_components=pca_n_component)
+        PCAer.fit(fit_data)
+        trans_fit = PCAer.transform(fit_data)
+        trans_obj = PCAer.transform(obj_data)
+        return trans_fit, trans_obj
+        #
