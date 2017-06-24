@@ -75,7 +75,6 @@ class MlpClassifier_P(MultilayerPerceptron):
 
 
     def clf_train(self, save_clsfy_path="mlp_trade_classifier", is_production=False):
-
         self.mlp_clf.fit(self.training_set, self.training_value_set)
         self.iteration_loss_list.append((self.mlp_clf.n_iter_, self.mlp_clf.loss_))
 
@@ -237,12 +236,25 @@ class MlpClassifier_P(MultilayerPerceptron):
         clf_path = other_config_dict['clf_path']
         tol = other_config_dict['tol']
         random_seed_list = other_config_dict['random_seed_list']
-        n_fold_range = int(math.floor(1 / dev_per))
 
+        # (4.) data pre-processing
+        is_standardisation = other_config_dict['is_standardisation']
+        is_PCA = other_config_dict['is_PCA']
 
         print ("Random_seed_list: {}".format(random_seed_list))
-        print ("{}-fold-validation".format(n_fold_range))
         # --------------------------------------------------------------------------------------------------------------
+
+
+        # --------------------------------------------------------------------------------------------------------------
+        # (4.) create validation_dict
+        # --------------------------------------------------------------------------------------------------------------
+        random_seed_list = other_config_dict['random_seed_list']
+        for random_seed in random_seed_list:
+            self.create_train_dev_vdict_general(samples_feature_list, samples_value_list, random_seed, is_cv=True,
+                                           data_per = data_per, dev_per = dev_per,
+                                         is_standardisation = is_standardisation, is_PCA = is_PCA)
+        # --------------------------------------------------------------------------------------------------------------
+
 
 
         # (4.) test the performance of different topology of MLP by 10-cross validation
@@ -264,15 +276,9 @@ class MlpClassifier_P(MultilayerPerceptron):
 
             # random inside, make sure each date has all the
 
-            if n_fold_range <= 1:
-                print ("dev_per too big!")
-                sys.exit()
             for random_seed in random_seed_list:
-                for n_fold_index in range(n_fold_range):
-                    self.load_train_dev_general_data_for_1_validation(samples_feature_list, samples_value_list,
-                                                                      data_per=data_per,dev_per=dev_per,
-                                                                      random_seed=random_seed, n_fold_index=n_fold_index,
-                                                                      is_print = False)
+                for cv_index in self.validation_dict[random_seed].keys():
+                    self.rs_cv_load_train_dev_data(random_seed, cv_index)
                     self.clf_train(save_clsfy_path=clf_path)
                     self.clf_dev(save_clsfy_path=clf_path, is_cv=True)
             #

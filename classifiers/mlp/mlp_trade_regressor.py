@@ -197,10 +197,10 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                     create_random_sub_set_list(set(date_str_list), dev_date_num, random_seed=random_seed)
                 print("-----------------------------------------------------------------------------")
                 print("random_seed: {}, date_random_subset_list: {}".format(random_seed, date_random_subset_list))
-                self.create_train_dev_vdict(samples_feature_list, samples_value_list, date_str_list, stock_id_list,
-                                            date_random_subset_list, random_seed,
-                                            is_standardisation = is_standardisation, is_PCA = is_PCA,
-                                            pca_n_component = pca_n_component)
+                self.create_train_dev_vdict_stock(samples_feature_list, samples_value_list, date_str_list, stock_id_list,
+                                                  date_random_subset_list, random_seed,
+                                                  is_standardisation = is_standardisation, is_PCA = is_PCA,
+                                                  pca_n_component = pca_n_component)
             # --------------------------------------------------------------------------------------------------------------
 
 
@@ -227,13 +227,13 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                 # (b.1) [window-shifting-n-fold]
                 random_seed = 'window_shift'
                 for shift in self.validation_dict[random_seed].keys():
-                    self.rs_cv_load_train_dev_data(random_seed, shift)
+                    self.trade_rs_cv_load_train_dev_data(random_seed, shift)
                     self.regressor_train(save_clsfy_path=clf_path)
                     self.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
             else:
                 for random_seed in random_seed_list:
                     for cv_index in self.validation_dict[random_seed].keys():
-                        self.rs_cv_load_train_dev_data(random_seed, cv_index)
+                        self.trade_rs_cv_load_train_dev_data(random_seed, cv_index)
                         self.regressor_train(save_clsfy_path=clf_path)
                         self.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
             #

@@ -248,9 +248,9 @@ class MlpTrade(MultilayerPerceptron):
 
 
 
-    def create_train_dev_vdict(self, samples_feature_list, samples_value_list,
-                               date_str_list, stock_id_list, date_random_subset_list, random_seed, is_cv=True,
-                               is_standardisation = True, is_PCA = True):
+    def create_train_dev_vdict_stock(self, samples_feature_list, samples_value_list,
+                                     date_str_list, stock_id_list, date_random_subset_list, random_seed, is_cv=True,
+                                     is_standardisation = True, is_PCA = True):
         # (0.) reset validation_dict
         self.validation_dict = collections.defaultdict(lambda: collections.defaultdict(lambda: {}))
 
@@ -411,7 +411,7 @@ class MlpTrade(MultilayerPerceptron):
 
 
 
-    def rs_cv_load_train_dev_data(self, random_seed, cv_index):
+    def trade_rs_cv_load_train_dev_data(self, random_seed, cv_index):
         self.training_set = self.validation_dict[random_seed][cv_index]['training_set']
         self.training_value_set = self.validation_dict[random_seed][cv_index]['training_value_set']
         self.dev_set = self.validation_dict[random_seed][cv_index]['dev_set']

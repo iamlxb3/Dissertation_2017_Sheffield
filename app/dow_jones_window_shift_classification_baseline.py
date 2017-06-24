@@ -73,7 +73,7 @@ average_f1_list = []
 accuracy_list = []
 is_baseline = False
 for shift in mlp_classifier1.validation_dict[random_seed].keys():
-    mlp_classifier1.rs_cv_load_train_dev_data(random_seed, shift)
+    mlp_classifier1.trade_rs_cv_load_train_dev_data(random_seed, shift)
     if is_baseline:
         average_f1, accuracy = mlp_classifier1.baseline_clf_dev(data_folder)
     else:

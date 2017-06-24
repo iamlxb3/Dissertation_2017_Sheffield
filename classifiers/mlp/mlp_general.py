@@ -147,13 +147,13 @@ class MultilayerPerceptron:
         # (2.) get the dev start, end index
         total_sample_number = len(samples_feature_list)
         dev_sample_number = math.floor(total_sample_number*dev_per)
-        sample_end_index = total_sample_number - 1
+        sample_end_index = total_sample_number
         dev_start_index = n_fold_index*dev_sample_number
         if dev_start_index >= total_sample_number - 1:
             print ("Please check dev_per or n_fold_index, too big!")
             sys.exit()
         dev_end_index = dev_start_index + dev_sample_number
-        if dev_end_index > sample_end_index - 1:
+        if dev_end_index > sample_end_index:
             dev_end_index = dev_end_index
         #
 
@@ -166,23 +166,6 @@ class MultilayerPerceptron:
                                   random_samples_value_list[dev_end_index:sample_end_index]
         #
 
-        # (4.) count each label
-        # count the label in traning and testing data
-        dev_label_dict = collections.defaultdict(lambda: 0)
-        for label in self.dev_value_set:
-            dev_label_dict[label] += 1
-
-        training_label_dict = collections.defaultdict(lambda: 0)
-        for label in self.training_value_set:
-            training_label_dict[label] += 1
-
-        if is_print:
-            print("-------------------------------------------------------------------------\n")
-            print("Set dev data range for cross validation : {}-{}".format(dev_start_index, dev_end_index))
-            print ("Training Label: {}".format(dict(training_label_dict.items())))
-            print("Dev Label: {}".format(dict(dev_label_dict.items())))
-            print("-------------------------------------------------------------------------")
-        #
 
     def mlp_data_pre_processing(self, fit_data, obj_data, is_standardisation, is_PCA, pca_n_component = None):
         trans_fit, trans_obj = fit_data, obj_data
@@ -195,13 +178,13 @@ class MultilayerPerceptron:
         return trans_fit, trans_obj
 
     def _update_train_dev_value_set(self, updated_train, updated_dev):
-        self.training_value_set = updated_train
-        self.dev_value_set = updated_dev
+        self.training_set = updated_train
+        self.dev_set = updated_dev
 
 
-    def general_feed_and_separate_data(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
-                               random_seed = 1, mode='reg',  is_production = False, is_standardisation = True,
-                                       is_PCA = True):
+    def general_feed_and_separate_data_1_fold(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
+                                              random_seed = 1, mode='reg', is_production = False, is_standardisation = True,
+                                              is_PCA = True):
         # (1.) read all the data, feature customizable
         samples_feature_list, samples_value_list = self._general_feed_data(folder, data_per=data_per,
                                                        feature_switch_tuple=feature_switch_tuple,
@@ -215,6 +198,71 @@ class MultilayerPerceptron:
         trans_fit, trans_obj = self.mlp_data_pre_processing(self.training_set, self.dev_set, is_standardisation
                                                             , is_PCA)
         self._update_train_dev_value_set(trans_fit, trans_obj)
+
+        print ("Split training and testing by 1 fold complete!")
+        print ("Traning data size: {}, testing data size: {}".format(len(self.training_value_set), len(self.dev_value_set)))
+
+    # def general_feed_and_separate_data_n_fold(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
+    #                                           random_seed = 1, mode='reg', is_production = False,
+    #                                           is_standardisation = True, is_PCA = True):
+    #     # (1.) read all the data, feature customizable
+    #     samples_feature_list, samples_value_list = self._general_feed_data(folder, data_per=data_per,
+    #                                                    feature_switch_tuple=feature_switch_tuple,
+    #                                                    is_random=False, mode=mode)
+    #
+    #     # (2.) load_train_dev_data_for_1_validation
+    #     self.load_train_dev_general_data_for_1_validation(samples_feature_list, samples_value_list, data_per = data_per,
+    #                                                  dev_per = dev_per, random_seed = random_seed, n_fold_index = 0)
+    #
+    #     # (3.) standardisation, PCA
+    #     trans_fit, trans_obj = self.mlp_data_pre_processing(self.training_set, self.dev_set, is_standardisation
+    #                                                         , is_PCA)
+    #     self._update_train_dev_value_set(trans_fit, trans_obj)
+
+
+
+    def create_train_dev_vdict_general(self, samples_feature_list, samples_value_list,random_seed, is_cv=True,
+                                       data_per = 1.0, dev_per = 0.1,
+                                     is_standardisation = True, is_PCA = True):
+        print ("Total data: {}".format(len(samples_feature_list)))
+
+        n_fold_range = int(math.floor(1 / dev_per))
+
+        # (0.) reset validation_dict
+        self.validation_dict = collections.defaultdict(lambda: collections.defaultdict(lambda: {}))
+
+        # get the date set and count the number of unique dates
+        for i in range(n_fold_range):
+            self.load_train_dev_general_data_for_1_validation(samples_feature_list, samples_value_list,
+                                                              data_per=data_per, dev_per=dev_per,
+                                                              random_seed=random_seed, n_fold_index=i,
+                                                              is_print=False)
+
+            # (.) standardisation, PCA
+            training_set, dev_set = self.mlp_data_pre_processing(self.training_set, self.dev_set,
+                                                                is_standardisation
+                                                                , is_PCA)
+            training_value_set = self.training_value_set
+            dev_value_set = self.dev_value_set
+            print ("training set size: {}".format(len(training_value_set)))
+            print ("dev set size: {}".format(len(dev_value_set)))
+
+
+            self.validation_dict[random_seed][i]['training_set'] = training_set
+            self.validation_dict[random_seed][i]['training_value_set'] = training_value_set
+            self.validation_dict[random_seed][i]['dev_set'] = dev_set
+            self.validation_dict[random_seed][i]['dev_value_set'] = dev_value_set
+
+        validation_num = len(list(self.validation_dict[random_seed].keys()))
+        print("Create validation_dict sucessfully! {}-fold cross validation".format(validation_num))
+
+    def rs_cv_load_train_dev_data(self, random_seed, cv_index):
+        self.training_set = self.validation_dict[random_seed][cv_index]['training_set']
+        self.training_value_set = self.validation_dict[random_seed][cv_index]['training_value_set']
+        self.dev_set = self.validation_dict[random_seed][cv_index]['dev_set']
+        self.dev_value_set = self.validation_dict[random_seed][cv_index]['dev_value_set']
+
+
 
     def save_data_image_PCA(self, target_feature_set, target_value_set, title, save_path, is_show = False):
         '''1st and 2nd component of PCA'''

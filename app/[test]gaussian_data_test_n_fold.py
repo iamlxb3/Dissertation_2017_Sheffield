@@ -24,7 +24,7 @@ sys.path.append(mlp_path)
 # ==========================================================================================================
 # local package import
 # ==========================================================================================================
-from mlp_trade_classifier import MlpTradeClassifier
+from mlp_classifier import MlpClassifier_P
 from trade_general_funcs import get_full_feature_switch_tuple
 # ==========================================================================================================
 
@@ -35,7 +35,7 @@ from trade_general_funcs import get_full_feature_switch_tuple
 # ----------------------------------------------------------------------------------------------------------------------
 # (1.) build classifer and read data
 # ----------------------------------------------------------------------------------------------------------------------
-mlp_general_clf = MlpTradeClassifier()
+mlp_general_clf = MlpClassifier_P()
 data_folder = os.path.join('test','gaussian_data')
 data_folder = os.path.join(parent_folder, 'data', data_folder)
 # ----------------------------------------------------------------------------------------------------------------------
@@ -46,14 +46,17 @@ data_folder = os.path.join(parent_folder, 'data', data_folder)
 # ----------------------------------------------------------------------------------------------------------------------
 other_config_dict = {}
 # (a.) learning_rate
-other_config_dict['data_per'] = 0.5
+other_config_dict['data_per'] = 1
 other_config_dict['dev_per'] = 0.2
 other_config_dict['learning_rate_init'] = 0.0001
 other_config_dict['tol'] = 1e-6
-other_config_dict['random_seed_list'] = [1,99,299]
+other_config_dict['random_seed_list'] = [1]
+other_config_dict['is_standardisation'] = True
+other_config_dict['is_PCA'] = True
+
 
 # (b.) clf_path
-clsfy_name = 'a_share_general_MLP_tp_test'
+clsfy_name = 'gaussain_test'
 other_config_dict['clf_path'] = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -63,15 +66,7 @@ other_config_dict['clf_path'] = os.path.join(parent_folder, 'trained_classifiers
 # ----------------------------------------------------------------------------------------------------------------------
 # get_full_feature_switch_tuple, (1,1,1,1,1,1,....)
 feature_switch_tuple_all_1 = get_full_feature_switch_tuple(data_folder)
-feature_switch_tuple_list = []
-feature_switch_tuple_list.append(feature_switch_tuple_all_1)
-for i in range(len(feature_switch_tuple_all_1)):
-    if i == 0 or i == len(feature_switch_tuple_all_1):
-        continue
-    feature_switch_list = list(feature_switch_tuple_all_1[:])
-    feature_switch_list[-i:] = [0 for x in range(i)]
-    feature_switch_tuple = tuple(feature_switch_list)
-    feature_switch_tuple_list.append(feature_switch_tuple)
+
 
 # >>>>>>>>>DEBUG
 feature_switch_tuple_list = [feature_switch_tuple_all_1]
@@ -86,14 +81,13 @@ print ("feature_switch_tuple_list: ", feature_switch_tuple_list)
 # ----------------------------------------------------------------------------------------------------------------------
 for feature_switch_tuple in feature_switch_tuple_list:
     mlp_general_clf.read_selected_feature_list(data_folder, feature_switch_tuple)
-
     # ------------------------------------------------------------------------------------------------------------------
     # config hidden layer size
     # ------------------------------------------------------------------------------------------------------------------
-    hidden_layer_node_min = 1
-    hidden_layer_node_max = 10
+    hidden_layer_node_min = 33
+    hidden_layer_node_max = 33
     hidden_layer_node_step = 1
-    hidden_layer_depth_min = 1
+    hidden_layer_depth_min = 3
     hidden_layer_depth_max = 3
 
     hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,
