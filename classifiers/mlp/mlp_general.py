@@ -182,6 +182,10 @@ class MultilayerPerceptron:
         self.dev_set = updated_dev
 
 
+
+
+
+
     def general_feed_and_separate_data_1_fold(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
                                               random_seed = 1, mode='reg', is_production = False, is_standardisation = True,
                                               is_PCA = True):
@@ -256,12 +260,27 @@ class MultilayerPerceptron:
         validation_num = len(list(self.validation_dict[random_seed].keys()))
         print("Create validation_dict sucessfully! {}-fold cross validation".format(validation_num))
 
-    def rs_cv_load_train_dev_data(self, random_seed, cv_index):
+
+    # ==================================================================================================================
+    # Load data to classifiers
+    # ==================================================================================================================
+    def load_validation_dict(self, validation_dict):
+        self.validation_dict = validation_dict
+
+    def load_train_dev_data_cv(self, random_seed, cv_index):
         self.training_set = self.validation_dict[random_seed][cv_index]['training_set']
         self.training_value_set = self.validation_dict[random_seed][cv_index]['training_value_set']
         self.dev_set = self.validation_dict[random_seed][cv_index]['dev_set']
         self.dev_value_set = self.validation_dict[random_seed][cv_index]['dev_value_set']
 
+    def load_train_dev_data_1_fold(self):
+        random_seed = '1_fold'
+        cv_index = 0
+        self.training_set = self.validation_dict[random_seed][cv_index]['training_set']
+        self.training_value_set = self.validation_dict[random_seed][cv_index]['training_value_set']
+        self.dev_set = self.validation_dict[random_seed][cv_index]['dev_set']
+        self.dev_value_set = self.validation_dict[random_seed][cv_index]['dev_value_set']
+    # ==================================================================================================================
 
 
     def save_data_image_PCA(self, target_feature_set, target_value_set, title, save_path, is_show = False):

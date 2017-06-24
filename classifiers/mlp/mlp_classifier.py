@@ -278,7 +278,7 @@ class MlpClassifier_P(MultilayerPerceptron):
 
             for random_seed in random_seed_list:
                 for cv_index in self.validation_dict[random_seed].keys():
-                    self.rs_cv_load_train_dev_data(random_seed, cv_index)
+                    self.load_train_dev_data(random_seed, cv_index)
                     self.clf_train(save_clsfy_path=clf_path)
                     self.clf_dev(save_clsfy_path=clf_path, is_cv=True)
             #
