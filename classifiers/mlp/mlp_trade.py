@@ -300,7 +300,7 @@ class MlpTrade(MultilayerPerceptron):
     def create_train_dev_vdict_window_shift(self, samples_feature_list, samples_value_list,
                                date_str_list, stock_id_list, is_cv=True, shifting_size_percent = 0.1, shift_num = 5,
                                             priority = 'training_set', is_standardisation = True, is_PCA = True,
-                                            pca_n_component = None):
+                                            pca_n_component = None, training_set_percent = 1.0):
 
         # (0.) reset validation_dict
         self.validation_dict = collections.defaultdict(lambda: collections.defaultdict(lambda: {}))
@@ -331,6 +331,8 @@ class MlpTrade(MultilayerPerceptron):
             sys.exit()
         #
 
+
+
         print("date_num: ", date_num)
         print("shift_num: ", shift_num)
         print("window_size: ", window_size)
@@ -346,12 +348,18 @@ class MlpTrade(MultilayerPerceptron):
                 print ("Error! dev_date_end_index exceed! Please check shift_num or shifting_size_percent!")
             training_date_list = sorted_date_list[training_date_start_index:training_date_end_index]
             dev_date_list = sorted_date_list[training_date_end_index:dev_date_end_index]
+
+
+
+            # only for testing the influence of the size of the training set on the validation error for stock market
+            training_date_list_index_start = math.floor((1 - training_set_percent / 1.0) * len(training_date_list))
+            training_date_list = training_date_list[training_date_list_index_start:]
+            #
+
             print ("---------------------------------------------------------------------")
             print ("shift_index: {}".format(shift))
             print ("training_date_list: ", training_date_list)
             print ("dev_date_list: ", dev_date_list)
-
-            #
 
             # (2.) get the dev index
             dev_index_list = []

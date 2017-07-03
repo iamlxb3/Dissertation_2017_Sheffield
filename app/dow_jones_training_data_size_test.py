@@ -24,7 +24,7 @@ sys.path.append(mlp_path)
 # ==========================================================================================================
 # local package import
 # ==========================================================================================================
-from mlp_trade_ensemble_classifier import MlpTradeDataEnsembleClassifier
+from mlp_trade_classifier import MlpTradeClassifier
 from trade_general_funcs import get_full_feature_switch_tuple
 from trade_general_funcs import read_pca_component
 # ==========================================================================================================
@@ -38,8 +38,7 @@ from trade_general_funcs import read_pca_component
 # Build MLP regressor for a-share data, save the mlp to local
 # ==========================================================================================================
 # (1.) build classifer
-ensemble_number = 3
-mlp_regressor1 = MlpTradeDataEnsembleClassifier(ensemble_number)
+mlp_regressor1 = MlpTradeClassifier()
 
 # # TODO ADD SOME regressor TESTING DATA
 # data_folder = os.path.join('dow_jones','dow_jones_regressor_PCA_data')
@@ -83,9 +82,11 @@ other_config_dict['is_PCA'] = True
 other_config_dict['is_PCA_feature_degradation'] = True
 pca_n_component = read_pca_component(data_folder)
 pca_n_component_list = sorted([i for i in range(pca_n_component + 1) if i != 0 ], reverse = True)
+pca_n_component_list = [pca_n_component]
 
-# (6.) test for the size of the traning set
-other_config_dict['training_set_percent'] = 1.0
+# (.) test for the size of the training size
+training_set_percent = 1.0
+other_config_dict['training_set_percent'] = training_set_percent
 
 # (3.) topology_result_path
 avg_f1_result_path = os.path.join(parent_folder, 'topology_feature_test',
@@ -135,17 +136,17 @@ for feature_switch_tuple in feature_switch_tuple_list:
             # ----------------------------------------------------------------------------------------------------------------------
             # config hidden layer size
             # ----------------------------------------------------------------------------------------------------------------------
-            hidden_layer_node_min = 20
-            hidden_layer_node_max = 100
+            hidden_layer_node_min = 33
+            hidden_layer_node_max = 33
             hidden_layer_node_step = 1
             hidden_layer_depth_min = 2
-            hidden_layer_depth_max = 8
+            hidden_layer_depth_max = 2
 
             hidden_layer_config_tuple = (hidden_layer_node_min, hidden_layer_node_max, hidden_layer_node_step, hidden_layer_depth_min,
                                          hidden_layer_depth_max)
             # ----------------------------------------------------------------------------------------------------------------------
             print("====================================================================")
-            print("Start testing for MLP's topology for ensemble classification for dow jones data set!")
+            print("Start testing for MLP's topology for classification for dow jones data set!")
             print("====================================================================")
 
             # run topology test, window shift

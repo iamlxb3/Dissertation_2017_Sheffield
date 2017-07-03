@@ -97,6 +97,9 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
         if is_window_shift:
             shifting_size_percent = other_config_dict['shifting_size_percent']
             shift_num = other_config_dict['shift_num']
+
+        # (6.) test for the size of the traning set
+        training_set_percent = other_config_dict['training_set_percent']
         # --------------------------------------------------------------------------------------------------------------
 
         # --------------------------------------------------------------------------------------------------------------
@@ -107,7 +110,7 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
                            date_str_list, stock_id_list, is_cv=True, shifting_size_percent = shifting_size_percent,
                                                      shift_num = shift_num,
                                                      is_standardisation = is_standardisation, is_PCA = is_PCA,
-                                                     pca_n_component = pca_n_component)
+                                                     pca_n_component = pca_n_component, training_set_percent = training_set_percent)
         else:
             dev_per = other_config_dict['dev_per']
             for random_seed in random_seed_list:
