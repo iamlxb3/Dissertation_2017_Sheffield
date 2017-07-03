@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0357bc33-e686-4051-9290-0338f55c9c47" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/dow_jones_cv_complete_ensemble_classification_PCA_window_test.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classifiers/mlp/mlp_trade_ensemble_classifier.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/dow_jones_training_data_size_test.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trained_classifiers/dow_jones_mlp_cv_PCA_classifier_window_shift" afterPath="$PROJECT_DIR$/trained_classifiers/dow_jones_mlp_cv_PCA_classifier_window_shift" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trained_classifiers/dow_jones_mlp_cv_PCA_classifier_window_shift_data_ensemble_0" afterPath="$PROJECT_DIR$/trained_classifiers/dow_jones_mlp_cv_PCA_classifier_window_shift_data_ensemble_0" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trained_classifiers/dow_jones_mlp_cv_PCA_classifier_window_shift_data_ensemble_0_data_ensemble_1" afterPath="$PROJECT_DIR$/trained_classifiers/dow_jones_mlp_cv_PCA_classifier_window_shift_data_ensemble_0_data_ensemble_1" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trained_classifiers/dow_jones_mlp_cv_PCA_classifier_window_shift_data_ensemble_0_data_ensemble_1_data_ensemble_2" afterPath="$PROJECT_DIR$/trained_classifiers/dow_jones_mlp_cv_PCA_classifier_window_shift_data_ensemble_0_data_ensemble_1_data_ensemble_2" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classifiers/mlp/mlp_trade.py" afterPath="$PROJECT_DIR$/classifiers/mlp/mlp_trade.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classifiers/mlp/mlp_trade_classifier.py" afterPath="$PROJECT_DIR$/classifiers/mlp/mlp_trade_classifier.py" />
     </list>
     <ignored mask="*.txt" />
     <ignored mask="*.log" />
@@ -29,8 +34,18 @@
       <file leaf-file-name="mlp_trade.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="513">
-              <caret line="52" column="20" lean-forward="false" selection-start-line="52" selection-start-column="20" selection-end-line="52" selection-end-column="20" />
+            <state relative-caret-position="933">
+              <caret line="363" column="0" lean-forward="false" selection-start-line="363" selection-start-column="0" selection-end-line="363" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dow_jones_cv_complete_classification_PCA_window_test.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/dow_jones_cv_complete_classification_PCA_window_test.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-158">
+              <caret line="81" column="54" lean-forward="false" selection-start-line="81" selection-start-column="54" selection-end-line="81" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -46,14 +61,34 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mlp_trade_ensemble_classifier.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="mlp_trade_ensemble_classifier.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade_ensemble_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="324">
-              <caret line="98" column="8" lean-forward="false" selection-start-line="98" selection-start-column="8" selection-end-line="98" selection-end-column="27" />
+            <state relative-caret-position="450">
+              <caret line="104" column="37" lean-forward="true" selection-start-line="104" selection-start-column="37" selection-end-line="104" selection-end-column="37" />
               <folding>
                 <element signature="e#693#706#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dow_jones_training_data_size_test.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/dow_jones_training_data_size_test.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="346">
+              <caret line="87" column="20" lean-forward="false" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mlp_trade_classifier.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade_classifier.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="156">
+              <caret line="108" column="47" lean-forward="false" selection-start-line="108" selection-start-column="47" selection-end-line="108" selection-end-column="47" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -63,16 +98,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="315">
               <caret line="40" column="19" lean-forward="true" selection-start-line="40" selection-start-column="19" selection-end-line="40" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="mlp_trade_classifier.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade_classifier.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
-              <caret line="139" column="32" lean-forward="true" selection-start-line="139" selection-start-column="32" selection-end-line="139" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -105,16 +130,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1512">
               <caret line="73" column="40" lean-forward="false" selection-start-line="73" selection-start-column="40" selection-end-line="73" selection-end-column="40" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="mlp_regressor.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_regressor.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="861">
-              <caret line="47" column="26" lean-forward="false" selection-start-line="47" selection-start-column="26" selection-end-line="47" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -173,7 +188,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/a_share_cv_complete_z_score_regression_test.py" />
         <option value="$PROJECT_DIR$/app/a_share_regression_PCA.py" />
         <option value="$PROJECT_DIR$/app/a_share_cv_regression_PCA.py" />
         <option value="$PROJECT_DIR$/data_generator/a_share.py" />
@@ -205,25 +219,26 @@
         <option value="$PROJECT_DIR$/app/dow_jones_cv_complete_classifier_PCA_window_test.py" />
         <option value="$PROJECT_DIR$/general_functions/trade_general_funcs.py" />
         <option value="$PROJECT_DIR$/data_processor/data_preprocessing.py" />
-        <option value="$PROJECT_DIR$/classifiers/mlp/mlp_trade_classifier.py" />
         <option value="$PROJECT_DIR$/classifiers/mlp/mlp_trade_regressor.py" />
         <option value="$PROJECT_DIR$/data_generator/dow_jones_index.py" />
         <option value="$PROJECT_DIR$/app/dow_jones_index_process_data.py" />
         <option value="$PROJECT_DIR$/app/dow_jones_index_train.py" />
         <option value="$PROJECT_DIR$/app/dow_jones_general_classification.py" />
         <option value="$PROJECT_DIR$/app/dow_jones_window_shift_classification.py" />
-        <option value="$PROJECT_DIR$/app/dow_jones_cv_complete_classification_PCA_window_test.py" />
         <option value="$PROJECT_DIR$/app/dow_jones_cv_complete_regression_PCA_window_test.py" />
         <option value="$PROJECT_DIR$/app/dow_jones_data_visualise.py" />
         <option value="$PROJECT_DIR$/app/[test]_a_share_trade_mlp_topology.py" />
         <option value="$PROJECT_DIR$/app/[test]_gaussian_data_test.py" />
         <option value="$PROJECT_DIR$/app/[test]gaussian_data_test_1_fold.py" />
-        <option value="$PROJECT_DIR$/classifiers/mlp/mlp_trade.py" />
         <option value="$PROJECT_DIR$/app/[test]gaussian_data_test_n_fold.py" />
         <option value="$PROJECT_DIR$/classifiers/mlp/mlp_classifier.py" />
         <option value="$PROJECT_DIR$/classifiers/mlp/mlp_general.py" />
         <option value="$PROJECT_DIR$/app/dow_jones_cv_complete_ensemble_classification_PCA_window_test.py" />
         <option value="$PROJECT_DIR$/classifiers/mlp/mlp_trade_ensemble_classifier.py" />
+        <option value="$PROJECT_DIR$/app/dow_jones_cv_complete_classification_PCA_window_test.py" />
+        <option value="$PROJECT_DIR$/classifiers/mlp/mlp_trade_classifier.py" />
+        <option value="$PROJECT_DIR$/classifiers/mlp/mlp_trade.py" />
+        <option value="$PROJECT_DIR$/app/dow_jones_training_data_size_test.py" />
       </list>
     </option>
   </component>
@@ -524,13 +539,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/a_share_clear_train_dev_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="38" column="54" lean-forward="true" selection-start-line="38" selection-start-column="54" selection-end-line="38" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data_generator/a_share.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4809">
@@ -681,7 +689,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/dow_jones_cv_complete_classification_PCA_window_test.py" />
     <entry file="file://$PROJECT_DIR$/app/dow_jones_cv_complete_regression_PCA_window_test.py" />
     <entry file="file://$PROJECT_DIR$/app/dow_jones_window_shift_classification_baseline.py" />
     <entry file="file://D:/Anaconda3/Lib/site-packages/matplotlib/figure.py" />
@@ -729,14 +736,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="513">
-          <caret line="52" column="20" lean-forward="false" selection-start-line="52" selection-start-column="20" selection-end-line="52" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_general.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-4547">
@@ -779,21 +778,45 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade_ensemble_classifier.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="104" column="37" lean-forward="true" selection-start-line="104" selection-start-column="37" selection-end-line="104" selection-end-column="37" />
+          <folding>
+            <element signature="e#693#706#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade_classifier.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="139" column="32" lean-forward="true" selection-start-line="139" selection-start-column="32" selection-end-line="139" selection-end-column="32" />
+        <state relative-caret-position="156">
+          <caret line="108" column="47" lean-forward="false" selection-start-line="108" selection-start-column="47" selection-end-line="108" selection-end-column="47" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade_ensemble_classifier.py">
+    <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="98" column="8" lean-forward="false" selection-start-line="98" selection-start-column="8" selection-end-line="98" selection-end-column="27" />
-          <folding>
-            <element signature="e#693#706#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="933">
+          <caret line="363" column="0" lean-forward="false" selection-start-line="363" selection-start-column="0" selection-end-line="363" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/dow_jones_cv_complete_classification_PCA_window_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-158">
+          <caret line="81" column="54" lean-forward="false" selection-start-line="81" selection-start-column="54" selection-end-line="81" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/dow_jones_training_data_size_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="346">
+          <caret line="87" column="20" lean-forward="false" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="20" />
+          <folding />
         </state>
       </provider>
     </entry>
