@@ -62,7 +62,8 @@ class DowJonesIndex:
                 date_temp = time.strptime(date, '%m/%d/%Y')
                 date_obj = datetime.datetime(*date_temp[:3])
                 date_str = date_obj.strftime("%Y-%m-%d")
-                file_name = date_str + '_' + quarter + '_' + stock_name + '.txt'
+                #file_name = date_str + '_' + quarter + '_' + stock_name + '.txt'
+                file_name = date_str + '_' + stock_name + '.txt'
                 #
 
                 # get the feature value list
@@ -81,6 +82,7 @@ class DowJonesIndex:
                 with open(file_path, 'w', encoding = 'utf-8') as f:
                     f.write(feature_name_value_str)
 
+
     def feature_engineering(self, input_folder, save_folder):
         file_name_list = os.listdir(input_folder)
         file_path_list = [os.path.join(input_folder, file_name) for file_name in file_name_list]
@@ -92,7 +94,6 @@ class DowJonesIndex:
             file_name = file_name_list[i]
             date = re.findall(r'([0-9]+-[0-9]+-[0-9]+)_', file_name)[0]
             stock_id = re.findall(r'_([0-9A-Za-z]+).txt', file_name)[0]
-            # find the data of the previous friday
             date_obj_temp = time.strptime(date, '%Y-%m-%d')
             date_obj = datetime.datetime(*date_obj_temp[:3])
 
@@ -249,6 +250,70 @@ class DowJonesIndex:
     print("label data successfully")
     #print ("label data successfully, label_dict: {}".format(list(label_dict.items()))
 
+    def f_engineering_add_1_week_data(self, input_folder, output_folder):
+        file_name_list = os.listdir(input_folder)
+        file_path_list = [os.path.join(input_folder, file_name) for file_name in file_name_list]
+
+        successful_save_count = 0
+        original_data_count = len(file_name_list)
+
+        for i, file_path in enumerate(file_path_list):
+            file_name = file_name_list[i]
+            date = re.findall(r'([0-9]+-[0-9]+-[0-9]+)_', file_name)[0]
+            stock_id = re.findall(r'_([0-9A-Za-z]+).txt', file_name)[0]
+
+            date_obj_temp = time.strptime(date, '%Y-%m-%d')
+            date_obj = datetime.datetime(*date_obj_temp[:3])
+
+            # find the data of the previous friday
+            delta1 = datetime.timedelta(days=7)
+            delta2 = datetime.timedelta(days=6)
+            delta3 = datetime.timedelta(days=8)
+            delta_list = [delta1, delta2, delta3]
+            previous_week_stock_path_list = []
+            for delta in delta_list:
+                previous_week_data_obj = date_obj - delta
+                previous_week_data_str = previous_week_data_obj.strftime("%Y-%m-%d")
+                previous_week_stock_path = previous_week_data_str + file_name[10:]
+                previous_week_stock_path = os.path.join(input_folder, previous_week_stock_path)
+                previous_week_stock_path_list.append(previous_week_stock_path)
+
+            #print ("previous_week_stock_path: ", previous_week_stock_path)
+            if os.path.exists(previous_week_stock_path_list[0]):
+                previous_week_stock_path = previous_week_stock_path_list[0]
+            elif os.path.exists(previous_week_stock_path_list[1]):
+                previous_week_stock_path = previous_week_stock_path_list[1]
+            elif os.path.exists(previous_week_stock_path_list[2]):
+                previous_week_stock_path = previous_week_stock_path_list[2]
+            else:
+                print("{}-{} has no previous week's data".format(stock_id, date))
+                continue
+
+            # previous week data
+            with open (previous_week_stock_path, 'r', encoding='utf-8') as f:
+                f_readlines = f.readlines()
+                pre_feature_name_list = f_readlines[0].strip().split(',')[::2]
+                pre_feature_value_list = f_readlines[0].strip().split(',')[1::2]
+
+                pre_feature_name_list = ['previous_week_' + feature_n for feature_n in pre_feature_name_list]
+            # this week data
+            with open (file_path, 'r', encoding='utf-8') as f:
+                f_readlines = f.readlines()
+                feature_name_list = f_readlines[0].strip().split(',')[::2]
+                feature_value_list = f_readlines[0].strip().split(',')[1::2]
+
+
+            combined_feature_name_list = pre_feature_name_list + feature_name_list
+            combined_feature_value_list = pre_feature_value_list + feature_value_list
+            feature_list = [j for i in zip(combined_feature_name_list, combined_feature_value_list) for j in i]
+            feature_list_str = ','.join(feature_list)
+            save_path = os.path.join(output_folder, file_name)
+            with open(save_path, 'w', encoding='utf-8') as f:
+                f.write(feature_list_str)
+
+            successful_save_count += 1
+
+        print ("Save {}/{} files to {}".format(successful_save_count, original_data_count, output_folder))
 
     def price_change_regression(self, input_folder, save_folder, key = 'percent_change_next_weeks_price'):
 
