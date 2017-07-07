@@ -12,6 +12,7 @@ import re
 import numpy as np
 import urllib
 import math
+import shutil
 # ==========================================================================================================
 
 # ==========================================================================================================
@@ -315,7 +316,7 @@ class Ashare:
         print ("Save {} samples to {} succesfully!".format(save_count, save_folder))
 
 
-    def label_data(self, input_folder, save_folder):
+    def label_data(self, input_folder, save_folder, split_test = False, test_folder = '', test_set_percent = 0.1):
 
         samples_list = []
         raw_data_file_name_list = os.listdir(input_folder)
@@ -391,7 +392,12 @@ class Ashare:
                                                                        ))
         print ("All files have been saved to {}".format(save_folder))
 
-    def regression(self, input_folder, save_folder):
+
+        if split_test:
+            self.seperate_test_set(save_folder, test_folder, test_set_percent = test_set_percent)
+
+
+    def regression(self, input_folder, save_folder, split_test = False, test_folder = '', test_set_percent = 0.2):
 
         file_name_list = os.listdir(input_folder)
         file_path_list = [os.path.join(input_folder, file_name) for file_name in file_name_list]
@@ -412,6 +418,8 @@ class Ashare:
         print ("key: ", key)
         print ("Write the regression value for {} files".format(len(file_name_list)))
 
+        if split_test:
+            self.seperate_test_set(save_folder, test_folder, test_set_percent = test_set_percent)
 
 
     def get_stocks_feature_this_week(self):
@@ -603,3 +611,39 @@ class Ashare:
             for file_path in file_path_list:
                 os.remove(file_path)
             print ("Succefully remove {} files in {}".format(file_count, prediction_foler))
+
+    def seperate_test_set(self, all_data_path, test_set_path, test_set_percent = 0.1):
+        file_name_list = os.listdir(all_data_path)
+        data_str_list = []
+        for file_name in file_name_list:
+            data_str = re.findall(r'([0-9]{4}-[0-9]{2}-[0-9]{2})_', file_name)[0]
+            data_str_list.append(data_str)
+
+        # (1.) get test set threshold index, get test data list
+        data_str_set = set(data_str_list)
+        unique_data_list = sorted(list(data_str_set))
+        date_number = len(data_str_set)
+        test_set_number = math.floor(test_set_percent*date_number)
+        test_unique_data_list = unique_data_list[-test_set_number:]
+
+
+        # (2.) cut and paste
+        test_file_name_list = []
+        for file_name in file_name_list:
+            data_str = re.findall(r'([0-9]{4}-[0-9]{2}-[0-9]{2})_', file_name)[0]
+            if data_str in test_unique_data_list:
+                test_file_name_list.append(file_name)
+            else:
+                continue
+
+        delete_file_path_list =  [os.path.join(all_data_path, x) for x in test_file_name_list]
+        test_save_file_path_list = [os.path.join(test_set_path, x) for x in test_file_name_list]
+
+        move_count = 0
+        for i, delete_path in enumerate(delete_file_path_list):
+            test_file_path = test_save_file_path_list[i]
+            shutil.move(delete_path, test_file_path)
+            move_count += 1
+
+        print ("Move {} files from {} to {} succesfully for separating test set[a_share].".
+               format(move_count, all_data_path, test_set_path))

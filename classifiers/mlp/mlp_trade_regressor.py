@@ -82,6 +82,9 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
     # ------------------------------------------------------------------------------------------------------------------
 
     def regressor_dev(self, save_clsfy_path="mlp_trade_regressor", is_cv=False, include_top_list = None):
+        # test mode
+
+
         if not include_top_list:
             include_top_list = [1]
         mlp_regressor = pickle.load(open(save_clsfy_path, "rb"))

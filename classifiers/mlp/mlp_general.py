@@ -167,13 +167,16 @@ class MultilayerPerceptron:
         #
 
 
-    def mlp_data_pre_processing(self, fit_data, obj_data, is_standardisation, is_PCA, pca_n_component = None):
+    def mlp_data_pre_processing(self, fit_data, obj_data, is_standardisation, is_PCA, pca_n_component = None,
+                                standardisation_file_path = '', pca_file_path = ''):
         trans_fit, trans_obj = fit_data, obj_data
         data_dp = DataPp()
         if is_standardisation:
-            trans_fit, trans_obj = data_dp.standardisation_fit_transfrom(trans_fit, trans_obj)
+            trans_fit, trans_obj = data_dp.standardisation_fit_transfrom(trans_fit, trans_obj,
+                                                                         standardisation_file_path = standardisation_file_path)
         if is_PCA:
-            trans_fit, trans_obj = data_dp.PCA_fit_transfrom(trans_fit, trans_obj, pca_n_component = pca_n_component)
+            trans_fit, trans_obj = data_dp.PCA_fit_transfrom(trans_fit, trans_obj, pca_n_component = pca_n_component,
+                                                             pca_file_path = pca_file_path)
         print ("Data pre-processing done! is_standardisation: {}, is_PCA: {}".format(is_standardisation, is_PCA))
         return trans_fit, trans_obj
 

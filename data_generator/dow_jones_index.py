@@ -247,7 +247,7 @@ class DowJonesIndex:
             feature_str = ','.join(feature_list)
             with open (file_path, 'w', encoding = 'utf-8') as f:
                 f.write(feature_str)
-    print("label data successfully")
+        print("label data successfully")
     #print ("label data successfully, label_dict: {}".format(list(label_dict.items()))
 
     def f_engineering_add_1_week_data(self, input_folder, output_folder):

@@ -38,7 +38,7 @@ from trade_general_funcs import read_pca_component
 # Build MLP regressor for a-share data, save the mlp to local
 # ==========================================================================================================
 # (1.) build classifer
-ensemble_number = 3
+ensemble_number = 10
 mode = 'adaboost' #adaboost, bagging
 mlp_regressor1 = MlpTradeEnsembleRegressor(ensemble_number, 'adaboost')
 

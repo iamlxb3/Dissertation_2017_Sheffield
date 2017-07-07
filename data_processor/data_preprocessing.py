@@ -270,24 +270,45 @@ class DataPp():
         print ("Scaling data for prediction succesful!")
 
 
-    def standardisation_fit_transfrom(self, fit_data, obj_data):
+    def standardisation_fit_transfrom(self, fit_data, obj_data, standardisation_file_path =''):
 
         # intialize sk-learn preprocessing
         scaler = preprocessing.StandardScaler()
         scaler.fit(fit_data)
-        trans_fit = scaler.transform(fit_data)
-        trans_obj = scaler.transform(obj_data)
+
+        if standardisation_file_path:
+            pickle.dump(scaler, open(standardisation_file_path, "wb"))
+            print ("save standardisation file to {}".format(standardisation_file_path))
+
+        trans_fit = fit_data
+        trans_obj = obj_data
+
+
+        if fit_data.size > 0:
+            trans_fit = scaler.transform(fit_data)
+        if obj_data.size > 0:
+            trans_obj = scaler.transform(obj_data)
+
         return trans_fit, trans_obj
         #
 
-    def PCA_fit_transfrom(self, fit_data, obj_data, pca_n_component = None):
+    def PCA_fit_transfrom(self, fit_data, obj_data, pca_file_path = '', pca_n_component = None):
         if not pca_n_component:
             pca_n_component = len(fit_data[0])
         from sklearn.decomposition import PCA
         # intialize sk-learn preprocessing
         PCAer = PCA(n_components=pca_n_component)
         PCAer.fit(fit_data)
-        trans_fit = PCAer.transform(fit_data)
-        trans_obj = PCAer.transform(obj_data)
+
+        if pca_file_path:
+            pickle.dump(PCAer, open(pca_file_path, "wb"))
+            print("save PCA file to {}".format(pca_file_path))
+
+        trans_fit = fit_data
+        trans_obj = obj_data
+        if fit_data.size > 0:
+            trans_fit = PCAer.transform(fit_data)
+        if obj_data.size > 0:
+            trans_obj = PCAer.transform(obj_data)
         return trans_fit, trans_obj
         #

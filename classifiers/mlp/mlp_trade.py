@@ -218,7 +218,8 @@ class MlpTrade(MultilayerPerceptron):
     # ------------------------------------------------------------------------------------------------------------------
     def trade_feed_and_separate_data(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
                                      random_seed='normal', mode='reg', is_production = False,
-                                     is_standardisation = True, is_PCA = True):
+                                     is_standardisation = True, is_PCA = True, is_test_folder = False,
+                                     standardisation_file_path = '', pca_file_path = ''):
         '''feed and seperate data in the normal order
         '''
         # (1.) read all the data, feature customizable
@@ -241,11 +242,25 @@ class MlpTrade(MultilayerPerceptron):
                                                         date_str_list, stock_id_list, dev_date_set,
                                                         is_production = is_production)
 
-        # (4.) data pre_processing
-        trans_fit, trans_obj = self.mlp_data_pre_processing(self.training_set, self.dev_set, is_standardisation
-                                                            , is_PCA)
-        self._update_train_dev_value_set(trans_fit, trans_obj)
 
+        if not is_test_folder:
+            # (4.) data pre_processing
+            self.training_set = np.array(self.training_set)
+            self.dev_set = np.array(self.dev_set)
+
+            trans_fit, trans_obj = self.mlp_data_pre_processing(self.training_set, self.dev_set, is_standardisation
+                                                                , is_PCA,
+                                                                standardisation_file_path = standardisation_file_path,
+                                                                pca_file_path = pca_file_path)
+
+            self._update_train_dev_value_set(trans_fit, trans_obj)
+        else:
+            if standardisation_file_path:
+                standardisation = pickle.load(open(standardisation_file_path, "rb"))
+                self.dev_set = standardisation.transform(self.dev_set)
+            if pca_file_path:
+                pca = pickle.load(open(pca_file_path, "rb"))
+                self.dev_set = pca.transform(self.dev_set)
 
 
     def create_train_dev_vdict_stock(self, samples_feature_list, samples_value_list,

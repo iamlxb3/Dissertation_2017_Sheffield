@@ -101,15 +101,15 @@ from dow_jones_index import DowJonesIndex
 #                         trained_classifiers_folder, scaler_name, mode = 'z_score', data_set = 'dow_jones')
 # # # ==========================================================================================================
 
-#
-# ==========================================================================================================
-# [5.] data labeling
-# ==========================================================================================================
-dow_jones_index1 = DowJonesIndex()
-input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered_more_data')
-save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_labeled')
-dow_jones_index1.label_data(input_file, save_folder)
-# ==========================================================================================================
+
+# # ==========================================================================================================
+# # [5.] data labeling
+# # ==========================================================================================================
+# dow_jones_index1 = DowJonesIndex()
+# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered_more_data')
+# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_labeled')
+# dow_jones_index1.label_data(input_file, save_folder)
+# # ==========================================================================================================
 
 # # # ==========================================================================================================
 # # # PCA-clf
@@ -121,14 +121,14 @@ dow_jones_index1.label_data(input_file, save_folder)
 # # # ==========================================================================================================
 
 
-# ==========================================================================================================
-# [5.] data regression
-# ==========================================================================================================
-dow_jones_index1 = DowJonesIndex()
-input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered_more_data')
-save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_regression')
-dow_jones_index1.price_change_regression(input_file, save_folder)
-# ==========================================================================================================
+# # ==========================================================================================================
+# # [5.] data regression
+# # ==========================================================================================================
+# dow_jones_index1 = DowJonesIndex()
+# input_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered_more_data')
+# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_regression')
+# dow_jones_index1.price_change_regression(input_folder, save_folder)
+# # ==========================================================================================================
 
 # # # ==========================================================================================================
 # # # PCA-regression
