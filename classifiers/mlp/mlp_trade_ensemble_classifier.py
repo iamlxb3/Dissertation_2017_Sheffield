@@ -15,6 +15,7 @@ import sys
 import math
 import os
 from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import BaggingClassifier, AdaBoostClassifier
 # ==========================================================================================================
 
 
@@ -43,86 +44,58 @@ from trade_general_funcs import compute_average_f1
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-class MlpTradeDataEnsembleClassifier(MlpTradeClassifier, ):
+class MlpTradeDataEnsembleClassifier(MlpTradeClassifier):
     '''Ensemble classifier of different data'''
 
-    def __init__(self, ensemble_number):
+    def __init__(self, ensemble_number, mode):
         super().__init__()
         self.ensemble_number = ensemble_number
+        self.mode = mode
 
     def set_mlp_clf(self, hidden_layer_sizes, tol=1e-6, learning_rate_init=0.001, verbose=False):
 
         self.hidden_size_list.append(hidden_layer_sizes)
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
 
-        self.ensemble_clf_list = []
-        for i in range(self.ensemble_number):
-            temp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
-                                         tol=tol, learning_rate_init=learning_rate_init,
-                                         max_iter=2000, random_state=1, verbose=verbose)
-            self.ensemble_clf_list.append(temp_clf)
-
+        temp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
+                                     tol=tol, learning_rate_init=learning_rate_init,
+                                     max_iter=10000, random_state=1, verbose=False)
+        if self.mode == 'bagging':
+            print("Set bagging EnsembleClassifier!")
+            self.clf = BaggingClassifier(base_estimator=temp_clf,  verbose=0, n_estimators=self.ensemble_number)
+        elif self.mode == 'adaboost':
+            print("Set adaboost EnsembleClassifier!")
+            self.clf = AdaBoostClassifier(base_estimator=temp_clf, n_estimators=self.ensemble_number)
+        else:
+            print ("Please type the right mode!!!")
+            sys.exit()
+        print ("ensemble_number: ", self.ensemble_number)
 
 
     def clf_train(self, save_clsfy_path="mlp_trade_classifier", is_production=False):
 
         # split data and train
-        training_set_size = len(self.training_set)
-        block_size = math.floor(training_set_size/self.ensemble_number)
-        n_iter_list = []
-        loss_list = []
 
-        for i in range(self.ensemble_number):
-            if i == self.ensemble_number - 1:
-                training_set = self.training_set[i * block_size:training_set_size]
-                training_value_set = self.training_value_set[i * block_size:training_set_size]
-            else:
-                training_set = self.training_set[i*block_size:i*block_size + block_size]
-                training_value_set = self.training_value_set[i*block_size:i*block_size + block_size]
-
-            self.ensemble_clf_list[i].fit(training_set, training_value_set)
-            n_iter_list.append(self.ensemble_clf_list[i].n_iter_)
-            loss_list.append(self.ensemble_clf_list[i].loss_)
-
-
+        self.clf.fit(self.training_set, self.training_value_set)
+        n_iter_list = [x.n_iter_ for x in self.clf.estimators_]
+        loss_list = [x.loss_ for x in self.clf.estimators_]
         self.iteration_loss_list.append((np.average(n_iter_list), np.average(loss_list)))
 
-
-        for i, classfier in enumerate(self.ensemble_clf_list):
-            save_clsfy_path = save_clsfy_path + '_data_ensemble_{}'.format(i)
-            pickle.dump(classfier, open(save_clsfy_path, "wb"))
+        save_clsfy_path = save_clsfy_path + '_data_ensemble'
+        pickle.dump(self.clf, open(save_clsfy_path, "wb"))
 
 
 
     def clf_dev(self, save_clsfy_path="mlp_trade_classifier", is_cv=False, is_return = False):
 
-        ensemble_classifier_list = []
-        for i in range(self.ensemble_number):
-            save_clsfy_path = save_clsfy_path + '_data_ensemble_{}'.format(i)
-            classfier = pickle.load(open(save_clsfy_path, "rb"))
-            ensemble_classifier_list.append(classfier)
 
-        pred_label_list_ensemble = []
-        for i, classfier in enumerate(ensemble_classifier_list):
-            pred_label_list_1 = classfier.predict(self.dev_set)
-            pred_label_list_ensemble.append(pred_label_list_1)
+        save_clsfy_path = save_clsfy_path + '_data_ensemble'
 
-        # find the label with the most vote
-        pred_label_list = []
-        pred_label_list_ensemble = list(zip(*pred_label_list_ensemble))
+        # (1.) read classifier
+        clf = pickle.load(open(save_clsfy_path, "rb"))
+        #
+        pred_label_list = clf.predict(self.dev_set)
 
-
-        for i, label_tuple in enumerate(pred_label_list_ensemble):
-            label_list = list(set(label_tuple))
-            label_max_count = 0
-            label_max_index = 0
-            for j, label in enumerate(label_list):
-                count = label_tuple.count(label)
-                if count > label_max_count:
-                    label_max_count = count
-                    label_max_index = j
-
-            pred_label_list.append(label_list[label_max_index])
 
         # (3.) compute the average f-measure
         pred_label_dict = collections.defaultdict(lambda: 0)

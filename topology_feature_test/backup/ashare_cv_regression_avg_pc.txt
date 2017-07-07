@@ -1,0 +1,24 @@
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['bvps', 'candleLength', 'candlePos', 'closeChange', 'esp', 'fixedAssets', 'gpr', 'highChange', 'holders', 'liquidAssets', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pb', 'pe', 'perundp', 'profit', 'reserved', 'reservedPerShare', 'rev', 'totalAssets', 'totals', 'undp', 'volume', 'volumeChange']
+hidden_size: (3, 1)
+iteration_loss: (68, 0.0015955361477656563)
+polar_accuracy: 0.5836538461538462
+avg_price_change: 0.0254881818182
+mres: 0.05377795844293073
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['bvps', 'candleLength', 'candlePos', 'closeChange', 'esp', 'fixedAssets', 'gpr', 'highChange', 'holders', 'liquidAssets', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pb', 'pe', 'perundp', 'profit', 'reserved', 'reservedPerShare', 'rev', 'totalAssets', 'totals', 'undp', 'volume', 'volumeChange']
+hidden_size: (1, 1)
+iteration_loss: (69, 0.0015912500947674031)
+polar_accuracy: 0.5716346153846154
+avg_price_change: -0.0101345454545
+mres: 0.0544910062834014
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['bvps', 'candleLength', 'candlePos', 'closeChange', 'esp', 'fixedAssets', 'gpr', 'highChange', 'holders', 'liquidAssets', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pb', 'pe', 'perundp', 'profit', 'reserved', 'reservedPerShare', 'rev', 'totalAssets', 'totals', 'undp', 'volume', 'volumeChange']
+hidden_size: (2, 1)
+iteration_loss: (68, 0.0015923142102097928)
+polar_accuracy: 0.5604166666666667
+avg_price_change: -0.0101345454545
+mres: 0.05432062870455168

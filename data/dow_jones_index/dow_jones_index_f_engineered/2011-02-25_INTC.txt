@@ -1,0 +1,1 @@
+candleLength,0.07627,candlePos,0.20339,days_to_next_dividend,68,highLowChange,0.05616,percent_change_next_weeks_price,-0.873563,percent_change_price,-0.410023,percent_return_next_dividend,0.823422,volumeChangePreviousWeek,0.27316

@@ -1,0 +1,24 @@
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['bvps', 'candleLength', 'candlePos', 'closeChange', 'esp', 'fixedAssets', 'gpr', 'highChange', 'holders', 'liquidAssets', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pb', 'pe', 'perundp', 'profit', 'reserved', 'reservedPerShare', 'rev', 'totalAssets', 'totals', 'undp', 'volume', 'volumeChange']
+hidden_size: (2, 1)
+average_iteration_loss: 22.3007892701
+average_polar_accuracy: 0.569857092943
+average_avg_price_change: -0.000885
+average_mres: 0.0561682808659
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['bvps', 'candleLength', 'candlePos', 'closeChange', 'esp', 'fixedAssets', 'gpr', 'highChange', 'holders', 'liquidAssets', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pb', 'pe', 'perundp', 'profit', 'reserved', 'reservedPerShare', 'rev', 'totalAssets', 'totals', 'undp', 'volume', 'volumeChange']
+hidden_size: (1, 1)
+average_iteration_loss: 40.5007892733
+average_polar_accuracy: 0.569857092943
+average_avg_price_change: -0.000885
+average_mres: 0.056168755985
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['bvps', 'candleLength', 'candlePos', 'closeChange', 'esp', 'fixedAssets', 'gpr', 'highChange', 'holders', 'liquidAssets', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pb', 'pe', 'perundp', 'profit', 'reserved', 'reservedPerShare', 'rev', 'totalAssets', 'totals', 'undp', 'volume', 'volumeChange']
+hidden_size: (3, 1)
+average_iteration_loss: 33.2507904147
+average_polar_accuracy: 0.569873118584
+average_avg_price_change: -0.000873818181818
+average_mres: 0.0562891234383

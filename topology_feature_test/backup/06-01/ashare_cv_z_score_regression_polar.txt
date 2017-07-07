@@ -1,0 +1,1395 @@
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (38, 4)
+average_iteration_loss: 0.0012077855798
+average_polar_accuracy: 0.584624407543
+average_avg_price_change: 0.000692090909091
+average_mres: 0.0493475025735
+var: 0.00497161788479 std: 0.0679147704223
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (37, 5)
+average_iteration_loss: 0.00120931707275
+average_polar_accuracy: 0.579699008371
+average_avg_price_change: 0.00249986363636
+average_mres: 0.0494997045608
+var: 0.00425416354895 std: 0.0617790138509
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (34, 5)
+average_iteration_loss: 0.00121460846022
+average_polar_accuracy: 0.578870062472
+average_avg_price_change: 0.00240668181818
+average_mres: 0.0493181465016
+var: 0.00327753990812 std: 0.0551187632281
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (31, 6)
+average_iteration_loss: 0.00122304532131
+average_polar_accuracy: 0.578692116852
+average_avg_price_change: -0.00439554545455
+average_mres: 0.0495238271638
+var: 0.00260902310645 std: 0.0480960587308
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (37, 6)
+average_iteration_loss: 0.00121597768324
+average_polar_accuracy: 0.578610103252
+average_avg_price_change: -0.00207772727273
+average_mres: 0.0494372248407
+var: 0.00357303776455 std: 0.0580537564971
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (42, 3)
+average_iteration_loss: 0.00122436528796
+average_polar_accuracy: 0.578480249045
+average_avg_price_change: 0.00153281818182
+average_mres: 0.0498674561964
+var: 0.0038330589457 std: 0.0577120560457
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (27, 6)
+average_iteration_loss: 0.00121682280817
+average_polar_accuracy: 0.578415163537
+average_avg_price_change: 0.00349131818182
+average_mres: 0.049481135328
+var: 0.00472750861242 std: 0.0662882498347
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (22, 6)
+average_iteration_loss: 0.00122348931406
+average_polar_accuracy: 0.577147890388
+average_avg_price_change: -0.00899290909091
+average_mres: 0.0496865469233
+var: 0.00321900807471 std: 0.0542684416305
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (22, 4)
+average_iteration_loss: 0.00123142091249
+average_polar_accuracy: 0.5771311471
+average_avg_price_change: 0.00778504545455
+average_mres: 0.0501026517719
+var: 0.00546180223246 std: 0.07165524232
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (32, 5)
+average_iteration_loss: 0.001223968286
+average_polar_accuracy: 0.576724405579
+average_avg_price_change: 0.00952731818182
+average_mres: 0.0499442162118
+var: 0.00700700952667 std: 0.0812230037821
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (38, 5)
+average_iteration_loss: 0.00121942605164
+average_polar_accuracy: 0.5764489307
+average_avg_price_change: -0.00179436363636
+average_mres: 0.0497425423503
+var: 0.00501941827368 std: 0.0678266761794
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (47, 2)
+average_iteration_loss: 0.00121092612785
+average_polar_accuracy: 0.576139058422
+average_avg_price_change: 0.00768572727273
+average_mres: 0.0492785076453
+var: 0.004612722105 std: 0.0648945651958
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (36, 2)
+average_iteration_loss: 0.00121461398104
+average_polar_accuracy: 0.575912268971
+average_avg_price_change: 0.00550240909091
+average_mres: 0.0493202413273
+var: 0.00414727375812 std: 0.0605612432201
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (44, 6)
+average_iteration_loss: 0.00122771914701
+average_polar_accuracy: 0.575847183463
+average_avg_price_change: -0.00304422727273
+average_mres: 0.0496686077558
+var: 0.00476280182754 std: 0.0669111421505
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (48, 4)
+average_iteration_loss: 0.0012206662237
+average_polar_accuracy: 0.575408248997
+average_avg_price_change: -0.00364459090909
+average_mres: 0.0498256150127
+var: 0.00597655070771 std: 0.0734262387424
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (34, 4)
+average_iteration_loss: 0.00122882256789
+average_polar_accuracy: 0.575018554373
+average_avg_price_change: -0.000392181818182
+average_mres: 0.0496601953408
+var: 0.00384390798864 std: 0.0587737946556
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (44, 2)
+average_iteration_loss: 0.00122229277279
+average_polar_accuracy: 0.574969340932
+average_avg_price_change: 0.0102223181818
+average_mres: 0.0497498575327
+var: 0.00597355431093 std: 0.0745551896737
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (40, 5)
+average_iteration_loss: 0.00121921534657
+average_polar_accuracy: 0.574920391498
+average_avg_price_change: 0.00805459090909
+average_mres: 0.0496906245508
+var: 0.00456071094527 std: 0.0630548894572
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (43, 4)
+average_iteration_loss: 0.00122031108966
+average_polar_accuracy: 0.5747908937
+average_avg_price_change: 0.0106923181818
+average_mres: 0.0496975255339
+var: 0.00614524178725 std: 0.0764594489545
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (24, 5)
+average_iteration_loss: 0.00122942916992
+average_polar_accuracy: 0.574774652024
+average_avg_price_change: 0.00573954545455
+average_mres: 0.050159105864
+var: 0.00495349959351 std: 0.0667984137067
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (47, 3)
+average_iteration_loss: 0.00121119716172
+average_polar_accuracy: 0.574741733061
+average_avg_price_change: -0.007368
+average_mres: 0.0496886483896
+var: 0.00416330345004 std: 0.0624686540504
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (45, 6)
+average_iteration_loss: 0.00120758105233
+average_polar_accuracy: 0.574449290488
+average_avg_price_change: 0.00584286363636
+average_mres: 0.0492470778406
+var: 0.00443078746126 std: 0.0650120214229
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (35, 3)
+average_iteration_loss: 0.00122572846597
+average_polar_accuracy: 0.574352672051
+average_avg_price_change: -0.000362590909091
+average_mres: 0.049937076262
+var: 0.0043732909111 std: 0.0647719915512
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (46, 5)
+average_iteration_loss: 0.00124285556258
+average_polar_accuracy: 0.574238808714
+average_avg_price_change: -0.00546859090909
+average_mres: 0.0503478163848
+var: 0.00325383225833 std: 0.0555225641533
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (45, 4)
+average_iteration_loss: 0.00122971468665
+average_polar_accuracy: 0.573929002438
+average_avg_price_change: -0.00239386363636
+average_mres: 0.0502655082184
+var: 0.00494025676527 std: 0.066950002346
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (34, 6)
+average_iteration_loss: 0.00121615165509
+average_polar_accuracy: 0.573896505885
+average_avg_price_change: 0.00212668181818
+average_mres: 0.0496391956654
+var: 0.00477344775333 std: 0.0642035447661
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (37, 3)
+average_iteration_loss: 0.00125133690307
+average_polar_accuracy: 0.573799663043
+average_avg_price_change: -0.00108490909091
+average_mres: 0.0505242739885
+var: 0.0026553167295 std: 0.0506557809885
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (26, 3)
+average_iteration_loss: 0.00124142786628
+average_polar_accuracy: 0.573669439227
+average_avg_price_change: 0.00143363636364
+average_mres: 0.0504967542137
+var: 0.00414342691905 std: 0.0621434301257
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (44, 3)
+average_iteration_loss: 0.00122993043697
+average_polar_accuracy: 0.573507154469
+average_avg_price_change: -0.00731577272727
+average_mres: 0.0495538315786
+var: 0.00270724765035 std: 0.0504153920625
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (48, 6)
+average_iteration_loss: 0.00122467461537
+average_polar_accuracy: 0.573376917452
+average_avg_price_change: -0.00124486363636
+average_mres: 0.0501636246875
+var: 0.00440602633907 std: 0.0632981901988
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (25, 6)
+average_iteration_loss: 0.00122548181348
+average_polar_accuracy: 0.573279203389
+average_avg_price_change: -0.000672818181818
+average_mres: 0.0498891516257
+var: 0.00635826383384 std: 0.0767566503504
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (41, 5)
+average_iteration_loss: 0.00122085827865
+average_polar_accuracy: 0.57298691922
+average_avg_price_change: 0.00601340909091
+average_mres: 0.0497572269056
+var: 0.00549797127866 std: 0.0719500791096
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (23, 6)
+average_iteration_loss: 0.00122295552353
+average_polar_accuracy: 0.572954079459
+average_avg_price_change: -0.00658163636364
+average_mres: 0.049685199662
+var: 0.00562401638236 std: 0.0736211786186
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (33, 4)
+average_iteration_loss: 0.00122405374084
+average_polar_accuracy: 0.572742396456
+average_avg_price_change: 0.00240554545455
+average_mres: 0.0500861541364
+var: 0.00395590130264 std: 0.0601440281021
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (36, 6)
+average_iteration_loss: 0.00122039192959
+average_polar_accuracy: 0.572710427916
+average_avg_price_change: 0.00586086363636
+average_mres: 0.0499234654475
+var: 0.0057052947706 std: 0.0725209049374
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (50, 5)
+average_iteration_loss: 0.00121365686549
+average_polar_accuracy: 0.572628783925
+average_avg_price_change: -0.000355136363636
+average_mres: 0.0497912822476
+var: 0.00409901140076 std: 0.0612905416255
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (45, 5)
+average_iteration_loss: 0.00121943872166
+average_polar_accuracy: 0.572368507897
+average_avg_price_change: 0.00830686363636
+average_mres: 0.0498557806828
+var: 0.00429607137019 std: 0.0628281672476
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (38, 3)
+average_iteration_loss: 0.00122170183216
+average_polar_accuracy: 0.572352833835
+average_avg_price_change: 0.000772363636364
+average_mres: 0.0497765372777
+var: 0.00392870790632 std: 0.0610495542014
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (49, 3)
+average_iteration_loss: 0.00124591406466
+average_polar_accuracy: 0.572174122596
+average_avg_price_change: -0.00943095454545
+average_mres: 0.0498033146698
+var: 0.0017171114325 std: 0.0406672413482
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (26, 6)
+average_iteration_loss: 0.00121877659375
+average_polar_accuracy: 0.572076170927
+average_avg_price_change: -0.00219913636364
+average_mres: 0.0498643485057
+var: 0.00327464324147 std: 0.0556819609662
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (32, 3)
+average_iteration_loss: 0.00122424364455
+average_polar_accuracy: 0.571994632538
+average_avg_price_change: 0.0108947272727
+average_mres: 0.049858516405
+var: 0.00664808411376 std: 0.0786049021943
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (50, 4)
+average_iteration_loss: 0.00121431453333
+average_polar_accuracy: 0.571848840262
+average_avg_price_change: 0.00669063636364
+average_mres: 0.0496916389075
+var: 0.00621867379612 std: 0.0749882938272
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (34, 3)
+average_iteration_loss: 0.00122048087806
+average_polar_accuracy: 0.57170197876
+average_avg_price_change: 0.00685122727273
+average_mres: 0.0496337432215
+var: 0.00369153139444 std: 0.0589874584455
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (47, 6)
+average_iteration_loss: 0.00124014891598
+average_polar_accuracy: 0.571686225496
+average_avg_price_change: -0.00795018181818
+average_mres: 0.049954567587
+var: 0.00256634070946 std: 0.0500128410113
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (27, 2)
+average_iteration_loss: 0.00123158836939
+average_polar_accuracy: 0.571393373713
+average_avg_price_change: -0.000434090909091
+average_mres: 0.0499216464271
+var: 0.00572258480483 std: 0.0708138707124
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (39, 6)
+average_iteration_loss: 0.00122509196297
+average_polar_accuracy: 0.571361616378
+average_avg_price_change: 0.00650181818182
+average_mres: 0.0502030802117
+var: 0.00648143525207 std: 0.0752452149165
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (28, 3)
+average_iteration_loss: 0.0012574212998
+average_polar_accuracy: 0.571345216298
+average_avg_price_change: -0.00879481818182
+average_mres: 0.0506904494147
+var: 0.00240802599872 std: 0.0471948983468
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (26, 2)
+average_iteration_loss: 0.00124490539689
+average_polar_accuracy: 0.571328935021
+average_avg_price_change: -0.0101852272727
+average_mres: 0.049830823193
+var: 0.00295618192114 std: 0.0529905011372
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (25, 2)
+average_iteration_loss: 0.00125184372084
+average_polar_accuracy: 0.571312666944
+average_avg_price_change: -0.00881563636364
+average_mres: 0.050317883853
+var: 0.00230282731331 std: 0.0456389842245
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (21, 3)
+average_iteration_loss: 0.00124445714739
+average_polar_accuracy: 0.571263915515
+average_avg_price_change: -0.00991845454545
+average_mres: 0.0499878029796
+var: 0.00250442082289 std: 0.0483597781589
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (22, 2)
+average_iteration_loss: 0.00124463983101
+average_polar_accuracy: 0.571263915515
+average_avg_price_change: -0.00991845454545
+average_mres: 0.0497905492372
+var: 0.00250442082289 std: 0.0483597781589
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (24, 2)
+average_iteration_loss: 0.00124502396225
+average_polar_accuracy: 0.571263915515
+average_avg_price_change: -0.00991845454545
+average_mres: 0.0498115462605
+var: 0.00250442082289 std: 0.0483597781589
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (29, 2)
+average_iteration_loss: 0.00124913615957
+average_polar_accuracy: 0.571263915515
+average_avg_price_change: -0.00991845454545
+average_mres: 0.0502189307361
+var: 0.00250442082289 std: 0.0483597781589
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (35, 5)
+average_iteration_loss: 0.00124783010364
+average_polar_accuracy: 0.571263915515
+average_avg_price_change: -0.00987204545455
+average_mres: 0.0498721786402
+var: 0.00250193981399 std: 0.048341252155
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (39, 4)
+average_iteration_loss: 0.00124601675689
+average_polar_accuracy: 0.571263915515
+average_avg_price_change: -0.00991845454545
+average_mres: 0.0497798939087
+var: 0.00250442082289 std: 0.0483597781589
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (40, 2)
+average_iteration_loss: 0.00124565206575
+average_polar_accuracy: 0.571263915515
+average_avg_price_change: -0.00991845454545
+average_mres: 0.0497841265828
+var: 0.00250442082289 std: 0.0483597781589
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (41, 3)
+average_iteration_loss: 0.00124654221175
+average_polar_accuracy: 0.571263915515
+average_avg_price_change: -0.0100003181818
+average_mres: 0.0498819900164
+var: 0.00249778611006 std: 0.048290679442
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (42, 5)
+average_iteration_loss: 0.00123008006218
+average_polar_accuracy: 0.571263915515
+average_avg_price_change: -0.00971672727273
+average_mres: 0.049536070385
+var: 0.00252765927339 std: 0.0485916052755
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (44, 4)
+average_iteration_loss: 0.00124637985756
+average_polar_accuracy: 0.571263915515
+average_avg_price_change: -0.00991845454545
+average_mres: 0.0497760473507
+var: 0.00250442082289 std: 0.0483597781589
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (50, 2)
+average_iteration_loss: 0.00124440633684
+average_polar_accuracy: 0.571263915515
+average_avg_price_change: -0.00991845454545
+average_mres: 0.0497739899683
+var: 0.00250442082289 std: 0.0483597781589
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (32, 2)
+average_iteration_loss: 0.00122531523164
+average_polar_accuracy: 0.571231392562
+average_avg_price_change: 0.00225081818182
+average_mres: 0.0497507726742
+var: 0.00377515327591 std: 0.0563685832878
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (38, 6)
+average_iteration_loss: 0.00122583343399
+average_polar_accuracy: 0.571198816808
+average_avg_price_change: -0.000458
+average_mres: 0.0497769137951
+var: 0.00557835935149 std: 0.0725429631941
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (28, 6)
+average_iteration_loss: 0.00124630720033
+average_polar_accuracy: 0.571133929305
+average_avg_price_change: -0.00602595454545
+average_mres: 0.0502087141671
+var: 0.00440218481812 std: 0.0636466211829
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (37, 2)
+average_iteration_loss: 0.00125066352493
+average_polar_accuracy: 0.571133876504
+average_avg_price_change: -0.00731722727273
+average_mres: 0.0501291774398
+var: 0.00304656396238 std: 0.0535215414427
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (20, 4)
+average_iteration_loss: 0.00127860072632
+average_polar_accuracy: 0.571101445953
+average_avg_price_change: -0.00833827272727
+average_mres: 0.0514428997157
+var: 0.00233746287008 std: 0.0475777278805
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (20, 6)
+average_iteration_loss: 0.00125035332321
+average_polar_accuracy: 0.571085125075
+average_avg_price_change: -0.000871681818182
+average_mres: 0.0503991139555
+var: 0.00368006908155 std: 0.05887709435
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (28, 2)
+average_iteration_loss: 0.0012464120945
+average_polar_accuracy: 0.571085111874
+average_avg_price_change: -0.0110509090909
+average_mres: 0.0498231376268
+var: 0.00236648348116 std: 0.0476079155203
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (31, 3)
+average_iteration_loss: 0.00124905236003
+average_polar_accuracy: 0.571085098674
+average_avg_price_change: -0.00424477272727
+average_mres: 0.0501516742665
+var: 0.00258252313791 std: 0.0485035077873
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (21, 5)
+average_iteration_loss: 0.00125304963357
+average_polar_accuracy: 0.571052654923
+average_avg_price_change: 0.00230763636364
+average_mres: 0.0500160668255
+var: 0.00212794972136 std: 0.0423447183164
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (30, 2)
+average_iteration_loss: 0.00124856182547
+average_polar_accuracy: 0.571036347245
+average_avg_price_change: -0.00861409090909
+average_mres: 0.0498545611341
+var: 0.00254000463669 std: 0.0492459830278
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (28, 5)
+average_iteration_loss: 0.00125337435947
+average_polar_accuracy: 0.57102015837
+average_avg_price_change: -0.0101466363636
+average_mres: 0.0501804979194
+var: 0.00303110439789 std: 0.0535746864494
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (42, 2)
+average_iteration_loss: 0.00125984993228
+average_polar_accuracy: 0.571020105569
+average_avg_price_change: -0.0102934545455
+average_mres: 0.0501275061265
+var: 0.00247034685607 std: 0.0479691251568
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (44, 5)
+average_iteration_loss: 0.0012213747627
+average_polar_accuracy: 0.571003731889
+average_avg_price_change: 0.00336459090909
+average_mres: 0.050060805792
+var: 0.00609807608308 std: 0.0750252954023
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (48, 3)
+average_iteration_loss: 0.00125531258457
+average_polar_accuracy: 0.57097136734
+average_avg_price_change: -0.00884768181818
+average_mres: 0.0501942649047
+var: 0.00224898888205 std: 0.0462948719507
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (43, 5)
+average_iteration_loss: 0.00124247195271
+average_polar_accuracy: 0.570938791586
+average_avg_price_change: -0.00917736363636
+average_mres: 0.0499535475074
+var: 0.0024522680912 std: 0.0486276785864
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (27, 3)
+average_iteration_loss: 0.00122415157203
+average_polar_accuracy: 0.570938712384
+average_avg_price_change: 0.00370654545455
+average_mres: 0.0499136524877
+var: 0.00430572587215 std: 0.0632295629583
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (36, 5)
+average_iteration_loss: 0.00124674353288
+average_polar_accuracy: 0.57087378528
+average_avg_price_change: -0.00788386363636
+average_mres: 0.0503394339001
+var: 0.00305813296539 std: 0.0538613264797
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (43, 3)
+average_iteration_loss: 0.00124804819749
+average_polar_accuracy: 0.57087377208
+average_avg_price_change: -0.0130288636364
+average_mres: 0.0499565927219
+var: 0.0024046217818 std: 0.0487222861368
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (29, 5)
+average_iteration_loss: 0.00124813994312
+average_polar_accuracy: 0.570727596994
+average_avg_price_change: -0.0144988636364
+average_mres: 0.0498644138224
+var: 0.00474928784647 std: 0.0643566295586
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (27, 4)
+average_iteration_loss: 0.00124795474421
+average_polar_accuracy: 0.570695074041
+average_avg_price_change: -0.00814163636364
+average_mres: 0.0498760478706
+var: 0.00452708771562 std: 0.0632392216848
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (40, 4)
+average_iteration_loss: 0.00125409316103
+average_polar_accuracy: 0.570694994839
+average_avg_price_change: 0.00427609090909
+average_mres: 0.0499937639051
+var: 0.00619653793715 std: 0.0744878098614
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (30, 4)
+average_iteration_loss: 0.00126998987113
+average_polar_accuracy: 0.57061385246
+average_avg_price_change: -0.00943245454545
+average_mres: 0.0506298057171
+var: 0.00299572881789 std: 0.0523434733424
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (34, 2)
+average_iteration_loss: 0.00121994219779
+average_polar_accuracy: 0.570548199339
+average_avg_price_change: 0.00227754545455
+average_mres: 0.0495675615732
+var: 0.00420408785959 std: 0.0642652494183
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (46, 4)
+average_iteration_loss: 0.0012169533454
+average_polar_accuracy: 0.570386350191
+average_avg_price_change: 0.00149986363636
+average_mres: 0.0499641371617
+var: 0.00564221186924 std: 0.071692737122
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (37, 4)
+average_iteration_loss: 0.00123766887944
+average_polar_accuracy: 0.570321383487
+average_avg_price_change: -0.00885186363636
+average_mres: 0.0502865927912
+var: 0.00264949617469 std: 0.0507965481314
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (30, 6)
+average_iteration_loss: 0.00123156445776
+average_polar_accuracy: 0.570304996607
+average_avg_price_change: -0.00579718181818
+average_mres: 0.0496935906223
+var: 0.00220961013938 std: 0.0457083147629
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (35, 6)
+average_iteration_loss: 0.001227746241
+average_polar_accuracy: 0.570125823357
+average_avg_price_change: 0.00842977272727
+average_mres: 0.0501102564533
+var: 0.0050995579801 std: 0.0693803608122
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (27, 5)
+average_iteration_loss: 0.00123125458497
+average_polar_accuracy: 0.56996318219
+average_avg_price_change: -0.00184836363636
+average_mres: 0.0502129472826
+var: 0.00413395999612 std: 0.0622030042419
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (42, 6)
+average_iteration_loss: 0.00122152791343
+average_polar_accuracy: 0.569947296923
+average_avg_price_change: 0.00601231818182
+average_mres: 0.0499502962395
+var: 0.00405668894936 std: 0.0618836380813
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (26, 5)
+average_iteration_loss: 0.00123581687133
+average_polar_accuracy: 0.569914153554
+average_avg_price_change: 0.000369136363636
+average_mres: 0.0500937640822
+var: 0.00351251207395 std: 0.0576186903325
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (29, 3)
+average_iteration_loss: 0.00122588852032
+average_polar_accuracy: 0.569849358454
+average_avg_price_change: 0.00692681818182
+average_mres: 0.0498950576531
+var: 0.00512299175459 std: 0.0684035389616
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (33, 6)
+average_iteration_loss: 0.00123938521349
+average_polar_accuracy: 0.56983360519
+average_avg_price_change: -0.00213236363636
+average_mres: 0.0502754650775
+var: 0.00550179104525 std: 0.0716997834029
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (41, 6)
+average_iteration_loss: 0.0012336168823
+average_polar_accuracy: 0.569736392739
+average_avg_price_change: 0.00109922727273
+average_mres: 0.050169326565
+var: 0.00411740984548 std: 0.0617861631747
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (23, 4)
+average_iteration_loss: 0.00123603544912
+average_polar_accuracy: 0.569671320431
+average_avg_price_change: -0.00205777272727
+average_mres: 0.0500393968336
+var: 0.00398524196614 std: 0.0614060741709
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (25, 4)
+average_iteration_loss: 0.00124914441528
+average_polar_accuracy: 0.569622740606
+average_avg_price_change: -0.00329154545455
+average_mres: 0.0506828253024
+var: 0.00463861998736 std: 0.0643547915918
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (36, 4)
+average_iteration_loss: 0.00123745265286
+average_polar_accuracy: 0.569606102921
+average_avg_price_change: -0.00146704545455
+average_mres: 0.0504030376106
+var: 0.00438087757134 std: 0.0624623100205
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (46, 2)
+average_iteration_loss: 0.00123970663558
+average_polar_accuracy: 0.569508652864
+average_avg_price_change: -0.00177854545455
+average_mres: 0.0501469278501
+var: 0.0041183851595 std: 0.0610235637011
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (26, 4)
+average_iteration_loss: 0.00122413961544
+average_polar_accuracy: 0.569410423988
+average_avg_price_change: 0.0075095
+average_mres: 0.0498459876503
+var: 0.00575530484882 std: 0.0725448436299
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (32, 4)
+average_iteration_loss: 0.0012291035175
+average_polar_accuracy: 0.569264367706
+average_avg_price_change: 0.0104605909091
+average_mres: 0.0501580123775
+var: 0.004662279492 std: 0.0668133217635
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (22, 5)
+average_iteration_loss: 0.00126028553254
+average_polar_accuracy: 0.569151203986
+average_avg_price_change: -0.0103011363636
+average_mres: 0.0505052653937
+var: 0.00465863679961 std: 0.0656801120025
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (29, 6)
+average_iteration_loss: 0.00122950715317
+average_polar_accuracy: 0.569117955015
+average_avg_price_change: 0.00270077272727
+average_mres: 0.0499337845278
+var: 0.00496540729957 std: 0.0658435172405
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (21, 6)
+average_iteration_loss: 0.00122671994483
+average_polar_accuracy: 0.569117717409
+average_avg_price_change: 0.00538554545455
+average_mres: 0.0498619879621
+var: 0.00400793361194 std: 0.0618711172083
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (48, 5)
+average_iteration_loss: 0.00121740383985
+average_polar_accuracy: 0.569068754775
+average_avg_price_change: 0.00810654545455
+average_mres: 0.0500590695134
+var: 0.0065454199119 std: 0.0795919586117
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (30, 3)
+average_iteration_loss: 0.00122761223958
+average_polar_accuracy: 0.569053635126
+average_avg_price_change: 0.00453004545455
+average_mres: 0.0498467007425
+var: 0.00401457640258 std: 0.0606530717044
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (23, 5)
+average_iteration_loss: 0.00123376360142
+average_polar_accuracy: 0.56905339752
+average_avg_price_change: -0.00489827272727
+average_mres: 0.0496340676811
+var: 0.00312797607855 std: 0.0540072566411
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (22, 3)
+average_iteration_loss: 0.00122961906359
+average_polar_accuracy: 0.568955855061
+average_avg_price_change: 0.00637922727273
+average_mres: 0.0498858586163
+var: 0.0056666393256 std: 0.0724136410706
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (21, 2)
+average_iteration_loss: 0.00125447301113
+average_polar_accuracy: 0.568890584749
+average_avg_price_change: 0.00289868181818
+average_mres: 0.0505111052065
+var: 0.00349236485523 std: 0.0580194422741
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (42, 4)
+average_iteration_loss: 0.00121706131241
+average_polar_accuracy: 0.5688582334
+average_avg_price_change: 0.00709672727273
+average_mres: 0.0497996955242
+var: 0.00651893136182 std: 0.076903767698
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (39, 5)
+average_iteration_loss: 0.00122432781289
+average_polar_accuracy: 0.568679178953
+average_avg_price_change: 0.00151018181818
+average_mres: 0.0502992511105
+var: 0.00491328568942 std: 0.0687429116679
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (33, 5)
+average_iteration_loss: 0.00123474716695
+average_polar_accuracy: 0.56864628639
+average_avg_price_change: 0.000468545454545
+average_mres: 0.0501702240847
+var: 0.00495245753446 std: 0.0672245145272
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (38, 2)
+average_iteration_loss: 0.00123012248048
+average_polar_accuracy: 0.568630348322
+average_avg_price_change: 0.00363454545455
+average_mres: 0.0499838540474
+var: 0.00436970989178 std: 0.0643490865478
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (48, 2)
+average_iteration_loss: 0.00123284231874
+average_polar_accuracy: 0.568598907795
+average_avg_price_change: 0.00717854545455
+average_mres: 0.0499653490895
+var: 0.0049274563481 std: 0.06920462627
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (24, 3)
+average_iteration_loss: 0.0012230121156
+average_polar_accuracy: 0.568548994737
+average_avg_price_change: -0.00102595454545
+average_mres: 0.049676392513
+var: 0.00589230802543 std: 0.0749851168104
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (21, 4)
+average_iteration_loss: 0.00123381957621
+average_polar_accuracy: 0.568452561105
+average_avg_price_change: 0.00236654545455
+average_mres: 0.0502728406883
+var: 0.0051313300081 std: 0.0691926899061
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (20, 3)
+average_iteration_loss: 0.00122945127455
+average_polar_accuracy: 0.56827357266
+average_avg_price_change: 0.00439086363636
+average_mres: 0.049801380674
+var: 0.00556629072837 std: 0.0698198970556
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (36, 3)
+average_iteration_loss: 0.00122787763654
+average_polar_accuracy: 0.568175040176
+average_avg_price_change: 0.000839136363636
+average_mres: 0.0500190889959
+var: 0.00342125288543 std: 0.0558687173715
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (31, 4)
+average_iteration_loss: 0.00124617599389
+average_polar_accuracy: 0.568126724358
+average_avg_price_change: 0.00699254545455
+average_mres: 0.0508866303922
+var: 0.00488761724033 std: 0.0682629497505
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (45, 2)
+average_iteration_loss: 0.00122245184386
+average_polar_accuracy: 0.568110509083
+average_avg_price_change: -0.00345077272727
+average_mres: 0.0500643766349
+var: 0.00505324565564 std: 0.0690526753477
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (33, 2)
+average_iteration_loss: 0.00122503388387
+average_polar_accuracy: 0.56783367457
+average_avg_price_change: 0.00415377272727
+average_mres: 0.0498826772791
+var: 0.0050937380289 std: 0.0686104190499
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (28, 4)
+average_iteration_loss: 0.00122873855787
+average_polar_accuracy: 0.567687314681
+average_avg_price_change: 0.0010705
+average_mres: 0.0500841334225
+var: 0.00440242546853 std: 0.0640049977164
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (23, 3)
+average_iteration_loss: 0.00123641989709
+average_polar_accuracy: 0.567671997027
+average_avg_price_change: 0.00146113636364
+average_mres: 0.0500039952948
+var: 0.0042597821625 std: 0.0620530169799
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (32, 6)
+average_iteration_loss: 0.00124014918115
+average_polar_accuracy: 0.567427923074
+average_avg_price_change: 0.00364136363636
+average_mres: 0.0504995493743
+var: 0.00618876345091 std: 0.072780977225
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (43, 2)
+average_iteration_loss: 0.00122837217401
+average_polar_accuracy: 0.567394858908
+average_avg_price_change: -0.00296645454545
+average_mres: 0.0499961132032
+var: 0.00422133145855 std: 0.0608611797455
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (46, 3)
+average_iteration_loss: 0.00123908239564
+average_polar_accuracy: 0.567346767495
+average_avg_price_change: 0.0024715
+average_mres: 0.0502268132157
+var: 0.0041013387856 std: 0.0614915477903
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (39, 3)
+average_iteration_loss: 0.00125919437939
+average_polar_accuracy: 0.567217560103
+average_avg_price_change: 0.00404245454545
+average_mres: 0.0506226249621
+var: 0.00442750375545 std: 0.0645756020469
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (40, 6)
+average_iteration_loss: 0.00123532727147
+average_polar_accuracy: 0.566907925431
+average_avg_price_change: -0.00238286363636
+average_mres: 0.0502490576971
+var: 0.00415359557221 std: 0.0624754501053
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (23, 2)
+average_iteration_loss: 0.00125555268372
+average_polar_accuracy: 0.566534406481
+average_avg_price_change: -0.00466431818182
+average_mres: 0.0505805218878
+var: 0.00445097197386 std: 0.0649163532385
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (47, 5)
+average_iteration_loss: 0.00124129629045
+average_polar_accuracy: 0.566420358339
+average_avg_price_change: 0.00181959090909
+average_mres: 0.0506603894734
+var: 0.00370068172552 std: 0.0584045984796
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (47, 4)
+average_iteration_loss: 0.00123630440294
+average_polar_accuracy: 0.566419698323
+average_avg_price_change: 0.0093575
+average_mres: 0.0506044211904
+var: 0.0049087106968 std: 0.0666220742031
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (40, 3)
+average_iteration_loss: 0.00123427073284
+average_polar_accuracy: 0.565997573147
+average_avg_price_change: 0.00189968181818
+average_mres: 0.0501887809109
+var: 0.00288673238151 std: 0.0527645173174
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (46, 6)
+average_iteration_loss: 0.00122829086089
+average_polar_accuracy: 0.565900373896
+average_avg_price_change: 0.007091
+average_mres: 0.0504134070642
+var: 0.00635263817293 std: 0.0773057255395
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (24, 6)
+average_iteration_loss: 0.00124128889759
+average_polar_accuracy: 0.565884792236
+average_avg_price_change: -0.000257363636364
+average_mres: 0.050314483499
+var: 0.00485592114698 std: 0.0665050250415
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (24, 4)
+average_iteration_loss: 0.00123782123713
+average_polar_accuracy: 0.565818162291
+average_avg_price_change: 0.000915727272727
+average_mres: 0.0501938167626
+var: 0.0045152907205 std: 0.0651908156394
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (49, 5)
+average_iteration_loss: 0.00122938597599
+average_polar_accuracy: 0.565754027207
+average_avg_price_change: 0.00817159090909
+average_mres: 0.050157727027
+var: 0.00646157900787 std: 0.077447797331
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (29, 4)
+average_iteration_loss: 0.00123356456861
+average_polar_accuracy: 0.565736835108
+average_avg_price_change: -0.00231322727273
+average_mres: 0.0500869688615
+var: 0.00367806862696 std: 0.0592525569138
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (43, 6)
+average_iteration_loss: 0.0012243408202
+average_polar_accuracy: 0.565591306838
+average_avg_price_change: 0.0102782272727
+average_mres: 0.0502126545724
+var: 0.00614246095919 std: 0.074016827647
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (25, 5)
+average_iteration_loss: 0.00124083605315
+average_polar_accuracy: 0.565461861841
+average_avg_price_change: 0.000372636363636
+average_mres: 0.0504319331805
+var: 0.00411424493364 std: 0.0626185888713
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (31, 2)
+average_iteration_loss: 0.00123905922927
+average_polar_accuracy: 0.565428797675
+average_avg_price_change: 0.00344622727273
+average_mres: 0.0501783552182
+var: 0.00413049132519 std: 0.0614086908645
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (25, 3)
+average_iteration_loss: 0.0012445475687
+average_polar_accuracy: 0.565169049659
+average_avg_price_change: 0.00303609090909
+average_mres: 0.0502366556874
+var: 0.00308926715471 std: 0.0533561347155
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (41, 2)
+average_iteration_loss: 0.00127343126192
+average_polar_accuracy: 0.565039380257
+average_avg_price_change: -0.00188227272727
+average_mres: 0.0512710779484
+var: 0.00499433769723 std: 0.0677072141832
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (39, 2)
+average_iteration_loss: 0.00125410741002
+average_polar_accuracy: 0.565022082555
+average_avg_price_change: 0.00697063636364
+average_mres: 0.0506723653888
+var: 0.00438451383079 std: 0.0640831509383
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (49, 4)
+average_iteration_loss: 0.00124774968718
+average_polar_accuracy: 0.564859428187
+average_avg_price_change: -5.11363636364e-05
+average_mres: 0.050955741771
+var: 0.00496407148944 std: 0.0676607971622
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (49, 2)
+average_iteration_loss: 0.0012483973397
+average_polar_accuracy: 0.564680584945
+average_avg_price_change: 0.00173127272727
+average_mres: 0.0507802012357
+var: 0.00362112540285 std: 0.0573790100517
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (35, 4)
+average_iteration_loss: 0.00124814381234
+average_polar_accuracy: 0.564438174233
+average_avg_price_change: 0.00146990909091
+average_mres: 0.0510455573343
+var: 0.00494039496413 std: 0.0679772963085
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (33, 3)
+average_iteration_loss: 0.00122995513816
+average_polar_accuracy: 0.56406414047
+average_avg_price_change: 0.00279504545455
+average_mres: 0.0500117347731
+var: 0.00370732308043 std: 0.0597163683504
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (50, 6)
+average_iteration_loss: 0.00124062751649
+average_polar_accuracy: 0.563868355935
+average_avg_price_change: 0.00229095454545
+average_mres: 0.0508185599495
+var: 0.0049705995987 std: 0.0694480811017
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (35, 2)
+average_iteration_loss: 0.00126335275884
+average_polar_accuracy: 0.563770681472
+average_avg_price_change: -0.000938272727273
+average_mres: 0.0511403692188
+var: 0.00475731630872 std: 0.0662911760382
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (30, 5)
+average_iteration_loss: 0.00123860960238
+average_polar_accuracy: 0.563706493587
+average_avg_price_change: -0.00208127272727
+average_mres: 0.0504067359581
+var: 0.00323253769008 std: 0.0549829291202
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (49, 6)
+average_iteration_loss: 0.0012465154405
+average_polar_accuracy: 0.563006161065
+average_avg_price_change: 0.00423390909091
+average_mres: 0.0509224906999
+var: 0.00563308446876 std: 0.0718994854935
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (20, 2)
+average_iteration_loss: 0.0013062414305
+average_polar_accuracy: 0.562421803933
+average_avg_price_change: -0.00808413636364
+average_mres: 0.0514845481944
+var: 0.00289303911163 std: 0.0529968749556
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (45, 3)
+average_iteration_loss: 0.00125651410771
+average_polar_accuracy: 0.562096178391
+average_avg_price_change: 0.00175622727273
+average_mres: 0.0513192226995
+var: 0.00528158031163 std: 0.069844272361
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (20, 5)
+average_iteration_loss: 0.00124360952755
+average_polar_accuracy: 0.5619670106
+average_avg_price_change: 0.00797977272727
+average_mres: 0.0502582490909
+var: 0.00485839478114 std: 0.067504356984
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (50, 3)
+average_iteration_loss: 0.00125487723139
+average_polar_accuracy: 0.561252574855
+average_avg_price_change: 0.00423795454545
+average_mres: 0.0508323184668
+var: 0.00472551413254 std: 0.0655616666685
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (31, 5)
+average_iteration_loss: 0.00123943107637
+average_polar_accuracy: 0.560975172729
+average_avg_price_change: 0.00139063636364
+average_mres: 0.0503715220516
+var: 0.00485370375694 std: 0.0668062083493
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'closeChange', 'gpr', 'highChange', 'lowChange', 'lowHighChange', 'npr', 'openChange', 'openCloseChange', 'outstanding', 'pe', 'profit', 'rev', 'volume', 'volumeChange']
+hidden_size: (41, 4)
+average_iteration_loss: 0.00127682388595
+average_polar_accuracy: 0.553872979744
+average_avg_price_change: -0.00172468181818
+average_mres: 0.0515481581097
+var: 0.00475015658866 std: 0.0673754103132

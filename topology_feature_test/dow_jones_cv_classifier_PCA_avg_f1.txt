@@ -1,0 +1,8 @@
+----------------------------------------------------
+feature_switch: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+feature_selected: ['candleLength', 'candlePos', 'close', 'days_to_next_dividend', 'high', 'low', 'open', 'percent_change_price', 'percent_change_volume_over_last_wk', 'percent_return_next_dividend', 'previous_weeks_volume', 'volume']
+hidden_size: (33, 2)
+average_iteration_loss: 0.562396817484
+average_accuracy: 0.44
+average_avg_f1: 0.430474875389
+pca_n_component: 12

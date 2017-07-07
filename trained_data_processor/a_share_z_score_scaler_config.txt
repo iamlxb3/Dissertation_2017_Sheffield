@@ -1,0 +1,1 @@
+candleLength,candlePos,close,days_to_next_dividend,high,low,open,percent_change_price,percent_change_volume_over_last_wk,percent_return_next_dividend,previous_weeks_volume,volume

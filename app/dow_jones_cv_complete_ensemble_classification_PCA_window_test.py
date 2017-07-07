@@ -39,7 +39,8 @@ from trade_general_funcs import read_pca_component
 # ==========================================================================================================
 # (1.) build classifer
 ensemble_number = 3
-mlp_regressor1 = MlpTradeDataEnsembleClassifier(ensemble_number)
+mode = 'bagging' # adaboost, bagging
+mlp_regressor1 = MlpTradeDataEnsembleClassifier(ensemble_number, mode)
 
 # # TODO ADD SOME regressor TESTING DATA
 # data_folder = os.path.join('dow_jones','dow_jones_regressor_PCA_data')
@@ -135,7 +136,7 @@ for feature_switch_tuple in feature_switch_tuple_list:
             # ----------------------------------------------------------------------------------------------------------------------
             # config hidden layer size
             # ----------------------------------------------------------------------------------------------------------------------
-            hidden_layer_node_min = 20
+            hidden_layer_node_min = 40
             hidden_layer_node_max = 100
             hidden_layer_node_step = 1
             hidden_layer_depth_min = 2

@@ -1,0 +1,2 @@
+bvps,esp,fixedAssets,gpr,holders,liquidAssets,npr,outstanding,pb,pe,perundp,profit,reserved,reservedPerShare,rev,totalAssets,totals,undp,volume
+0,1

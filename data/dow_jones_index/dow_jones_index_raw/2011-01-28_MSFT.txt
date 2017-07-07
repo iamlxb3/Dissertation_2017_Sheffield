@@ -1,0 +1,1 @@
+open,28.02,high,29.46,low,27.45,close,27.75,volume,457318851,percent_change_price,-0.963597,percent_change_volume_over_last_wk,107.8338068,previous_weeks_volume,220040646,next_weeks_open,27.77,next_weeks_close,27.77,percent_change_next_weeks_price,0,days_to_next_dividend,18,percent_return_next_dividend,0.576577
