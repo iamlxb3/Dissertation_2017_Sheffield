@@ -41,6 +41,7 @@ class Ashare:
         self.a_share_samples_dict = collections.defaultdict(lambda: 0)
         if is_stock_set:
             self.stock_set =  set(ts.get_stock_basics().to_dict()['profit'].keys())
+            print ("Got stock set!")
         self.t_attributors = []
         self.f_attributors = []
 

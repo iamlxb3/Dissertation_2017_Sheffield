@@ -66,10 +66,17 @@ class MlpTrade(MultilayerPerceptron):
         self.dev_stock_id_set = []
         # --------------------------------------------------------------------------------------------------------------
 
-    def weekly_predict(self, input_folder, classifier_path, prediction_save_path):
+    def weekly_predict(self, input_folder, classifier_path, prediction_save_path,
+                       standardisation_file_path='', pca_file_path= ''):
         '''weekly predict could be based on regression or classification
         '''
         mlp = pickle.load(open(classifier_path, "rb"))
+
+        if standardisation_file_path:
+            z_score = pickle.load(open(standardisation_file_path, "rb"))
+        if pca_file_path:
+            pca = pickle.load(open(pca_file_path, "rb"))
+
         file_name_list = os.listdir(input_folder)
         prediction_set = []
 
@@ -101,10 +108,17 @@ class MlpTrade(MultilayerPerceptron):
             with open(file_path, 'r') as f:
                 feature_value_list = f.readlines()[0].strip().split(',')[1::2]
                 feature_value_list = [float(x) for x in feature_value_list]
+                feature_array = np.array(feature_value_list).reshape(1, -1)
+
+                # standardisation and PCA
+                if standardisation_file_path:
+                    feature_array = z_score.transform(feature_array)
+                if pca_file_path:
+                    feature_array = pca.transform(feature_array)
+
                 # =================================================================================================
                 # construct features_set and predict
                 # =================================================================================================
-                feature_array = np.array(feature_value_list).reshape(1, -1)
                 pred_value = float(mlp.predict(feature_array)[0])
                 prediction_set.append((stock_id, pred_value))
                 # =================================================================================================

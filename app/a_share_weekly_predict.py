@@ -31,7 +31,7 @@ sys.path.append(data_generator_path)
 # ==========================================================================================================
 # local package import
 # ==========================================================================================================
-from mlp_classifier import MlpClassifier
+from mlp_trade_regressor import MlpTradeRegressor
 from data_preprocessing import DataPp
 from stock_pca import StockPca
 from a_share import Ashare
@@ -49,7 +49,7 @@ from a_share import Ashare
 # a_share1 = Ashare()
 #
 # prediction_folder_set = {'[pred]_a_share_f_engineered_data', '[pred]_a_share_prediction_data',
-#                          '[pred]_a_share_processed_data', '[pred]_a_share_raw_data', '[pred]_a_share_scaled_data'}
+#                          '[pred]_a_share_processed_data', '[pred]_a_share_raw_data'}
 # prediction_folder_list = [os.path.join(parent_folder, 'data', 'a_share', x) for x in prediction_folder_set]
 #
 # a_share1.delete_all_prediction_folder(prediction_folder_list)
@@ -59,7 +59,7 @@ from a_share import Ashare
 # ==========================================================================================================
 # [1.] Download the raw data for prediction
 # ==========================================================================================================
-a_share1 = Ashare()
+a_share1 = Ashare(is_stock_set = True)
 today_obj = datetime.datetime.today().date()
 days_ago_obj = today_obj - datetime.timedelta(days=15)
 days_ago_str = days_ago_obj.strftime("%Y-%m-%d")
@@ -102,36 +102,12 @@ data_cleaner.correct_non_float_feature(input_folder, save_folder)
 
 
 
-# # ==========================================================================================================
-# # [4.b] scaling
-# # ==========================================================================================================
-data_cleaner = DataPp()
-input_folder = '[pred]_a_share_processed_data'
-input_folder = os.path.join(parent_folder, 'data', 'a_share', input_folder)
-save_folder = '[pred]_a_share_scaled_data'
-save_folder = os.path.join(parent_folder, 'data', 'a_share', save_folder)
-features_scale_list = []
-
-
-# pickle load and scale the prediction data
-trained_classifiers_folder = os.path.join(parent_folder, 'trained_data_processor')
-scaler1_name = 'a_share_scaler_0_1'
-scaler1_path = os.path.join(trained_classifiers_folder, scaler1_name)
-scaler_path_list = []
-scaler_path_list.append(scaler1_path)
-
-data_cleaner.pred_scale_data(input_folder, save_folder, scaler_path_list)
-
-# # ============================================================================================================
-
-
-
 
 # # ==========================================================================================================
 # # [4.3] predicion final transfrom, delete the 'priceChange'
 # # ==========================================================================================================
 a_share1 = Ashare()
-input_folder = os.path.join(parent_folder, 'data', 'a_share', '[pred]_a_share_scaled_data')
+input_folder = os.path.join(parent_folder, 'data', 'a_share', '[pred]_a_share_processed_data')
 save_folder = os.path.join(parent_folder, 'data', 'a_share', '[pred]_a_share_prediction_data')
 a_share1.prediction_transfrom(input_folder, save_folder)
 # # ==========================================================================================================
@@ -151,7 +127,7 @@ a_share1.prediction_transfrom(input_folder, save_folder)
 # Build MLP classifier for a-share data, save the mlp to local
 # ==========================================================================================================
 # (1.) build classifer
-mlp_predictor = MlpClassifier()
+mlp_predictor = MlpTradeRegressor()
 
 
 # (2.) predict and save result
@@ -161,13 +137,19 @@ prediction_input_folder = os.path.join('a_share','[pred]_a_share_prediction_data
 prediction_input_folder = os.path.join(parent_folder, 'data', prediction_input_folder)
 
 # classifier_path
-classifier_name = 'a_share_mlp_regressor_v1.0'
+classifier_name = 'a_share_mlp_regressor'
 classifier_path = os.path.join(parent_folder, 'trained_classifiers', classifier_name)
+
+# standardization and PCA
+standardisation_file_path = os.path.join(parent_folder, 'data_processor','z_score')
+pca_file_path = os.path.join(parent_folder,'data_processor','pca')
+
 
 # prediction result save path
 result_name = datetime.datetime.today().date().strftime("%Y-%m-%d")
 result_name = 'a_share_' + result_name + '_prediction.txt'
 prediction_save_path = os.path.join(parent_folder, 'prediction', 'a_share', result_name)
 
-mlp_predictor.weekly_predict(prediction_input_folder, classifier_path, prediction_save_path)
+mlp_predictor.weekly_predict(prediction_input_folder, classifier_path, prediction_save_path,
+                             standardisation_file_path, pca_file_path)
 # ==========================================================================================================
