@@ -213,7 +213,7 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
             sys.exit()
 
         with open(path, 'w', encoding='utf-8') as f:
-            for tuple1 in topology_list:
+            for i, tuple1 in enumerate(topology_list):
                 feature_switch = str(tuple1[0])
                 feature_selected = str(tuple1[1])
                 hidden_size = str(tuple1[2])
@@ -222,6 +222,7 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
                 avg_avg_f1 = str(tuple1[5])
                 pca_n_component = str(tuple1[6])
                 f.write('----------------------------------------------------\n')
+                f.write('id: {}\n'.format(i))
                 f.write('feature_switch: {}\n'.format(feature_switch))
                 f.write('feature_selected: {}\n'.format(feature_selected))
                 f.write('hidden_size: {}\n'.format(hidden_size))

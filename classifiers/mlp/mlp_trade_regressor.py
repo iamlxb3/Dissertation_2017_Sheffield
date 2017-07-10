@@ -352,7 +352,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
 
                 # save file
                 with open(new_path, 'w', encoding='utf-8') as f:
-                    for tuple1 in topology_list:
+                    for i,tuple1 in enumerate(topology_list):
                         feature_switch = str(tuple1[0])
                         feature_selected = str(tuple1[1])
                         hidden_size = str(tuple1[2])
@@ -366,6 +366,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                         # var = str(tuple1[7])
                         # std = str(tuple1[8])
                         f.write('----------------------------------------------------\n')
+                        f.write('id: {}\n'.format(i))
                         f.write('feature_switch: {}\n'.format(feature_switch))
                         f.write('feature_selected: {}\n'.format(feature_selected))
                         f.write('hidden_size: {}\n'.format(hidden_size))
@@ -386,7 +387,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                                    key=lambda x: x[-3])
             # write to file
             with open(path, 'w', encoding='utf-8') as f:
-                for tuple1 in topology_list:
+                for i, tuple1 in enumerate(topology_list):
                     feature_switch = str(tuple1[0])
                     feature_selected = str(tuple1[1])
                     hidden_size = str(tuple1[2])
@@ -399,6 +400,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                     # var = str(tuple1[7])
                     # std = str(tuple1[8])
                     f.write('----------------------------------------------------\n')
+                    f.write('id: {}\n'.format(i))
                     f.write('feature_switch: {}\n'.format(feature_switch))
                     f.write('feature_selected: {}\n'.format(feature_selected))
                     f.write('hidden_size: {}\n'.format(hidden_size))
@@ -416,7 +418,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                                key=lambda x: x[-4], reverse=True)
             # write to file
             with open(path, 'w', encoding='utf-8') as f:
-                for tuple1 in topology_list:
+                for i, tuple1 in enumerate(topology_list):
                     feature_switch = str(tuple1[0])
                     feature_selected = str(tuple1[1])
                     hidden_size = str(tuple1[2])
@@ -429,6 +431,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                     # var = str(tuple1[7])
                     # std = str(tuple1[8])
                     f.write('----------------------------------------------------\n')
+                    f.write('id: {}\n'.format(i))
                     f.write('feature_switch: {}\n'.format(feature_switch))
                     f.write('feature_selected: {}\n'.format(feature_selected))
                     f.write('hidden_size: {}\n'.format(hidden_size))

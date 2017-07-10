@@ -355,8 +355,9 @@ class MlpTrade(MultilayerPerceptron):
 
         window_size = date_num - shifting_size*shift_num
 
-        if shifting_size*shift_num >= window_size:
-            print("Training set too small!!")
+        if shifting_size >= (1/2)*window_size:
+            print("Training set too small!! Training set should be at least 2 times as big as testing set")
+            print ("Training set size: {}, testing set size: {}".format(window_size, shifting_size))
             sys.exit()
         #
 
