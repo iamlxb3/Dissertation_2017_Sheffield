@@ -352,7 +352,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
 
                 # save file
                 with open(new_path, 'w', encoding='utf-8') as f:
-                    for tuple1 in topology_list:
+                    for i,tuple1 in enumerate(topology_list):
                         feature_switch = str(tuple1[0])
                         feature_selected = str(tuple1[1])
                         hidden_size = str(tuple1[2])
@@ -366,6 +366,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                         # var = str(tuple1[7])
                         # std = str(tuple1[8])
                         f.write('----------------------------------------------------\n')
+                        f.write('id: {}\n'.format(i))
                         f.write('feature_switch: {}\n'.format(feature_switch))
                         f.write('feature_selected: {}\n'.format(feature_selected))
                         f.write('hidden_size: {}\n'.format(hidden_size))
@@ -386,7 +387,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                                    key=lambda x: x[-3])
             # write to file
             with open(path, 'w', encoding='utf-8') as f:
-                for tuple1 in topology_list:
+                for i, tuple1 in enumerate(topology_list):
                     feature_switch = str(tuple1[0])
                     feature_selected = str(tuple1[1])
                     hidden_size = str(tuple1[2])
@@ -399,6 +400,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                     # var = str(tuple1[7])
                     # std = str(tuple1[8])
                     f.write('----------------------------------------------------\n')
+                    f.write('id: {}\n'.format(i))
                     f.write('feature_switch: {}\n'.format(feature_switch))
                     f.write('feature_selected: {}\n'.format(feature_selected))
                     f.write('hidden_size: {}\n'.format(hidden_size))
@@ -416,7 +418,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                                key=lambda x: x[-4], reverse=True)
             # write to file
             with open(path, 'w', encoding='utf-8') as f:
-                for tuple1 in topology_list:
+                for i, tuple1 in enumerate(topology_list):
                     feature_switch = str(tuple1[0])
                     feature_selected = str(tuple1[1])
                     hidden_size = str(tuple1[2])
@@ -429,6 +431,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                     # var = str(tuple1[7])
                     # std = str(tuple1[8])
                     f.write('----------------------------------------------------\n')
+                    f.write('id: {}\n'.format(i))
                     f.write('feature_switch: {}\n'.format(feature_switch))
                     f.write('feature_selected: {}\n'.format(feature_selected))
                     f.write('hidden_size: {}\n'.format(hidden_size))
@@ -466,23 +469,30 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
             top_n_pc_list = [[y[i] for y in x] for x in self.tp_cv_avg_price_change_list]
             cv_avg_price_change_list = [np.average(x) for x in top_n_pc_list]
             pca_n_component_list = [x for x in self.tp_cv_pca_n_component_list]
+            #
+            cv_top_n_pp_list = [x[i] for x in self.tp_cv_pc_pos_percent_list]
+            #
 
             topology_list = list(zip(self.feature_switch_list, self.feature_selected_list,
-                                     self.hidden_size_list, cv_avg_price_change_list, pca_n_component_list))
+                                     self.hidden_size_list, cv_avg_price_change_list, pca_n_component_list,
+                                     cv_top_n_pp_list))
             sorted_topology_list = sorted(topology_list,
-                                          key=lambda x: x[-2], reverse=True)
+                                          key=lambda x: x[-3], reverse=True)
 
             top_feature_switch = sorted_topology_list[0][0]
             top_hidden_size = sorted_topology_list[0][2]
             top_cv_avg_price_change = sorted_topology_list[0][3]
             top_pca_n_component = sorted_topology_list[0][4]
+            top_n_pp = sorted_topology_list[0][5]
 
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             print("{}-TOP-BEST".format(include_top))
             print("cv_avg_price_change: ", top_cv_avg_price_change)
+            print("top_n_pp: ", top_n_pp)
             print("feature_switch: ", top_feature_switch)
             print("hidden_size: ", top_hidden_size)
             print("pca_n_component: ", top_pca_n_component)
+
 
     # ------------------------------------------------------------------------------------------------------------------
 

@@ -271,6 +271,8 @@ class DataPp():
 
 
     def standardisation_fit_transfrom(self, fit_data, obj_data, standardisation_file_path =''):
+        fit_data = np.array(fit_data)
+        obj_data = np.array(obj_data)
 
         # intialize sk-learn preprocessing
         scaler = preprocessing.StandardScaler()
@@ -293,6 +295,9 @@ class DataPp():
         #
 
     def PCA_fit_transfrom(self, fit_data, obj_data, pca_file_path = '', pca_n_component = None):
+        fit_data = np.array(fit_data)
+        obj_data = np.array(obj_data)
+
         if not pca_n_component:
             pca_n_component = len(fit_data[0])
         from sklearn.decomposition import PCA
