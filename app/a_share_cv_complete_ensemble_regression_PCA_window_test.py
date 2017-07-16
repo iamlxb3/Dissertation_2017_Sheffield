@@ -157,15 +157,11 @@ for feature_switch_tuple in feature_switch_tuple_list:
                                                  , is_window_shift = True)
             # ======================================================================================================================
 
-<<<<<<< HEAD
+
             mlp_regressor1.cv_r_save_feature_topology_result(rmse_result_path, key = 'rmse')
             mlp_regressor1.cv_r_save_feature_topology_result(avg_pc_result_path, key = 'avg_pc')
             mlp_regressor1.cv_r_save_feature_topology_result(polarity_result_path, key = 'polar')
-=======
-        mlp_regressor1.cv_r_save_feature_topology_result(rmse_result_path, key = 'rmse')
-        mlp_regressor1.cv_r_save_feature_topology_result(avg_pc_result_path, key = 'avg_pc')
-        mlp_regressor1.cv_r_save_feature_topology_result(polarity_result_path, key = 'polar')
->>>>>>> origin/master
+
         # ==========================================================================================================
         # ==========================================================================================================
         # ==========================================================================================================
