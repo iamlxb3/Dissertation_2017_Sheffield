@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0357bc33-e686-4051-9290-0338f55c9c47" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/Dissertation_2017_Sheffield.iml" afterPath="$PROJECT_DIR$/.idea/Dissertation_2017_Sheffield.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/a_share_cv_complete_classifier_PCA_window_test.py" afterPath="$PROJECT_DIR$/app/a_share_cv_complete_classifier_PCA_window_test.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classifiers/mlp/mlp_trade.py" afterPath="$PROJECT_DIR$/classifiers/mlp/mlp_trade.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classifiers/mlp/mlp_trade_classifier.py" afterPath="$PROJECT_DIR$/classifiers/mlp/mlp_trade_classifier.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classifiers/mlp/mlp_trade_regressor.py" afterPath="$PROJECT_DIR$/classifiers/mlp/mlp_trade_regressor.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_processor/data_preprocessing.py" afterPath="$PROJECT_DIR$/data_processor/data_preprocessing.py" />
     </list>
     <ignored mask="*.txt" />
     <ignored mask="*.log" />
@@ -66,7 +59,7 @@
       <file leaf-file-name="a_share_cv_complete_ensemble_regression_PCA_window_test.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_ensemble_regression_PCA_window_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="661">
+            <state relative-caret-position="850">
               <caret line="155" column="44" lean-forward="false" selection-start-line="155" selection-start-column="44" selection-end-line="155" selection-end-column="44" />
               <folding />
             </state>
@@ -882,7 +875,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_ensemble_regression_PCA_window_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="661">
+        <state relative-caret-position="850">
           <caret line="155" column="44" lean-forward="false" selection-start-line="155" selection-start-column="44" selection-end-line="155" selection-end-column="44" />
           <folding />
         </state>
