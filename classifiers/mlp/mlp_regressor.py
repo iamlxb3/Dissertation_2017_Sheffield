@@ -61,14 +61,19 @@ class MlpRegressor_P(MultilayerPerceptron):
         # --------------------------------------------------------------------------------------------------------------
 
 
-    def set_regressor(self, hidden_layer_sizes, tol=1e-8, learning_rate_init=0.001):
+    def set_regressor(self, hidden_layer_sizes, tol=1e-8, learning_rate_init=0.0001):
         self.hidden_size_list.append(hidden_layer_sizes)
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
         self.mlp_regressor = MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
                                           tol=tol, learning_rate_init=learning_rate_init,
                                           max_iter=1000, random_state=1)
 
-
+    def set_regressor_test(self, hidden_layer_sizes, tol=1e-8, learning_rate_init=0.0001, random_state=1):
+        self.hidden_size_list.append(hidden_layer_sizes)
+        self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
+        self.mlp_regressor = MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
+                                          tol=tol, learning_rate_init=learning_rate_init,
+                                          max_iter=1000, random_state=random_state)
     # ------------------------------------------------------------------------------------------------------------------
 
 
@@ -83,3 +88,6 @@ class MlpRegressor_P(MultilayerPerceptron):
         if is_production:
             print("classifier for production saved to {} successfully!".format(save_clsfy_path))
 
+    def regressor_train_test(self, training_set, training_value_set, save_clsfy_path="mlp_trade_regressor", is_production=False):
+        self.mlp_regressor.fit(training_set, training_value_set)
+        return self.mlp_regressor.n_iter_, self.mlp_regressor.loss_
