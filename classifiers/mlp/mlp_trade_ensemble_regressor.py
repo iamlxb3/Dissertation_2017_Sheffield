@@ -54,12 +54,12 @@ class MlpTradeEnsembleRegressor(MlpTradeRegressor):
         self.ensemble_number =  ensemble_number
         self.mode = mode
 
-    def set_regressor(self, hidden_layer_sizes, tol=1e-8, learning_rate_init=0.001, mode = 'bagging'):
+    def set_regressor(self, hidden_layer_sizes, tol=1e-8, learning_rate_init=0.001, random_state = 1):
         self.hidden_size_list.append(hidden_layer_sizes)
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
         temp_regressor = MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
                                           tol=tol, learning_rate_init=learning_rate_init,
-                                          max_iter=10000, random_state=1)
+                                          max_iter=10000, random_state=random_state)
         if self.mode == 'bagging':
             print ("Set bagging EnsembleRegressor!")
             self.mlp_regressor = BaggingRegressor(base_estimator=temp_regressor, n_estimators=self.ensemble_number, verbose=1)
@@ -77,11 +77,12 @@ class MlpTradeEnsembleRegressor(MlpTradeRegressor):
         self.mlp_regressor.fit(self.training_set, self.training_value_set)
         n_iter_list = [x.n_iter_ for x in self.mlp_regressor.estimators_]
         loss_list = [x.loss_ for x in self.mlp_regressor.estimators_]
-        self.iteration_loss_list.append((np.average(n_iter_list), np.average(loss_list)))
+        #self.iteration_loss_list.append((np.average(n_iter_list), np.average(loss_list)))
         pickle.dump(self.mlp_regressor, open(save_clsfy_path, "wb"))
 
         if is_production:
             print("classifier for production saved to {} successfully!".format(save_clsfy_path))
+        return np.average(n_iter_list), np.average(loss_list)
 
 
 
@@ -110,10 +111,10 @@ class MlpTradeEnsembleRegressor(MlpTradeRegressor):
         polar_percent = polar_count / len(pred_value_list)
         #
 
-        self.mres_list.append(mrse)
-        self.avg_price_change_list.append(avg_price_change_tuple)
-        self.polar_accuracy_list.append(polar_percent)
-        self.var_std_list.append((var_tuple, std_tuple))
+        # self.mres_list.append(mrse)
+        # self.avg_price_change_list.append(avg_price_change_tuple)
+        # self.polar_accuracy_list.append(polar_percent)
+        # self.var_std_list.append((var_tuple, std_tuple))
 
         # <uncomment for debugging>
         if not is_cv:
@@ -129,5 +130,6 @@ class MlpTradeEnsembleRegressor(MlpTradeRegressor):
             # print("Testing complete! Testing Set size: {}".format(len(self.r_dev_value_set)))
             # <uncomment for debugging>
 
+        return mrse, avg_price_change_tuple, polar_percent
     # ------------------------------------------------------------------------------------------------------------------
 

@@ -38,7 +38,7 @@ from trade_general_funcs import read_pca_component
 # Build MLP regressor for a-share data, save the mlp to local
 # ==========================================================================================================
 # (1.) build classifer
-ensemble_number = 10
+ensemble_number = 3
 mode = 'adaboost' #adaboost, bagging
 mlp_regressor1 = MlpTradeEnsembleRegressor(ensemble_number, 'adaboost')
 
@@ -88,6 +88,8 @@ other_config_dict['is_PCA_feature_degradation'] = True
 pca_n_component = read_pca_component(data_folder)
 pca_n_component_list = sorted([i for i in range(pca_n_component + 1) if i != 0 ], reverse = True)
 
+#(5.) random state for MLP
+other_config_dict['random_state_num'] = 2
 
 # (3.) topology_result_path
 rmse_result_path = os.path.join(parent_folder, 'topology_feature_test',
