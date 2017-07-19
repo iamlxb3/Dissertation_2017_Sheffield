@@ -85,6 +85,10 @@ other_config_dict['is_PCA_feature_degradation'] = True
 pca_n_component = read_pca_component(data_folder)
 pca_n_component_list = sorted([i for i in range(pca_n_component + 1) if i != 0 ], reverse = True)
 
+# (5.) random state
+other_config_dict['random_state_num'] = 5
+
+
 # (6.) test for the size of the traning set
 other_config_dict['training_set_percent'] = 1.0
 
