@@ -327,7 +327,7 @@ class MlpTrade(MultilayerPerceptron):
         print("Create validation_dict sucessfully! {}-fold cross validation".format(validation_num))
 
     def create_train_dev_vdict_window_shift(self, samples_feature_list, samples_value_list,
-                               date_str_list, stock_id_list, is_cv=True, shifting_size_percent = 0.1, shift_num = 5,
+                                            date_str_list, stock_id_list, is_cv=True, shifting_size_percent = 0.1, shift_num = 5,
                                             priority = 'training_set', is_standardisation = True, is_PCA = True,
                                             pca_n_component = None, training_set_percent = 1.0):
 

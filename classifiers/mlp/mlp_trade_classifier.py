@@ -13,6 +13,7 @@ import collections
 import numpy as np
 import sys
 import os
+import random
 # ==========================================================================================================
 
 
@@ -48,6 +49,10 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
     def __init__(self):
         super().__init__()
 
+        self.rsavg_average_f1_list = []
+        self.rsavg_accuracy_list = []
+        self.rsavg_iteration_list = []
+        self.rsavg_loss_list = []
 
     #   ====================================================================================================================
     #   CROSS VALIDATION FUNCTIONS FOR CLASSIFICATION
@@ -98,6 +103,9 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
             shifting_size_percent = other_config_dict['shifting_size_percent']
             shift_num = other_config_dict['shift_num']
 
+        # (6.) random state
+        random_state_num = other_config_dict['random_state_num']
+
         # (6.) test for the size of the traning set
         training_set_percent = other_config_dict['training_set_percent']
         # --------------------------------------------------------------------------------------------------------------
@@ -135,21 +143,38 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
             self._update_feature_switch_list(i)
 
             # (a.) clear the evaluation list for one hidden layer topology
-            self.iteration_loss_list = []
             self.average_f1_list = []
             self.accuracy_list = []
+            self.iteration_loss_list = []
             #
 
             # (b.) train and dev
-            self.set_mlp_clf(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol=tol)
+
+            random_pool = [x for x in range(9999)]
+            random.seed(1)
+            random_list = random.sample(random_pool, random_state_num)
+
 
             if is_window_shift:
                 # (b.1) [window-shifting-n-fold]
                 random_seed = 'window_shift'
                 for shift in self.validation_dict[random_seed].keys():
                     self.trade_rs_cv_load_train_dev_data(random_seed, shift)
-                    self.clf_train(save_clsfy_path=clf_path)
-                    self.clf_dev(save_clsfy_path=clf_path, is_cv=True)
+
+                    # clear
+                    self.rsavg_average_f1_list = []
+                    self.rsavg_accuracy_list = []
+                    self.rsavg_iteration_list = []
+                    self.rsavg_loss_list = []
+
+                    for rs_i, random_state in enumerate(random_list):
+                        print ("shift:{}, random_state: {}".format(shift, random_state))
+                        self.set_mlp_clf(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol=tol,
+                                         random_state = random_state)
+                        n_iter, loss = self.clf_train(save_clsfy_path=clf_path)
+                        average_f1, accuracy = self.clf_dev(save_clsfy_path=clf_path, is_cv=True, is_return=True)
+                        self.save_evaluate_value_per_random_state(rs_i, average_f1, accuracy, n_iter, loss)
+                    self.save_average_evaluate_value()
             else:
                 # (b.2) [random-n-fold]-random inside, make sure each date has all the
                 for random_seed in random_seed_list:
@@ -269,4 +294,19 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
         print("top_pca_n_component: ", top_pca_n_component)
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 
+    def save_evaluate_value_per_random_state(self, rs_i, average_f1, accuracy, n_iter, loss):
+        if rs_i == 0:
+            if self.rsavg_average_f1_list or self.rsavg_accuracy_list or self.rsavg_loss_list or \
+                    self.rsavg_iteration_list:
+                print ("rsavg_average_f1_list, ... are not clear")
+                sys.exit()
+        self.rsavg_average_f1_list.append(average_f1)
+        self.rsavg_accuracy_list.append(accuracy)
+        self.rsavg_iteration_list.append(n_iter)
+        self.rsavg_loss_list.append(loss)
 
+
+    def save_average_evaluate_value(self):
+        self.iteration_loss_list.append((np.average(self.rsavg_iteration_list), np.average(self.rsavg_loss_list)))
+        self.average_f1_list.append(np.average(self.rsavg_average_f1_list))
+        self.accuracy_list.append(np.average(self.rsavg_accuracy_list))

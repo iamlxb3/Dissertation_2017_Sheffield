@@ -14,6 +14,7 @@ import re
 import math
 import numpy as np
 import pickle
+import random
 from sklearn.neural_network import MLPRegressor
 # ==========================================================================================================
 
@@ -61,6 +62,13 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
         self.var_std_list = []
         self.avg_price_change_list = []
         self.polar_accuracy_list = []
+
+        self.rsavg_iteration_loss_list = []
+        self.rsavg_mres_list = []
+        self.rsavg_avg_price_change_list = []
+        self.rsavg_polar_accuracy_list = []
+        self.rsavg_iteration_list = []
+        self.rsavg_loss_list = []
         # --------------------------------------------------------------------------------------------------------------
 
 
@@ -105,10 +113,11 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
         polar_percent = polar_count / len(pred_value_list)
         #
 
-        self.mres_list.append(mrse)
-        self.avg_price_change_list.append(avg_price_change_tuple)
-        self.polar_accuracy_list.append(polar_percent)
-        self.var_std_list.append((var_tuple, std_tuple))
+
+        # self.mres_list.append(mrse)
+        # self.avg_price_change_list.append(avg_price_change_tuple)
+        # self.polar_accuracy_list.append(polar_percent)
+        # self.var_std_list.append((var_tuple, std_tuple))
 
         # <uncomment for debugging>
         if not is_cv:
@@ -124,7 +133,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
             # print("Testing complete! Testing Set size: {}".format(len(self.r_dev_value_set)))
             # <uncomment for debugging>
     # ------------------------------------------------------------------------------------------------------------------
-
+        return mrse, avg_price_change_tuple, polar_percent
 
     def regressor_dev_test(self, dev_set, dev_value_set, dev_date_set, dev_stock_id_set, save_clsfy_path="mlp_trade_regressor", is_cv=False, include_top_list = None):
         # test mode
@@ -218,6 +227,11 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
         else:
             shifting_size_percent = other_config_dict['shifting_size_percent']
             shift_num = other_config_dict['shift_num']
+
+
+        # (6.) random state
+        random_state_num = other_config_dict['random_state_num']
+
         # --------------------------------------------------------------------------------------------------------------
 
 
@@ -262,7 +276,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
             self.var_std_list = []
 
             # (b.) 10-cross-validation train and test
-            self.set_regressor(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol=tol)
+
 
             # random inside, make sure each date has all the
             if is_window_shift:
@@ -270,8 +284,29 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                 random_seed = 'window_shift'
                 for shift in self.validation_dict[random_seed].keys():
                     self.trade_rs_cv_load_train_dev_data(random_seed, shift)
-                    self.regressor_train(save_clsfy_path=clf_path)
-                    self.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
+
+                    random_pool = [x for x in range(9999)]
+                    random.seed(1)
+                    random_list = random.sample(random_pool, random_state_num)
+
+                    # clear
+                    self.rsavg_avg_price_change_list = []
+                    self.rsavg_iteration_list = []
+                    self.rsavg_loss_list = []
+                    self.rsavg_mres_list = []
+                    self.rsavg_polar_accuracy_list = []
+
+                    # Run MLP with different initial weight for several times!
+                    for rs_i, random_state in enumerate(random_list):
+                        print ("shift:{}, random_state: {}".format(shift, random_state))
+                        self.set_regressor(hidden_layer_sizes, learning_rate_init=learning_rate_init, tol=tol,
+                                           random_state=random_state)
+                        n_iter, loss = self.regressor_train(save_clsfy_path=clf_path)
+                        mrse, avg_price_change_tuple, polar_percent = self.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
+                        self.save_evaluate_value_per_random_state(rs_i, mrse, avg_price_change_tuple, polar_percent, n_iter, loss)
+                    #
+
+                    self.save_average_evaluate_value()
             else:
                 for random_seed in random_seed_list:
                     for cv_index in self.validation_dict[random_seed].keys():
@@ -280,7 +315,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                         self.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
             #
 
-            # (c.) save the 10-cross-valiation evaluate result for each topology
+        # (c.) save the 10-cross-valiation evaluate result for each topology
             self.tp_cv_iteration_loss_list.append(self.iteration_loss_list)
             self.tp_cv_mres_list.append(self.mres_list)
             self.tp_cv_avg_price_change_list.append(self.avg_price_change_list)
@@ -535,3 +570,23 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
 
     # ------------------------------------------------------------------------------------------------------------------
 
+    def save_evaluate_value_per_random_state(self, i, mrse, avg_price_change_tuple, polar_percent, n_iter, loss):
+        if i == 0:
+            if self.rsavg_avg_price_change_list or self.rsavg_iteration_list or \
+                    self.rsavg_loss_list or self.rsavg_mres_list or self.rsavg_polar_accuracy_list:
+                print ("rs list should be empty!")
+                sys.exit()
+
+        self.rsavg_avg_price_change_list.append(avg_price_change_tuple)
+        self.rsavg_iteration_list.append(n_iter)
+        self.rsavg_loss_list.append(loss)
+        self.rsavg_mres_list.append(mrse)
+        self.rsavg_polar_accuracy_list.append(polar_percent)
+
+
+    def save_average_evaluate_value(self):
+        self.mres_list.append(np.average(self.rsavg_mres_list))
+        avg_price_change_temp = tuple([np.average(x) for x in list(zip(*self.rsavg_avg_price_change_list))])
+        self.avg_price_change_list.append(avg_price_change_temp)
+        self.polar_accuracy_list.append(np.average(self.rsavg_polar_accuracy_list))
+        self.iteration_loss_list.append((np.average(self.rsavg_iteration_list), np.average(self.rsavg_loss_list)))

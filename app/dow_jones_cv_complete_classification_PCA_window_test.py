@@ -66,6 +66,7 @@ data_folder = os.path.join(parent_folder, 'data', data_folder)
 other_config_dict = {}
 # (1.) mlp config
 other_config_dict['data_per'] = 1.0
+other_config_dict['training_set_percent'] = 1.0  # test the influence of the size of the training set
 other_config_dict['learning_rate_init'] = 0.0001
 other_config_dict['tol'] = 1e-6
 # clsfy
@@ -83,6 +84,8 @@ other_config_dict['is_PCA_feature_degradation'] = True
 pca_n_component = read_pca_component(data_folder)
 pca_n_component_list = sorted([i for i in range(pca_n_component + 1) if i != 0 ], reverse = True)
 
+# (5.) random state num
+other_config_dict['random_state_num'] = 5
 
 # (3.) topology_result_path
 avg_f1_result_path = os.path.join(parent_folder, 'topology_feature_test',
