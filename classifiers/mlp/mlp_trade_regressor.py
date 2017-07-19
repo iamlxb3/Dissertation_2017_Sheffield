@@ -123,9 +123,48 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
             pass
             # print("Testing complete! Testing Set size: {}".format(len(self.r_dev_value_set)))
             # <uncomment for debugging>
-
     # ------------------------------------------------------------------------------------------------------------------
 
+
+    def regressor_dev_test(self, dev_set, dev_value_set, dev_date_set, dev_stock_id_set, save_clsfy_path="mlp_trade_regressor", is_cv=False, include_top_list = None):
+        # test mode
+
+
+        if not include_top_list:
+            include_top_list = [1]
+        mlp_regressor = self.mlp_regressor
+        pred_value_list = np.array(mlp_regressor.predict(dev_set))
+        actual_value_list = np.array(dev_value_set)
+        mrse = calculate_mrse(actual_value_list, pred_value_list)
+        date_list = dev_date_set
+        stock_id_list = dev_stock_id_set
+
+        avg_price_change_tuple, var_tuple, std_tuple = get_avg_price_change(pred_value_list, actual_value_list,
+                                                                                  date_list, stock_id_list,
+                                                                                  include_top_list=
+                                                                                  include_top_list)
+
+        # count how many predicted value has the same polarity as actual value
+        polar_list = [1 for x, y in zip(pred_value_list, actual_value_list) if x * y >= 0]
+        polar_count = len(polar_list)
+        polar_percent = polar_count / len(pred_value_list)
+        #
+
+        # <uncomment for debugging>
+        if not is_cv:
+            print("----------------------------------------------------------------------------------------")
+            print("actual_value_list, ", actual_value_list)
+            print("pred_value_list, ", pred_value_list)
+            print("polarity: {}".format(polar_percent))
+            print("mrse: {}".format(mrse))
+            print("avg_price_change: {}".format(avg_price_change_tuple))
+            print("----------------------------------------------------------------------------------------")
+        else:
+            pass
+            # print("Testing complete! Testing Set size: {}".format(len(self.r_dev_value_set)))
+            # <uncomment for debugging>
+    # ------------------------------------------------------------------------------------------------------------------
+        return mrse, avg_price_change_tuple[0], polar_percent
 
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -469,23 +508,30 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
             top_n_pc_list = [[y[i] for y in x] for x in self.tp_cv_avg_price_change_list]
             cv_avg_price_change_list = [np.average(x) for x in top_n_pc_list]
             pca_n_component_list = [x for x in self.tp_cv_pca_n_component_list]
+            #
+            cv_top_n_pp_list = [x[i] for x in self.tp_cv_pc_pos_percent_list]
+            #
 
             topology_list = list(zip(self.feature_switch_list, self.feature_selected_list,
-                                     self.hidden_size_list, cv_avg_price_change_list, pca_n_component_list))
+                                     self.hidden_size_list, cv_avg_price_change_list, pca_n_component_list,
+                                     cv_top_n_pp_list))
             sorted_topology_list = sorted(topology_list,
-                                          key=lambda x: x[-2], reverse=True)
+                                          key=lambda x: x[-3], reverse=True)
 
             top_feature_switch = sorted_topology_list[0][0]
             top_hidden_size = sorted_topology_list[0][2]
             top_cv_avg_price_change = sorted_topology_list[0][3]
             top_pca_n_component = sorted_topology_list[0][4]
+            top_n_pp = sorted_topology_list[0][5]
 
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             print("{}-TOP-BEST".format(include_top))
             print("cv_avg_price_change: ", top_cv_avg_price_change)
+            print("top_n_pp: ", top_n_pp)
             print("feature_switch: ", top_feature_switch)
             print("hidden_size: ", top_hidden_size)
             print("pca_n_component: ", top_pca_n_component)
+
 
     # ------------------------------------------------------------------------------------------------------------------
 
