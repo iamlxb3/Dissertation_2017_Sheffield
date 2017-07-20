@@ -70,7 +70,7 @@ class MlpClassifier_P(MultilayerPerceptron):
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
         self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
                                      tol=tol, learning_rate_init=learning_rate_init,
-                                     max_iter=2000, random_state=random_state, verbose=verbose)
+                                     max_iter=10000, random_state=random_state, verbose=verbose)
 
 
 

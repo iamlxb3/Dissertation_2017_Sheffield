@@ -307,6 +307,20 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
 
 
     def save_average_evaluate_value(self):
+
+        all = list(zip(self.rsavg_loss_list, self.rsavg_iteration_list, self.rsavg_average_f1_list,
+                       self.rsavg_accuracy_list))
+        sorted_all = sorted(all, key = lambda x:x[0])
+        unzip_all = list(zip(*sorted_all))
+
+        keep_num = 3
+        self.rsavg_loss_list = unzip_all[0][0:keep_num]
+        self.rsavg_iteration_list = unzip_all[1][0:keep_num]
+        self.rsavg_average_f1_list = unzip_all[2][0:keep_num]
+        self.rsavg_accuracy_list = unzip_all[3][0:keep_num]
+
+
+
         self.iteration_loss_list.append((np.average(self.rsavg_iteration_list), np.average(self.rsavg_loss_list)))
         self.average_f1_list.append(np.average(self.rsavg_average_f1_list))
         self.accuracy_list.append(np.average(self.rsavg_accuracy_list))

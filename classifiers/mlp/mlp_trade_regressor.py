@@ -585,6 +585,22 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
 
 
     def save_average_evaluate_value(self):
+
+        # --------------------------------------------------------------------------------------------------------------
+        # sort by loss, keep N results of different initial weight
+        # --------------------------------------------------------------------------------------------------------------
+        all = list(zip(self.rsavg_loss_list, self.rsavg_iteration_list, self.rsavg_polar_accuracy_list,
+                       self.rsavg_avg_price_change_list, self.rsavg_mres_list))
+        sorted_all = sorted(all, key = lambda x:x[0])
+        unzip_all = list(zip(*sorted_all))
+        keep_num = 3
+        self.rsavg_loss_list = unzip_all[0][0:keep_num]
+        self.rsavg_iteration_list = unzip_all[1][0:keep_num]
+        self.rsavg_polar_accuracy_list = unzip_all[2][0:keep_num]
+        self.rsavg_avg_price_change_list = unzip_all[3][0:keep_num]
+        self.rsavg_mres_list = unzip_all[4][0:keep_num]
+        # --------------------------------------------------------------------------------------------------------------
+
         self.mres_list.append(np.average(self.rsavg_mres_list))
         avg_price_change_temp = tuple([np.average(x) for x in list(zip(*self.rsavg_avg_price_change_list))])
         self.avg_price_change_list.append(avg_price_change_temp)
