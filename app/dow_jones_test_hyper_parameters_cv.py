@@ -43,10 +43,10 @@ from trade_general_funcs import read_pca_component
 # ==========================================================================================================
 # Build MLP classifier for a-share data, save the mlp to local
 # ==========================================================================================================
-print ("Build MLP regressor for a-share data!")
+print ("Build MLP regressor for dow-jones data!")
 # (1.) build classifer
 mlp_regressor1 = MlpTradeRegressor()
-clsfy_name = 'a_share_mlp_cv_PCA_regressor'
+clsfy_name = 'dow_jone_hyper_parameter_MLP_regressor'
 clf_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
 
 
@@ -55,7 +55,7 @@ data_per = 1.0 # the percentage of data using for training and testing
 dev_per = 0.0 # the percentage of data using for developing
 
 
-input_folder = os.path.join('a_share','a_share_regression_data')
+input_folder = os.path.join('dow_jones_index','dow_jones_index_regression')
 input_folder = os.path.join(parent_folder, 'data', input_folder)
 feature_switch_tuple_all_1 = get_full_feature_switch_tuple(input_folder)
 
@@ -118,7 +118,6 @@ hyper_parameter_size = len(hyper_parameter_list)
 print ("hyper_parameter_size: ", hyper_parameter_size)
 
 for i, (hidden_layer_sizes, learning_rate_init, learning_rate, early_stopping) in enumerate(hyper_parameter_list):
-
     tol = 1e-10
     n_iter_list = []
     loss_list = []
@@ -144,13 +143,12 @@ for i, (hidden_layer_sizes, learning_rate_init, learning_rate, early_stopping) i
         for shift in mlp_regressor1.validation_dict[random_seed].keys():
             mlp_regressor1.trade_rs_cv_load_train_dev_data(random_seed, shift)
             mlp_regressor1.regressor_train(save_clsfy_path=clf_path)
-            mlp_regressor1.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
+            mrse, avg_price_change_tuple, polar_percent = mlp_regressor1.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
             shift_n_iter_list.append(mlp_regressor1.mlp_regressor.n_iter_)
             shift_loss_list.append(mlp_regressor1.mlp_regressor.loss_)
-
-        shift_rmse_list.extend(mlp_regressor1.mres_list)
-        shift_avg_pc_list.extend([x[0] for x in mlp_regressor1.avg_price_change_list])
-        shift_polar_percent_list.extend(mlp_regressor1.polar_accuracy_list)
+            shift_rmse_list.append(mrse)
+            shift_avg_pc_list.append(avg_price_change_tuple[0])
+            shift_polar_percent_list.append(polar_percent)
 
 
         avg_n_iter = np.average(shift_n_iter_list)
