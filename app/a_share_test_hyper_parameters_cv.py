@@ -12,6 +12,7 @@ import sys
 import random
 import os
 import itertools
+import numpy as np
 # ==========================================================================================================
 
 # ==========================================================================================================
@@ -19,13 +20,18 @@ import itertools
 # ==========================================================================================================
 parent_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 clf_path = os.path.join(parent_folder, 'classifiers', 'mlp')
+path2 = os.path.join(parent_folder, 'general_functions')
 sys.path.append(clf_path)
+sys.path.append(path2)
 # ==========================================================================================================
 
 # ==========================================================================================================
 # local package import
 # ==========================================================================================================
 from mlp_trade_regressor import MlpTradeRegressor
+from trade_general_funcs import get_full_feature_switch_tuple
+from trade_general_funcs import read_pca_component
+
 # ==========================================================================================================
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -44,42 +50,44 @@ clsfy_name = 'a_share_mlp_cv_PCA_regressor'
 clf_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
 
 
-# (3.) GET TRANINING SET
+# (2.) GET TRANINING SET
 data_per = 1.0 # the percentage of data using for training and testing
 dev_per = 0.0 # the percentage of data using for developing
-train_data_folder = os.path.join('a_share','a_share_regression_data')
-train_data_folder = os.path.join(parent_folder, 'data', train_data_folder)
-standardisation_file_path = os.path.join(parent_folder, 'data_processor','z_score')
-pca_file_path = os.path.join(parent_folder,'data_processor','pca')
-mlp_regressor1.trade_feed_and_separate_data(train_data_folder, dev_per = dev_per, data_per = data_per,
-                                            standardisation_file_path = standardisation_file_path,
-                                                            pca_file_path = pca_file_path)
-
-TRAINING_SET = mlp_regressor1.training_set
-TRAINING_VALUE_SET = mlp_regressor1.training_value_set
 
 
-# (4.) GET TESTING SET
-data_per = 1.0
-dev_per = 1.0
+input_folder = os.path.join('a_share','a_share_regression_data')
+input_folder = os.path.join(parent_folder, 'data', input_folder)
+feature_switch_tuple_all_1 = get_full_feature_switch_tuple(input_folder)
 
-test_data_folder = os.path.join('a_share', 'a_share_regression_data_test')
-test_data_folder = os.path.join(parent_folder, 'data', test_data_folder)
-mlp_regressor1.trade_feed_and_separate_data(test_data_folder, dev_per=dev_per, data_per=data_per,
-                                            is_test_folder=True,
-                                            standardisation_file_path=standardisation_file_path,
-                                            pca_file_path=pca_file_path)
-
-TEST_TRAINING_SET = mlp_regressor1.dev_set
-TEST_TRAINING_VALUE_SET = mlp_regressor1.dev_value_set
-TEST_DATE_SET = mlp_regressor1.dev_date_set
-TEST_STOCK_ID_SET = mlp_regressor1.dev_stock_id_set
+# (3.)
+samples_feature_list, samples_value_list, \
+date_str_list, stock_id_list = mlp_regressor1._feed_data(input_folder, data_per=data_per,
+                                               feature_switch_tuple=feature_switch_tuple_all_1,
+                                               is_random=False)
 
 
+# (4.)
+is_standardisation = True
+is_PCA = True
+shift_num = 5
+shifting_size_percent = 0.1
+pca_n_component = read_pca_component(input_folder)
+include_top_list = [1]
 
-hidden_layer_depth = [x for x in range(1, 4)]
-hidden_layer_node = [x for x in range(100, 600)][::200]
+mlp_regressor1.create_train_dev_vdict_window_shift(samples_feature_list, samples_value_list,
+                                         date_str_list, stock_id_list, is_cv=True,
+                                         shifting_size_percent=shifting_size_percent,
+                                         shift_num=shift_num,
+                                         is_standardisation=is_standardisation, is_PCA=is_PCA,
+                                         pca_n_component=pca_n_component)
 
+
+
+
+# (4.) HIDDEN LAYERS
+
+hidden_layer_depth = [x for x in range(1, 3)]
+hidden_layer_node = [x for x in range(100, 600)][::100]
 
 hidden_layer_sizes_list = []
 for layer_depth in hidden_layer_depth:
@@ -89,47 +97,89 @@ for layer_depth in hidden_layer_depth:
 random.shuffle(hidden_layer_sizes_list)
 print ("hidden_layer_sizes_list: ", hidden_layer_sizes_list)
 print ("Total {} hidden layers to test".format(len(hidden_layer_sizes_list)))
-#sys.exit()
 
-#hidden_layer_sizes_list = hidden_layer_sizes_list[-2:]
+# (5.) learning_rate_init
+learning_rate_init_list = [1e-5, 1e-4, 1e-3, 1e-2, 1e-1]
+learning_rate_init_list = learning_rate_init_list[::-1]
+print ("learning_rate_init_list: ", learning_rate_init_list)
 
-for hidden_layer_sizes in hidden_layer_sizes_list:
+# (6.) learning_rate
+learning_rate_list = ['constant', 'invscaling']
+print ("learning_rate_list: ", learning_rate_list)
 
+# (7.) learning_rate
+early_stopping_list = [True, False]
+print ("early_stopping_list: ", early_stopping_list)
+
+
+hyper_parameter_list = list(itertools.product(hidden_layer_sizes_list, learning_rate_init_list, learning_rate_list,
+                                              early_stopping_list))
+hyper_parameter_size = len(hyper_parameter_list)
+print ("hyper_parameter_size: ", hyper_parameter_size)
+
+for i, (hidden_layer_sizes, learning_rate_init, learning_rate, early_stopping) in enumerate(hyper_parameter_list):
+
+    tol = 1e-10
     n_iter_list = []
     loss_list = []
     rmse_list = []
     avg_pc_list = []
     random_state_list = []
     polar_percent_list = []
+    random_state_total = 100
 
-    hidden_layer_sizes = (200, 20)
-    for i in range(100):
-        print ("Hidden-layer-size-now: ", hidden_layer_sizes)
-        random_state = i
-        tol = 1e-10
-        learning_rate_init = 0.1
-        #learning_rate = 'invscaling'    #constant
-        learning_rate = 'constant'    #constant
-        early_stopping = False
+    for random_state in range(random_state_total):
+
+        random_seed = 'window_shift'
+
+        shift_n_iter_list = []
+        shift_loss_list = []
+        shift_rmse_list = []
+        shift_avg_pc_list = []
+        shift_polar_percent_list = []
 
         mlp_regressor1.set_regressor_test(hidden_layer_sizes, tol=tol, learning_rate_init=learning_rate_init,
-                                          random_state = random_state, verbose = False, learning_rate = learning_rate,
-                                          early_stopping = early_stopping)
-        n_iter, loss = mlp_regressor1.regressor_train_test(TRAINING_SET, TRAINING_VALUE_SET, save_clsfy_path= clf_path)
-        print ("Test regressor trained successfully for random_state: {}!".format(random_state))
+                                          random_state=random_state,
+                           verbose = False, learning_rate = learning_rate, early_stopping =early_stopping)
+        for shift in mlp_regressor1.validation_dict[random_seed].keys():
+            mlp_regressor1.trade_rs_cv_load_train_dev_data(random_seed, shift)
+            mlp_regressor1.regressor_train(save_clsfy_path=clf_path)
+            mlp_regressor1.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
+            shift_n_iter_list.append(mlp_regressor1.mlp_regressor.n_iter_)
+            shift_loss_list.append(mlp_regressor1.mlp_regressor.loss_)
+
+        shift_rmse_list.extend(mlp_regressor1.mres_list)
+        shift_avg_pc_list.extend([x[0] for x in mlp_regressor1.avg_price_change_list])
+        shift_polar_percent_list.extend(mlp_regressor1.polar_accuracy_list)
 
 
-        rmse, avg_pc, polar_percent = mlp_regressor1.regressor_dev_test(TEST_TRAINING_SET, TEST_TRAINING_VALUE_SET,
-                                                         TEST_DATE_SET, TEST_STOCK_ID_SET,save_clsfy_path= clf_path)
+        avg_n_iter = np.average(shift_n_iter_list)
+        avg_loss= np.average(shift_loss_list)
+        avg_rmse = np.average(np.average(shift_rmse_list))
+        avg_pc = np.average(shift_avg_pc_list)
+        avg_polar_percent = np.average(np.average(shift_polar_percent_list))
+
+
 
         random_state_list.append(random_state)
-        n_iter_list.append(n_iter)
-        loss_list.append(loss)
-        rmse_list.append(rmse)
+        n_iter_list.append(avg_n_iter)
+        loss_list.append(avg_loss)
+        rmse_list.append(avg_rmse)
         avg_pc_list.append(avg_pc)
-        polar_percent_list.append(polar_percent)
+        polar_percent_list.append(avg_polar_percent)
 
-
+        print ("-----------------------------------------------------------------------------------")
+        print ("random_state: {}|{}".format(random_state, random_state_total))
+        print ("early_stopping: ", early_stopping)
+        print ("learning_rate: ", learning_rate)
+        print ("learning_rate_init: ", learning_rate_init)
+        print ("hidden_layer_sizes: ", hidden_layer_sizes)
+        print ("avg_n_iter: ", avg_n_iter)
+        print ("avg_loss: ", avg_loss)
+        print ("avg_rmse: ", avg_rmse)
+        print ("avg_pc: ", avg_pc)
+        print ("avg_polar_percent: ", avg_polar_percent)
+        print ("Testing percent: {:.7f}%".format(100*i/hyper_parameter_size))
 
     # ==========================================================================================================
     write_list = list(zip(loss_list, n_iter_list, rmse_list, avg_pc_list, polar_percent_list, random_state_list))
