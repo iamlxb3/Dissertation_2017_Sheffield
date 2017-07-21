@@ -65,18 +65,18 @@ class MlpClassifier_P(MultilayerPerceptron):
         self.tp_cv_average_accuracy_list = []
         # --------------------------------------------------------------------------------------------------------------
 
-    def set_mlp_clf(self, hidden_layer_sizes, tol=1e-6, learning_rate_init=0.001, verbose=False):
+    def set_mlp_clf(self, hidden_layer_sizes, tol=1e-6, learning_rate_init=0.001, verbose=False, random_state = 1):
         self.hidden_size_list.append(hidden_layer_sizes)
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
         self.mlp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
                                      tol=tol, learning_rate_init=learning_rate_init,
-                                     max_iter=2000, random_state=1, verbose=verbose)
+                                     max_iter=10000, random_state=random_state, verbose=verbose)
 
 
 
     def clf_train(self, save_clsfy_path="mlp_trade_classifier", is_production=False):
         self.mlp_clf.fit(self.training_set, self.training_value_set)
-        self.iteration_loss_list.append((self.mlp_clf.n_iter_, self.mlp_clf.loss_))
+        #self.iteration_loss_list.append((self.mlp_clf.n_iter_, self.mlp_clf.loss_))
 
         # try:
         #     self.mlp_clf.fit(self.training_set, self.training_label)
@@ -86,6 +86,7 @@ class MlpClassifier_P(MultilayerPerceptron):
         #     sys.exit()
 
         pickle.dump(self.mlp_clf, open(save_clsfy_path, "wb"))
+        return self.mlp_clf.n_iter_, self.mlp_clf.loss_
 
 
 
@@ -124,10 +125,10 @@ class MlpClassifier_P(MultilayerPerceptron):
             dev_label_dict[dev_label] += 1
         #
 
-        # (6.) save result for 1-fold
-        self.average_f1_list.append(average_f1)
-        self.accuracy_list.append(accuracy)
-        #
+        # # (6.) save result for 1-fold
+        # self.average_f1_list.append(average_f1)
+        # self.accuracy_list.append(accuracy)
+        # #
 
         # print
         if not is_cv:

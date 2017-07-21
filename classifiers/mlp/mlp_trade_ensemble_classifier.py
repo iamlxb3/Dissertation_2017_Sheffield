@@ -52,14 +52,14 @@ class MlpTradeDataEnsembleClassifier(MlpTradeClassifier):
         self.ensemble_number = ensemble_number
         self.mode = mode
 
-    def set_mlp_clf(self, hidden_layer_sizes, tol=1e-6, learning_rate_init=0.001, verbose=False):
+    def set_mlp_clf(self, hidden_layer_sizes, tol=1e-6, learning_rate_init=0.001,  verbose=False, random_state = 1):
 
         self.hidden_size_list.append(hidden_layer_sizes)
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
 
         temp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
                                      tol=tol, learning_rate_init=learning_rate_init,
-                                     max_iter=10000, random_state=1, verbose=False)
+                                     max_iter=10000, random_state=random_state, verbose=False)
         if self.mode == 'bagging':
             print("Set bagging EnsembleClassifier!")
             self.clf = BaggingClassifier(base_estimator=temp_clf,  verbose=0, n_estimators=self.ensemble_number)
@@ -79,11 +79,12 @@ class MlpTradeDataEnsembleClassifier(MlpTradeClassifier):
         self.clf.fit(self.training_set, self.training_value_set)
         n_iter_list = [x.n_iter_ for x in self.clf.estimators_]
         loss_list = [x.loss_ for x in self.clf.estimators_]
-        self.iteration_loss_list.append((np.average(n_iter_list), np.average(loss_list)))
+
+        #self.iteration_loss_list.append((np.average(n_iter_list), np.average(loss_list)))
 
         save_clsfy_path = save_clsfy_path + '_data_ensemble'
         pickle.dump(self.clf, open(save_clsfy_path, "wb"))
-
+        return np.average(n_iter_list), np.average(loss_list)
 
 
     def clf_dev(self, save_clsfy_path="mlp_trade_classifier", is_cv=False, is_return = False):

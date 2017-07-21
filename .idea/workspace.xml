@@ -24,6 +24,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+<<<<<<< HEAD
+      <file leaf-file-name="mlp_trade_regressor.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade_regressor.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="4004">
+              <caret line="188" column="40" lean-forward="false" selection-start-line="188" selection-start-column="40" selection-end-line="188" selection-end-column="40" />
+=======
       <file leaf-file-name="a_share_weekly_predict.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/a_share_weekly_predict.py">
 <<<<<<< HEAD
@@ -71,6 +78,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="449">
               <caret line="188" column="40" lean-forward="true" selection-start-line="188" selection-start-column="40" selection-end-line="188" selection-end-column="40" />
+>>>>>>> 53c4718d7a89a4a70f0208356f953f0bb5ef0f0e
               <folding />
             </state>
           </provider>
@@ -79,7 +87,7 @@
       <file leaf-file-name="mlp_trade_classifier.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="666">
+            <state relative-caret-position="4752">
               <caret line="220" column="45" lean-forward="true" selection-start-line="220" selection-start-column="45" selection-end-line="220" selection-end-column="45" />
               <folding />
             </state>
@@ -89,6 +97,10 @@
       <file leaf-file-name="a_share_cv_complete_ensemble_regression_PCA_window_test.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_ensemble_regression_PCA_window_test.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="468">
+              <caret line="145" column="0" lean-forward="true" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
+=======
             <state relative-caret-position="132">
               <caret line="40" column="19" lean-forward="true" selection-start-line="40" selection-start-column="19" selection-end-line="40" selection-end-column="19" />
               <folding />
@@ -102,11 +114,18 @@
             <state relative-caret-position="1540">
               <caret line="73" column="0" lean-forward="false" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
 >>>>>>> origin/master
+>>>>>>> 53c4718d7a89a4a70f0208356f953f0bb5ef0f0e
               <folding />
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
+      <file leaf-file-name="a_share_download_process_data_all.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/a_share_download_process_data_all.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="968">
+=======
       <file leaf-file-name="a_share_simple_predict.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/a_share_simple_predict.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -129,6 +148,7 @@
         <entry file="file://$PROJECT_DIR$/app/a_share_download_process_data_all.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="924">
+>>>>>>> 53c4718d7a89a4a70f0208356f953f0bb5ef0f0e
               <caret line="45" column="20" lean-forward="false" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="39" />
               <folding />
             </state>
@@ -139,10 +159,14 @@
         <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade.py">
           <provider selected="true" editor-type-id="text-editor">
 <<<<<<< HEAD
+            <state relative-caret-position="7458">
+=======
+<<<<<<< HEAD
             <state relative-caret-position="7119">
               <caret line="348" column="47" lean-forward="false" selection-start-line="348" selection-start-column="47" selection-end-line="348" selection-end-column="47" />
 =======
             <state relative-caret-position="1329">
+>>>>>>> 53c4718d7a89a4a70f0208356f953f0bb5ef0f0e
               <caret line="348" column="47" lean-forward="true" selection-start-line="348" selection-start-column="47" selection-end-line="348" selection-end-column="47" />
 >>>>>>> origin/master
               <folding />
@@ -154,10 +178,14 @@
         <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_general.py">
           <provider selected="true" editor-type-id="text-editor">
 <<<<<<< HEAD
+            <state relative-caret-position="3696">
+=======
+<<<<<<< HEAD
             <state relative-caret-position="3528">
 =======
             <state relative-caret-position="415">
 >>>>>>> origin/master
+>>>>>>> 53c4718d7a89a4a70f0208356f953f0bb5ef0f0e
               <caret line="174" column="50" lean-forward="false" selection-start-line="174" selection-start-column="50" selection-end-line="174" selection-end-column="50" />
               <folding />
             </state>
@@ -168,10 +196,14 @@
         <entry file="file://$PROJECT_DIR$/data_processor/data_preprocessing.py">
           <provider selected="true" editor-type-id="text-editor">
 <<<<<<< HEAD
+            <state relative-caret-position="6446">
+=======
+<<<<<<< HEAD
             <state relative-caret-position="6153">
 =======
             <state relative-caret-position="732">
 >>>>>>> origin/master
+>>>>>>> 53c4718d7a89a4a70f0208356f953f0bb5ef0f0e
               <caret line="299" column="0" lean-forward="false" selection-start-line="299" selection-start-column="0" selection-end-line="299" selection-end-column="0" />
               <folding />
             </state>
@@ -313,6 +345,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -335,7 +368,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="trained_classifiers" />
+              <option name="myItemId" value="topology_feature_test" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -456,6 +489,13 @@
       <pane id="Scope" />
 =======
       <pane id="Scope" />
+<<<<<<< HEAD
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Font" />
+=======
       <pane id="Scratches" />
 >>>>>>> origin/master
     </panes>
@@ -463,6 +503,7 @@
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+>>>>>>> 53c4718d7a89a4a70f0208356f953f0bb5ef0f0e
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -636,6 +677,11 @@
   </component>
   <component name="ToolWindowManager">
 <<<<<<< HEAD
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <layout>
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32291666" sideWeight="0.4961665" order="0" side_tool="false" content_ui="combo" />
+=======
+<<<<<<< HEAD
     <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
 =======
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
@@ -643,6 +689,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3203125" sideWeight="0.4961665" order="0" side_tool="false" content_ui="combo" />
+>>>>>>> 53c4718d7a89a4a70f0208356f953f0bb5ef0f0e
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32930845" sideWeight="0.50208336" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -687,10 +734,13 @@
   <component name="editorHistoryManager">
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
     <entry file="file://$PROJECT_DIR$/data/dow_jones_index/dow_jones_index_raw/2011-01-07_1_AA.txt" />
 >>>>>>> origin/master
     <entry file="file://$PROJECT_DIR$/data/dow_jones_index/dow_jones_index_regression/2011-01-07_AA_#-0.04428#.txt" />
     <entry file="file://$PROJECT_DIR$/data/dow_jones_index/dow_jones_index_f_engineered/2011-01-07_1_AA.txt" />
+>>>>>>> 53c4718d7a89a4a70f0208356f953f0bb5ef0f0e
     <entry file="file://$PROJECT_DIR$/data_processor/stock_pca.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="561">
@@ -820,8 +870,11 @@
           <caret line="76" column="8" lean-forward="false" selection-start-line="76" selection-start-column="8" selection-end-line="76" selection-end-column="8" />
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
           <folding />
 >>>>>>> origin/master
+>>>>>>> 53c4718d7a89a4a70f0208356f953f0bb5ef0f0e
         </state>
       </provider>
     </entry>
@@ -857,7 +910,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1562">
           <caret line="77" column="8" lean-forward="false" selection-start-line="77" selection-start-column="8" selection-end-line="77" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -866,9 +918,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="546">
           <caret line="37" column="35" lean-forward="false" selection-start-line="37" selection-start-column="23" selection-end-line="37" selection-end-column="35" />
+<<<<<<< HEAD
+=======
           <folding>
             <element signature="e#243#253#0" expanded="false" />
           </folding>
+>>>>>>> 53c4718d7a89a4a70f0208356f953f0bb5ef0f0e
         </state>
       </provider>
     </entry>
@@ -883,7 +938,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1470">
           <caret line="73" column="0" lean-forward="false" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -891,6 +945,8 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="840">
           <caret line="43" column="24" lean-forward="false" selection-start-line="43" selection-start-column="24" selection-end-line="43" selection-end-column="24" />
+<<<<<<< HEAD
+=======
 =======
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="572">
@@ -899,6 +955,7 @@
           <folding>
             <element signature="e#745#755#0" expanded="true" />
           </folding>
+>>>>>>> 53c4718d7a89a4a70f0208356f953f0bb5ef0f0e
         </state>
       </provider>
     </entry>
@@ -985,13 +1042,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="14" lean-forward="false" selection-start-line="0" selection-start-column="14" selection-end-line="0" selection-end-column="14" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade_classifier.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="666">
+        <state relative-caret-position="4752">
           <caret line="220" column="45" lean-forward="true" selection-start-line="220" selection-start-column="45" selection-end-line="220" selection-end-column="45" />
           <folding />
         </state>
@@ -999,7 +1055,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/data_processor/data_preprocessing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="732">
+        <state relative-caret-position="6446">
           <caret line="299" column="0" lean-forward="false" selection-start-line="299" selection-start-column="0" selection-end-line="299" selection-end-column="0" />
           <folding />
         </state>
@@ -1007,7 +1063,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_general.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="415">
+        <state relative-caret-position="3696">
           <caret line="174" column="50" lean-forward="false" selection-start-line="174" selection-start-column="50" selection-end-line="174" selection-end-column="50" />
           <folding />
         </state>
@@ -1015,15 +1071,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade_regressor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="449">
-          <caret line="188" column="40" lean-forward="true" selection-start-line="188" selection-start-column="40" selection-end-line="188" selection-end-column="40" />
+        <state relative-caret-position="4004">
+          <caret line="188" column="40" lean-forward="false" selection-start-line="188" selection-start-column="40" selection-end-line="188" selection-end-column="40" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/classifiers/mlp/mlp_trade.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1329">
+        <state relative-caret-position="7458">
           <caret line="348" column="47" lean-forward="true" selection-start-line="348" selection-start-column="47" selection-end-line="348" selection-end-column="47" />
           <folding />
         </state>
@@ -1031,16 +1087,37 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/a_share_download_process_data_all.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="506">
+        <state relative-caret-position="968">
           <caret line="45" column="20" lean-forward="false" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="39" />
           <folding />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/topology_feature_test/a_share_cv_regressor_PCA_avg_pc_window_shift_top_3.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/topology_feature_test/a_share_cv_regressor_PCA_avg_pc_window_shift_top_1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/topology_feature_test/a_share_cv_regressor_PCA_polarity_window_shift.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/a_share_cv_complete_ensemble_regression_PCA_window_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="40" column="19" lean-forward="true" selection-start-line="40" selection-start-column="19" selection-end-line="40" selection-end-column="19" />
+        <state relative-caret-position="468">
+          <caret line="145" column="0" lean-forward="true" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
           <folding />
         </state>
       </provider>
