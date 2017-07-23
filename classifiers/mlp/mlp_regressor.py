@@ -69,13 +69,16 @@ class MlpRegressor_P(MultilayerPerceptron):
                                           max_iter=10000, random_state=random_state)
 
     def set_regressor_test(self, hidden_layer_sizes, tol=1e-8, learning_rate_init=0.0001, random_state=1,
-                           verbose = False, learning_rate = 'constant', early_stopping =False):
+                           verbose = False, learning_rate = 'constant', early_stopping =False, activation  = 'relu',
+                           validation_fraction  = 0.1, alpha  = 0.0001):
         self.hidden_size_list.append(hidden_layer_sizes)
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
         self.mlp_regressor = MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
                                           tol=tol, learning_rate_init=learning_rate_init,
                                           max_iter=10000, random_state=random_state, verbose=verbose,
-                                          learning_rate = learning_rate, early_stopping=early_stopping)
+                                          learning_rate = learning_rate, early_stopping=early_stopping,
+                                          activation = activation, validation_fraction = validation_fraction,
+                                          alpha = alpha)
 
     # ------------------------------------------------------------------------------------------------------------------
 
