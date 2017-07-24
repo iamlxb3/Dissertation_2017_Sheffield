@@ -46,7 +46,7 @@ from trade_general_funcs import read_pca_component
 classifier = 'regressor'
 EXPERIMENTS = 10
 TRAILS = 2000
-random_state_total = 5
+random_state_total = 50
 is_standardisation = True
 is_PCA = True
 tol = 1e-10
