@@ -54,12 +54,17 @@ class MlpTradeEnsembleRegressor(MlpTradeRegressor):
         self.ensemble_number =  ensemble_number
         self.mode = mode
 
-    def set_regressor(self, hidden_layer_sizes, tol=1e-8, learning_rate_init=0.001, random_state = 1):
+    def set_regressor(self, hidden_layer_sizes, tol=1e-8, learning_rate_init=0.001, random_state = 1,
+                           verbose = False, learning_rate = 'constant', early_stopping =False, activation  = 'relu',
+                           validation_fraction  = 0.1, alpha  = 0.0001):
         self.hidden_size_list.append(hidden_layer_sizes)
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
         temp_regressor = MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
                                           tol=tol, learning_rate_init=learning_rate_init,
-                                          max_iter=10000, random_state=random_state)
+                                          max_iter=10000, random_state=random_state, verbose=verbose,
+                                          learning_rate = learning_rate, early_stopping=early_stopping,
+                                          activation = activation, validation_fraction = validation_fraction,
+                                          alpha = alpha)
         if self.mode == 'bagging':
             print ("Set bagging EnsembleRegressor!")
             self.mlp_regressor = BaggingRegressor(base_estimator=temp_regressor, n_estimators=self.ensemble_number, verbose=1)
@@ -83,8 +88,6 @@ class MlpTradeEnsembleRegressor(MlpTradeRegressor):
         if is_production:
             print("classifier for production saved to {} successfully!".format(save_clsfy_path))
         return np.average(n_iter_list), np.average(loss_list)
-
-
 
     # ------------------------------------------------------------------------------------------------------------------
     # [C.1]  Dev
