@@ -43,6 +43,8 @@ from trade_general_funcs import read_pca_component
 # ==========================================================================================================
 # Build MLP classifier for a-share data, save the mlp to local
 # ==========================================================================================================
+RANDOM_SEED_OFFSET = 1
+data_set = 'dow_jones'
 classifier = 'regressor'
 EXPERIMENTS = 10
 TRAILS = 2000
@@ -88,70 +90,107 @@ else:
 shift_num = 5
 shifting_size_percent = 0.1
 pca_n_component = read_pca_component(input_folder)
+
+
 include_top_list = [1]
 
-mlp_regressor1.create_train_dev_vdict_window_shift(samples_feature_list, samples_value_list,
-                                         date_str_list, stock_id_list, is_cv=True,
-                                         shifting_size_percent=shifting_size_percent,
-                                         shift_num=shift_num,
-                                         is_standardisation=is_standardisation, is_PCA=is_PCA,
-                                         pca_n_component=pca_n_component)
+# ----------------------------------------------------------------------------------------------------------------------
+# generator builder
+# ----------------------------------------------------------------------------------------------------------------------
+def build_generator_from_pool(random_pool, trails, experiment_count):
+    for i in range(trails):
+        random.seed(i+experiment_count+RANDOM_SEED_OFFSET)
+        random_sample = random.sample(random_pool, 1)[0]
+        yield random_sample
+
+def build_generator_from_range(target_range, trails, experiment_count):
+    for i in range(trails):
+        random.seed(i+experiment_count+RANDOM_SEED_OFFSET)
+        random_value = random.uniform(*target_range)
+        yield random_value
+# ----------------------------------------------------------------------------------------------------------------------
 
 
+for experiment_count, experiment in enumerate(range(EXPERIMENTS)):
 
-for experiment in range(EXPERIMENTS):
 
     # (1.) activation function
     activation_list = ['identity', 'logistic', 'tanh', 'relu']
-    activation_random_sample_list = [random.sample(activation_list, 1)[0] for x in range(TRAILS)]
+    activation_random_sample_generator = build_generator_from_pool(activation_list, TRAILS, experiment_count)
 
     # (2.) L2 penalty (regularization term) parameter.
     alpha_range = (0.00001, 0.001)
-    alpha_random_sample_list = [random.uniform(*alpha_range) for x in range(TRAILS)]
+    alpha_random_sample_generator = build_generator_from_range(alpha_range, TRAILS, experiment_count)
 
     # (3.) learning_rate
     learning_rate_list = ['constant', 'invscaling']
-    learning_rate_random_sample_list =[random.sample(learning_rate_list, 1)[0] for x in range(TRAILS)]
+    learning_rate_random_sample_generator = build_generator_from_pool(learning_rate_list, TRAILS, experiment_count)
 
     # (4.) learning_rate_init
     learning_rate_init_range = (0.00001, 0.1)
-    learning_rate_init_random_sample_list = [random.uniform(*learning_rate_init_range) for x in range(TRAILS)]
+    learning_rate_init_random_sample_generator = build_generator_from_range(learning_rate_init_range, TRAILS,
+                                                                            experiment_count)
 
     # (5.) early-stopping
     early_stopping_list = [True, False]
-    early_stopping_random_sample_list = [random.sample(early_stopping_list, 1)[0] for x in range(TRAILS)]
+    early_stopping_random_sample_generator = build_generator_from_pool(early_stopping_list, TRAILS, experiment_count)
 
     # (6.) early-stopping validation_fraction
     validation_fraction_range = (0.1, 0.3)
-    validation_fraction_random_sample_list = [random.uniform(*validation_fraction_range) for x in range(TRAILS)]
+    validation_fraction_random_sample_generator = build_generator_from_range(validation_fraction_range, TRAILS,
+                                                                             experiment_count)
 
     # (7.) HIDDEN LAYERS
-    hidden_layer_depth = [x for x in range(1, 3)]
-    hidden_layer_node = [x for x in range(20, 400)]
+    hidden_layer_depth = (1,3)
+    hidden_layer_node  = (20,400)
+
+    def hidden_layer_generator(hidden_layer_depth, hidden_layer_node, experiment_count):
+        for i in range(TRAILS):
+            hidden_layer_sizes = []
+            random.seed(i + experiment_count + RANDOM_SEED_OFFSET)
+            layer_depth = random.randint(*hidden_layer_depth)
+            for j in range(layer_depth):
+                random.seed(j + i + experiment_count + RANDOM_SEED_OFFSET)
+                layer_node = random.randint(*hidden_layer_node)
+                hidden_layer_sizes.append(layer_node)
+            hidden_layer_sizes_tuple = tuple(hidden_layer_sizes)
+            yield hidden_layer_sizes_tuple
+
+
+    hidden_layer_size= hidden_layer_generator(hidden_layer_depth, hidden_layer_node, experiment_count)
 
 
 
-    hidden_layer_sizes_list = []
-    for layer_depth in hidden_layer_depth:
-        hidden_layer_sizes_list_temp = list(itertools.product(hidden_layer_node, repeat=layer_depth))
-        hidden_layer_sizes_list.extend(hidden_layer_sizes_list_temp)
-    hidden_layer_sizes_random_sample_list = random.sample(hidden_layer_sizes_list, TRAILS)
+    hyper_parameter_trail_zip = zip(activation_random_sample_generator, alpha_random_sample_generator,
+                                          learning_rate_random_sample_generator, learning_rate_init_random_sample_generator,
+                                          early_stopping_random_sample_generator, validation_fraction_random_sample_generator,
+                                    hidden_layer_size)
 
-    print ("hidden_layer_sizes_list: ", len(hidden_layer_sizes_list))
-
-    hyper_parameter_trail_list = list(zip(activation_random_sample_list, alpha_random_sample_list,
-                                          learning_rate_random_sample_list, learning_rate_init_random_sample_list,
-                                          early_stopping_random_sample_list, validation_fraction_random_sample_list,
-                                          hidden_layer_sizes_random_sample_list))
-
-    hyper_parameter_size = len(hyper_parameter_trail_list)
-    print ("hyper_parameter_size: ", hyper_parameter_size)
-    print ("hyper_parameter_trail_list: ", hyper_parameter_trail_list)
+    # hyper_parameter_size = len(hyper_parameter_trail_list)
+    # print ("hyper_parameter_size: ", hyper_parameter_size)
+    # print ("hyper_parameter_trail_list: ", hyper_parameter_trail_list)
 
 
 
+    for i, hyper_paramter_tuple in enumerate(hyper_parameter_trail_zip):
 
-    for i, hyper_paramter_tuple in enumerate(hyper_parameter_trail_list):
+        # (0.) PCA n component
+        if data_preprocessing == 'pca' or data_preprocessing == 'pca_standardization':
+            random.seed(i + experiment_count + RANDOM_SEED_OFFSET)
+            pca_n_component = random.randint(2, pca_n_component)
+        else:
+            pca_n_component = None
+
+        mlp_regressor1.create_train_dev_vdict_window_shift(samples_feature_list, samples_value_list,
+                                                           date_str_list, stock_id_list, is_cv=True,
+                                                           shifting_size_percent=shifting_size_percent,
+                                                           shift_num=shift_num,
+                                                           is_standardisation=is_standardisation, is_PCA=is_PCA,
+                                                           pca_n_component=pca_n_component)
+
+
+
+
         activation_function = hyper_paramter_tuple[0]
         alpha = hyper_paramter_tuple[1]
         learning_rate = hyper_paramter_tuple[2]
@@ -213,6 +252,7 @@ for experiment in range(EXPERIMENTS):
             polar_percent_list.append(avg_polar_percent)
 
             print ("-----------------------------------------------------------------------------------")
+            print ("pca_n_component: ", pca_n_component)
             print ("random_state: {}|{}".format(random_state, random_state_total))
             print ("activation_function: ", activation_function)
             print ("alpha: ", alpha)
@@ -226,7 +266,7 @@ for experiment in range(EXPERIMENTS):
             print ("avg_rmse: ", avg_rmse)
             print ("avg_pc: ", avg_pc)
             print ("avg_polar_percent: ", avg_polar_percent)
-            print ("Testing percent: {:.7f}%".format(100*i/hyper_parameter_size))
+            print ("Testing percent: {:.7f}%".format(100*i/TRAILS))
             print ("experiment: {}/{}".format(experiment, EXPERIMENTS))
 
         # ==========================================================================================================
@@ -236,11 +276,11 @@ for experiment in range(EXPERIMENTS):
 
         hidden_layer_write_str = '_'.join([str(x) for x in hidden_layer_sizes])
 
-        write_tuple = (experiment, trail, random_state_total, activation_function, alpha, learning_rate, learning_rate_init, early_stopping,
+        write_tuple = (experiment, trail, random_state_total, pca_n_component, activation_function, alpha, learning_rate, learning_rate_init, early_stopping,
                        validation_fraction, hidden_layer_write_str)
-        save_folder = os.path.join(parent_folder, 'hyper_parameter_test', classifier, data_preprocessing)
-        csv_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.csv'.format(*write_tuple))
-        txt_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.txt'.format(*write_tuple))
+        save_folder = os.path.join(parent_folder, 'hyper_parameter_test', data_set, classifier, data_preprocessing)
+        csv_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.csv'.format(*write_tuple))
+        txt_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.txt'.format(*write_tuple))
 
 
 
