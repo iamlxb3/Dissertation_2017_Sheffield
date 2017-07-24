@@ -43,11 +43,13 @@ from trade_general_funcs import read_pca_component
 # ==========================================================================================================
 # Build MLP classifier for a-share data, save the mlp to local
 # ==========================================================================================================
-RANDOM_SEED_OFFSET = 1
+RANDOM_SEED_OFFSET = 54385438
+EXPERIMENT_RANDOM_SEED_OFFSET = 38453845
+
 data_set = 'dow_jones'
 classifier = 'regressor'
 EXPERIMENTS = 10
-TRAILS = 2000
+TRAILS = 100
 random_state_total = 50
 is_standardisation = True
 is_PCA = True
@@ -99,13 +101,13 @@ include_top_list = [1]
 # ----------------------------------------------------------------------------------------------------------------------
 def build_generator_from_pool(random_pool, trails, experiment_count):
     for i in range(trails):
-        random.seed(i+experiment_count+RANDOM_SEED_OFFSET)
+        random.seed(i+experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET+RANDOM_SEED_OFFSET)
         random_sample = random.sample(random_pool, 1)[0]
         yield random_sample
 
 def build_generator_from_range(target_range, trails, experiment_count):
     for i in range(trails):
-        random.seed(i+experiment_count+RANDOM_SEED_OFFSET)
+        random.seed(i+experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET+RANDOM_SEED_OFFSET)
         random_value = random.uniform(*target_range)
         yield random_value
 # ----------------------------------------------------------------------------------------------------------------------
@@ -147,10 +149,10 @@ for experiment_count, experiment in enumerate(range(EXPERIMENTS)):
     def hidden_layer_generator(hidden_layer_depth, hidden_layer_node, experiment_count):
         for i in range(TRAILS):
             hidden_layer_sizes = []
-            random.seed(i + experiment_count + RANDOM_SEED_OFFSET)
+            random.seed(i + experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
             layer_depth = random.randint(*hidden_layer_depth)
             for j in range(layer_depth):
-                random.seed(j + i + experiment_count + RANDOM_SEED_OFFSET)
+                random.seed(j + i + experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
                 layer_node = random.randint(*hidden_layer_node)
                 hidden_layer_sizes.append(layer_node)
             hidden_layer_sizes_tuple = tuple(hidden_layer_sizes)
@@ -176,7 +178,7 @@ for experiment_count, experiment in enumerate(range(EXPERIMENTS)):
 
         # (0.) PCA n component
         if data_preprocessing == 'pca' or data_preprocessing == 'pca_standardization':
-            random.seed(i + experiment_count + RANDOM_SEED_OFFSET)
+            random.seed(i + experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
             pca_n_component = random.randint(2, pca_n_component)
         else:
             pca_n_component = None
