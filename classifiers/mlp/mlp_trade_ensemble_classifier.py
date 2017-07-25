@@ -52,14 +52,19 @@ class MlpTradeDataEnsembleClassifier(MlpTradeClassifier):
         self.ensemble_number = ensemble_number
         self.mode = mode
 
-    def set_mlp_clf(self, hidden_layer_sizes, tol=1e-6, learning_rate_init=0.001,  verbose=False, random_state = 1):
+    def set_mlp_clf(self, hidden_layer_sizes, tol=1e-8, learning_rate_init=0.0001, random_state=1,
+                           verbose = False, learning_rate = 'constant', early_stopping =False, activation  = 'relu',
+                           validation_fraction  = 0.1, alpha  = 0.0001):
 
         self.hidden_size_list.append(hidden_layer_sizes)
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
 
         temp_clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
                                      tol=tol, learning_rate_init=learning_rate_init,
-                                     max_iter=10000, random_state=random_state, verbose=False)
+                                     max_iter=10000, random_state=random_state, verbose=verbose, learning_rate =
+                                     learning_rate, early_stopping =early_stopping, alpha= alpha,
+                                              validation_fraction = validation_fraction, activation = activation)
+
         if self.mode == 'bagging':
             print("Set bagging EnsembleClassifier!")
             self.clf = BaggingClassifier(base_estimator=temp_clf,  verbose=0, n_estimators=self.ensemble_number)
@@ -85,7 +90,6 @@ class MlpTradeDataEnsembleClassifier(MlpTradeClassifier):
         save_clsfy_path = save_clsfy_path + '_data_ensemble'
         pickle.dump(self.clf, open(save_clsfy_path, "wb"))
         return np.average(n_iter_list), np.average(loss_list)
-
 
     def clf_dev(self, save_clsfy_path="mlp_trade_classifier", is_cv=False, is_return = False):
 
