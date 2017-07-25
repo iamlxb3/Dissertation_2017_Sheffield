@@ -90,7 +90,11 @@ for file_name in file_name_list:
                 x_list[i] = float(x)
         #
 
-        regressor_eva_metrics_avg_list = [np.average(x) for x in regressor_eva_metrics_list]
+        regressor_eva_metrics_avg_value_list = [np.average(x) for x in regressor_eva_metrics_list]
+        regressor_eva_metrics_avg_var_list = [np.var(x) for x in regressor_eva_metrics_list]
+        regressor_eva_metrics_avg_std_list = [np.std(x) for x in regressor_eva_metrics_list]
+        regressor_eva_metrics_avg_list = list(zip(regressor_eva_metrics_avg_value_list, regressor_eva_metrics_avg_var_list,
+                                             regressor_eva_metrics_avg_std_list))
 
 
     hyper_parameter_avg_dict[hyper_parameter_tuple] = regressor_eva_metrics_avg_list
@@ -142,12 +146,13 @@ def save_hyper_parameter_result_to_file_regressor(hyper_parameter_list, save_pat
                 hyper_parameter_tuple_str = '\n'.join(hyper_parameter_tuple)
                 f.write(hyper_parameter_tuple_str + '\n')
                 f.write('---------------------------\n')
-                evaluation_metrics_list = [str(x) for x in list(evaluation_metrics_tuple)]
-                evaluation_metrics_list[0] = 'loss: ' + evaluation_metrics_list[0]
-                evaluation_metrics_list[1] = 'iteration_step: ' + evaluation_metrics_list[1]
-                evaluation_metrics_list[2] = 'rmse: ' + evaluation_metrics_list[2]
-                evaluation_metrics_list[3] = 'avg_pc: ' + evaluation_metrics_list[3]
-                evaluation_metrics_list[4] = 'hit: ' + evaluation_metrics_list[4]
+                evaluation_metrics_list = ['' for x in list(evaluation_metrics_tuple)]
+                #evaluation_metrics_list = [str(x) for x in list(evaluation_metrics_tuple)]
+                evaluation_metrics_list[0] = 'loss: {}, var: {}, std: {}'.format(evaluation_metrics_tuple[0][0],evaluation_metrics_tuple[0][1],evaluation_metrics_tuple[0][2])
+                evaluation_metrics_list[1] = 'iteration_step: {}, var: {}, std: {}'.format(evaluation_metrics_tuple[1][0],evaluation_metrics_tuple[1][1],evaluation_metrics_tuple[1][2])
+                evaluation_metrics_list[2] = 'rmse: {}, var: {}, std: {}'.format(evaluation_metrics_tuple[2][0],evaluation_metrics_tuple[2][1],evaluation_metrics_tuple[2][2])
+                evaluation_metrics_list[3] = 'avg_pc: {}, var: {}, std: {}'.format(evaluation_metrics_tuple[3][0],evaluation_metrics_tuple[3][1],evaluation_metrics_tuple[3][2])
+                evaluation_metrics_list[4] = 'hit: {}, var: {}, std: {}'.format(evaluation_metrics_tuple[4][0],evaluation_metrics_tuple[4][1],evaluation_metrics_tuple[4][2])
 
                 evaluation_metrics_tuple_str = '\n'.join(evaluation_metrics_list)
                 f.write(evaluation_metrics_tuple_str + '\n')

@@ -48,6 +48,7 @@ EXPERIMENT_RANDOM_SEED_OFFSET = 38453845
 
 data_set = 'dow_jones'
 mode = 'adaboost' #adaboost, bagging
+#mode = 'bagging' #adaboost, bagging
 classifier = '{}_regressor'.format(mode)
 
 ensemble_number = 3
