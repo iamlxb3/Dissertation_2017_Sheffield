@@ -23,7 +23,7 @@ from pjslib.logger import logger1
 
 
 
-class DowJonesIndex:
+class DowJonesIndexExtended:
     """
     quarter:  the yearly quarter (1 = Jan-Mar; 2 = Apr=Jun).
     stock: the stock symbol (see above)
@@ -57,12 +57,17 @@ class DowJonesIndex:
                 for i, line in enumerate(f_readlines):
                     if i <= 1 or i == len(f_readlines) - 1:
                         continue
+                    #print ("line: ", line)
                     line_split = line.split(',')
                     date_str = line_split[0]
-                    date_temp = time.strptime(date_str, '%d/%m/%Y')
-                    date_obj = datetime.datetime(*date_temp[:3])
-                    date_str_new = date_obj.strftime("%Y-%m-%d")
-                    save_file_name = date_str_new + '_' + file_name_list[j][:-4] + '.txt'
+                    date_str_next = f_readlines[i+1].split(',')[0]
+                    if date_str >= date_str_next:
+                        print ("ERROR! check raw data date order!")
+                        sys.exit()
+                    # date_temp = time.strptime(date_str, '%d/%m/%Y')
+                    # date_obj = datetime.datetime(*date_temp[:3])
+                    # date_str_new = date_obj.strftime("%Y-%m-%d")
+                    save_file_name = date_str + '_' + file_name_list[j][:-4] + '.txt'
                     save_file_path = os.path.join(save_folder, save_file_name)
 
                     # this week data
@@ -92,9 +97,11 @@ class DowJonesIndex:
                     #
 
                     #
-                    percent_change_price = float(close) / float(previous_close)
-                    percent_change_volume_over_last_wk = float(volume) / float(previous_volume)
-                    percent_change_next_weeks_price = float(next_close) / float(close)
+
+
+                    percent_change_price = 100*(float(close)-float(previous_close)) / float(previous_close)
+                    percent_change_volume_over_last_wk = 100*(float(volume)-float(previous_volume)) / float(previous_volume)
+                    percent_change_next_weeks_price = 100*(float(next_close)-float(close)) / float(close)
 
                     write_str = 'open,{},high,{},low,{},close,{},volume,{},' \
                                 'percent_change_price,{},percent_change_volume_over_last_wk,{},' \
@@ -121,28 +128,14 @@ class DowJonesIndex:
             date_obj_temp = time.strptime(date, '%Y-%m-%d')
             date_obj = datetime.datetime(*date_obj_temp[:3])
 
-            # previous_friday_obj = date_obj - datetime.timedelta(days = 7)
-            # previous_friday_str = previous_friday_obj.strftime("%Y-%m-%d")
-            # previous_friday_full_path = previous_friday_str + '_' + stock_id + '.csv'
-            # previous_friday_full_path = os.path.join(input_folder, previous_friday_full_path)
-
-
-            # try:
-            #     with open (previous_friday_full_path, 'r', encoding = 'utf-8') as f:
-            #         previous_f_feature_pair_dict = {}
-            #         for line in f:
-            #             line_list = line.split(',')
-            #             feature_name = line_list[0]
-            #             feature_value = float(line_list[1].strip())
-            #             previous_f_feature_pair_dict[feature_name] = feature_value
-            # except FileNotFoundError:
-            #     logger1.error("{} cannot find the previous friday data".format(file_name))
-            #     continue
-
-
             feature_pair_dict = {}
             with open(file_path, 'r', encoding = 'utf-8') as f:
-                line_list = f.readlines()[0].split(',')
+
+                line_list = ''
+                for line in f.readlines():
+                    line_list += line.strip()
+                line_list = line_list.split(',')
+
                 feature_name_list = line_list[::2]
                 feature_value_list = line_list[1::2]
                 for i,f_n in enumerate(feature_name_list):
@@ -151,6 +144,7 @@ class DowJonesIndex:
             # ===================================================================================
             # add features
             # ===================================================================================
+            #print ("feature_pair_dict: ", feature_pair_dict.keys())
             open_value = float(feature_pair_dict['open'])
             close_value = float(feature_pair_dict['close'])
             high_value = float(feature_pair_dict['high'])
