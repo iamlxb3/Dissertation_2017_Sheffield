@@ -43,14 +43,15 @@ from trade_general_funcs import read_pca_component
 EXPERIMENTS = 3
 is_standardisation_list = [True, False]
 is_PCA_list = [True, False]
-TRAILS= 1024
+TRAILS= 128
 RANDOM_SEED_OFFSET = 54385438
 EXPERIMENT_RANDOM_SEED_OFFSET = 38453845
 data_set = 'dow_jones'
 random_state_total = 50
 tol = 1e-10
 classifier = 'classifier'
-
+input_folder = os.path.join('dow_jones_index_extended', 'dow_jones_index_extended_labeled')
+input_folder = os.path.join(parent_folder, 'data', input_folder)
 
 
 # ==========================================================================================================
@@ -68,12 +69,11 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
 
     # (2.) GET TRANINING SET
-    data_per = 1.0 # the percentage of data using for training and testing
-    dev_per = 0.0 # the percentage of data using for developing
+    data_per = 1.0 # the percentage of data using for training, validation and testing
+    #dev_per = 0.0 # the percentage of data using for developing
 
 
-    input_folder = os.path.join('dow_jones_index','dow_jones_index_labeled')
-    input_folder = os.path.join(parent_folder, 'data', input_folder)
+
     feature_switch_tuple_all_1 = get_full_feature_switch_tuple(input_folder)
 
     # (3.)
@@ -97,7 +97,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
         sys.exit()
     shift_num = 5
     shifting_size_percent = 0.1
-    pca_n_component = read_pca_component(input_folder)
+    pca_n_component_max = read_pca_component(input_folder)
 
 
     # ----------------------------------------------------------------------------------------------------------------------
@@ -183,7 +183,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             # (0.) PCA n component
             if data_preprocessing == 'pca' or data_preprocessing == 'pca_standardization':
                 random.seed(i + experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
-                pca_n_component = random.randint(2, pca_n_component)
+                pca_n_component = random.randint(2, pca_n_component_max)
             else:
                 pca_n_component = None
 
@@ -253,6 +253,8 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                 accuracy_list.append(avg_accuracy)
 
                 print ("-----------------------------------------------------------------------------------")
+                print ("is_PCA", is_PCA)
+                print ("is_standardisation", is_standardisation)
                 print ("pca_n_component: ", pca_n_component)
                 print ("random_state: {}|{}".format(random_state, random_state_total))
                 print ("activation_function: ", activation_function)

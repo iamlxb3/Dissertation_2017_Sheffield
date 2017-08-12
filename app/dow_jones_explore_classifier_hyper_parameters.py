@@ -55,7 +55,7 @@ parent_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # read data into dictionary
 # ----------------------------------------------------------------------------------------------------------------------
 data_set = 'dow_jones'
-classifier = 'bagging_classifier'
+classifier = 'classifier'
 data_preprocessing = 'pca_standardization'
 # data_preprocessing = 'origin'
 # data_preprocessing = 'pca'
@@ -76,6 +76,9 @@ for file_name in file_name_list:
     hyper_parameter_tuple = tuple(file_name.split('_'))
     with open (file_path, 'r') as f:
         f_readlines_list = f.readlines()
+        if not f_readlines_list:
+            print ("{} is empty!".format(file_path))
+            break
         f_readlines_list = [line.strip().split(',') for line in f_readlines_list]
 
         regressor_eva_metrics_list = list(zip(*f_readlines_list))

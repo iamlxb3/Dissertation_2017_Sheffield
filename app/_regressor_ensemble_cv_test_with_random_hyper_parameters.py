@@ -41,16 +41,20 @@ EXPERIMENTS = 3
 is_standardisation_list = [True, False]
 is_PCA_list = [True, False]
 mode_list = ['adaboost', 'bagging']
-TRAILS= 1024
+TRAILS= 128
 RANDOM_SEED_OFFSET = 54385438
 EXPERIMENT_RANDOM_SEED_OFFSET = 38453845
 data_set = 'dow_jones'
 random_state_total = 50
 tol = 1e-10
+input_folder = os.path.join('dow_jones_index_extended', 'dow_jones_index_extended_regression')
+input_folder = os.path.join(parent_folder, 'data', input_folder)
 
 
 
 for is_standardisation, is_PCA, mode in list(itertools.product(is_standardisation_list, is_PCA_list, mode_list)):
+
+
 
 
     # ==========================================================================================================
@@ -75,11 +79,9 @@ for is_standardisation, is_PCA, mode in list(itertools.product(is_standardisatio
 
     # (2.) GET TRANINING SET
     data_per = 1.0 # the percentage of data using for training and testing
-    dev_per = 0.0 # the percentage of data using for developing
+    #dev_per = 0.0 # the percentage of data using for developing
 
 
-    input_folder = os.path.join('dow_jones_index','dow_jones_index_regression')
-    input_folder = os.path.join(parent_folder, 'data', input_folder)
     feature_switch_tuple_all_1 = get_full_feature_switch_tuple(input_folder)
 
     # (3.)
@@ -87,6 +89,7 @@ for is_standardisation, is_PCA, mode in list(itertools.product(is_standardisatio
     date_str_list, stock_id_list = mlp_regressor1._feed_data(input_folder, data_per=data_per,
                                                    feature_switch_tuple=feature_switch_tuple_all_1,
                                                    is_random=False)
+
 
 
     # (4.)
@@ -103,10 +106,18 @@ for is_standardisation, is_PCA, mode in list(itertools.product(is_standardisatio
         sys.exit()
     shift_num = 5
     shifting_size_percent = 0.1
-    pca_n_component = read_pca_component(input_folder)
+    pca_n_component_max = read_pca_component(input_folder)
 
 
     include_top_list = [1]
+
+    # split training and validation set
+    mlp_regressor1.create_train_dev_vdict_window_shift(samples_feature_list, samples_value_list,
+                                                       date_str_list, stock_id_list, is_cv=True,
+                                                       shifting_size_percent=shifting_size_percent,
+                                                       shift_num=shift_num,
+                                                       is_standardisation=is_standardisation, is_PCA=is_PCA,
+                                                       pca_n_component=pca_n_component)
 
     # ----------------------------------------------------------------------------------------------------------------------
     # generator builder
@@ -191,16 +202,10 @@ for is_standardisation, is_PCA, mode in list(itertools.product(is_standardisatio
             # (0.) PCA n component
             if data_preprocessing == 'pca' or data_preprocessing == 'pca_standardization':
                 random.seed(i + experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
-                pca_n_component = random.randint(2, pca_n_component)
+                pca_n_component = random.randint(2, pca_n_component_max)
             else:
                 pca_n_component = None
 
-            mlp_regressor1.create_train_dev_vdict_window_shift(samples_feature_list, samples_value_list,
-                                                               date_str_list, stock_id_list, is_cv=True,
-                                                               shifting_size_percent=shifting_size_percent,
-                                                               shift_num=shift_num,
-                                                               is_standardisation=is_standardisation, is_PCA=is_PCA,
-                                                               pca_n_component=pca_n_component)
 
 
 

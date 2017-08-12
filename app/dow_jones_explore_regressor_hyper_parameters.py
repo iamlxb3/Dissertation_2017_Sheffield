@@ -55,7 +55,7 @@ parent_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # read data into dictionary
 # ----------------------------------------------------------------------------------------------------------------------
 data_set = 'dow_jones'
-classifier = 'regressor'
+classifier = 'adaboost_regressor'
 data_preprocessing = 'pca_standardization'
 # data_preprocessing = 'origin'
 # data_preprocessing = 'pca'
@@ -69,6 +69,8 @@ hyper_parameter_avg_dict = collections.defaultdict(lambda :{})
 hyper_parameter_best_list = []
 
 for file_name in file_name_list:
+    if file_name == '.gitignore':
+        continue
     file_path = os.path.join(hyper_parameter_folder, file_name)
     file_name = file_name[0:-4]
     hyper_parameter_tuple = tuple(file_name.split('_'))

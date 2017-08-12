@@ -120,14 +120,14 @@ dow_jones_index1.label_data(input_file, save_folder)
 # # # ==========================================================================================================
 
 
-# ==========================================================================================================
-# [5.] data regression
-# ==========================================================================================================
-dow_jones_index1 = DowJonesIndexExtended()
-input_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_f_engineered_more_data')
-save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_regression')
-dow_jones_index1.price_change_regression(input_folder, save_folder)
-# ==========================================================================================================
+# # ==========================================================================================================
+# # [5.] data regression
+# # ==========================================================================================================
+# dow_jones_index1 = DowJonesIndexExtended()
+# input_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_f_engineered_more_data')
+# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_regression')
+# dow_jones_index1.price_change_regression(input_folder, save_folder)
+# # ==========================================================================================================
 
 # # # ==========================================================================================================
 # # # PCA-regression
