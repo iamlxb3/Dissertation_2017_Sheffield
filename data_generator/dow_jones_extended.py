@@ -160,6 +160,8 @@ class DowJonesIndexExtended:
             feature_pair_dict['highLowChange'] = "{:.5f}".format(abs((high_value - low_value) / (low_value)))
             # (4.) volumeChangePreviousWeek
             feature_pair_dict['volumeChangePreviousWeek'] = "{:.5f}".format((volume - previous_weeks_volume) / (previous_weeks_volume))
+            # (5.) close open change
+            feature_pair_dict['closeOpenChange'] = "{:.5f}".format((close_value - open_value) / (open_value))
             # -----------------------------------------------------------------------------------
 
 
