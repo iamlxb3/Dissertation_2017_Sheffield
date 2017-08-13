@@ -47,26 +47,67 @@ class DowJonesIndexExtended:
         pass
 
     def format_raw_data(self, input_folder, save_folder):
+        dividend_folder = os.path.join(input_folder, 'dividend')
         file_name_list = os.listdir(input_folder)
+        file_name_list.remove('dividend')
+        file_name_list.remove('BACKUP')
         file_path_list = [os.path.join(input_folder, x) for x in file_name_list]
 
-
         for j, file_path in enumerate(file_path_list):
+            print ("Start formatting {}".format(file_path))
+            dividend_file_path = os.path.join(dividend_folder, 'EOD-' + file_name_list[j])
             with open(file_path, 'r', encoding = 'utf-8') as f:
-                f_readlines = f.readlines()
-                for i, line in enumerate(f_readlines):
-                    if i <= 1 or i == len(f_readlines) - 1:
+                f_readlines1 = f.readlines()
+                for i, line in enumerate(f_readlines1):
+                    if i <= 1 or i == len(f_readlines1) - 1:
                         continue
                     #print ("line: ", line)
                     line_split = line.split(',')
                     date_str = line_split[0]
-                    date_str_next = f_readlines[i+1].split(',')[0]
+                    date_str_next = f_readlines1[i+1].split(',')[0]
                     if date_str >= date_str_next:
                         print ("ERROR! check raw data date order!")
                         sys.exit()
-                    # date_temp = time.strptime(date_str, '%d/%m/%Y')
-                    # date_obj = datetime.datetime(*date_temp[:3])
-                    # date_str_new = date_obj.strftime("%Y-%m-%d")
+
+
+                    # --------------------------------------------------------------------------------------------------
+                    # read dividend data
+                    # --------------------------------------------------------------------------------------------------
+                    date_temp = time.strptime(date_str, '%Y-%m-%d')
+                    date_obj = datetime.datetime(*date_temp[:3])
+                    percent_return_next_dividend = 0
+                    days_to_next_dividend = 0
+                    with open (dividend_file_path, 'r') as f:
+                        f_readlines2 = f.readlines()[::-1]
+                        for k, line in enumerate(f_readlines2):
+                            if k == len(f_readlines2) - 1:
+                                continue
+                            if not line:
+                                continue
+                            line_list = line.strip().split(',')
+                            check_date_str = line_list[0]
+                            check_date_temp = time.strptime(check_date_str, '%Y-%m-%d')
+                            check_date_obj = datetime.datetime(*check_date_temp[:3])
+                            if check_date_obj < date_obj:
+                                continue
+                            else:
+                                percent_return_next_dividend = float(line_list[6])
+                                if percent_return_next_dividend == 0:
+                                    continue
+                                else:
+                                    days_to_next_dividend = float((check_date_obj - date_obj).days)
+                                    break
+
+                    if percent_return_next_dividend == 0 or days_to_next_dividend == 0:
+                        print ("Error! Please check days_to_next_dividend or dividend_value, "
+                               "path: {}".format(dividend_file_path))
+                        sys.exit()
+
+                    # --------------------------------------------------------------------------------------------------
+
+
+
+
                     save_file_name = date_str + '_' + file_name_list[j][:-4] + '.txt'
                     save_file_path = os.path.join(save_folder, save_file_name)
 
@@ -79,7 +120,7 @@ class DowJonesIndexExtended:
                     #
 
                     # previous week data
-                    previous_line_split = f_readlines[i-1].split(',')
+                    previous_line_split = f_readlines1[i-1].split(',')
                     previous_open1 = previous_line_split[1]
                     previous_high = previous_line_split[2]
                     previous_low = previous_line_split[3]
@@ -88,7 +129,7 @@ class DowJonesIndexExtended:
                     #
 
                     # next week data
-                    next_line_split = f_readlines[i+1].split(',')
+                    next_line_split = f_readlines1[i+1].split(',')
                     next_open1 = next_line_split[1]
                     next_high = next_line_split[2]
                     next_low = next_line_split[3]
@@ -106,11 +147,14 @@ class DowJonesIndexExtended:
                     write_str = 'open,{},high,{},low,{},close,{},volume,{},' \
                                 'percent_change_price,{},percent_change_volume_over_last_wk,{},' \
                                 'previous_weeks_volume,{},next_weeks_open,{},next_weeks_close,{},' \
-                                'percent_change_next_weeks_price,{}'.format(open1, high, low, close, volume,
+                                'percent_change_next_weeks_price,{}, days_to_next_dividend:{}, ' \
+                                'percent_return_next_dividend:{}'.format(open1, high, low, close, volume,
                                                                             percent_change_price,
                                                                             percent_change_volume_over_last_wk,
                                                                             previous_volume,next_open1,next_close,
-                                                                            percent_change_next_weeks_price)
+                                                                            percent_change_next_weeks_price,
+                                                                            days_to_next_dividend,
+                                                                            percent_return_next_dividend)
                     with open (save_file_path, 'w', encoding='utf-8') as f:
                         f.write(write_str)
 
@@ -313,7 +357,16 @@ class DowJonesIndexExtended:
             with open (previous_week_stock_path, 'r', encoding='utf-8') as f:
                 f_readlines = f.readlines()
                 pre_feature_name_list = f_readlines[0].strip().split(',')[::2]
+                delete_feature1 = 'days_to_next_dividend'
+                delete_feature2 = 'percent_return_next_dividend'
+                delete_index1 = pre_feature_name_list.index(delete_feature1)
+                delete_index2 = pre_feature_name_list.index(delete_feature2)
+                pre_feature_name_list.remove(delete_feature1)
+                pre_feature_name_list.remove(delete_feature2)
+
                 pre_feature_value_list = f_readlines[0].strip().split(',')[1::2]
+                pre_feature_value_list.remove(pre_feature_value_list[delete_index1])
+                pre_feature_value_list.remove(pre_feature_value_list[delete_index2])
 
                 pre_feature_name_list = ['previous_week_' + feature_n for feature_n in pre_feature_name_list]
             # this week data
