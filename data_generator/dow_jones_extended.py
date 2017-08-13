@@ -98,7 +98,7 @@ class DowJonesIndexExtended:
                                     days_to_next_dividend = float((check_date_obj - date_obj).days)
                                     break
 
-                    if percent_return_next_dividend == 0 or days_to_next_dividend == 0:
+                    if percent_return_next_dividend == 0:
                         print ("Error! Please check days_to_next_dividend or dividend_value, "
                                "path: {}".format(dividend_file_path))
                         sys.exit()
@@ -147,8 +147,8 @@ class DowJonesIndexExtended:
                     write_str = 'open,{},high,{},low,{},close,{},volume,{},' \
                                 'percent_change_price,{},percent_change_volume_over_last_wk,{},' \
                                 'previous_weeks_volume,{},next_weeks_open,{},next_weeks_close,{},' \
-                                'percent_change_next_weeks_price,{}, days_to_next_dividend:{}, ' \
-                                'percent_return_next_dividend:{}'.format(open1, high, low, close, volume,
+                                'percent_change_next_weeks_price,{},days_to_next_dividend,{},' \
+                                'percent_return_next_dividend,{}'.format(open1, high, low, close, volume,
                                                                             percent_change_price,
                                                                             percent_change_volume_over_last_wk,
                                                                             previous_volume,next_open1,next_close,

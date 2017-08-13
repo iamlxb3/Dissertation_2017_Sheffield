@@ -40,14 +40,14 @@ from dow_jones_extended import DowJonesIndexExtended
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-# ==========================================================================================================
-# [1.] format raw data
-# ==========================================================================================================
-dow_jones_index1 = DowJonesIndexExtended()
-input_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_original')
-save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_raw')
-dow_jones_index1.format_raw_data(input_folder, save_folder)
-# ==========================================================================================================
+# # ==========================================================================================================
+# # [1.] format raw data
+# # ==========================================================================================================
+# dow_jones_index1 = DowJonesIndexExtended()
+# input_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_original')
+# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_raw')
+# dow_jones_index1.format_raw_data(input_folder, save_folder)
+# # ==========================================================================================================
 
 
 # # ==========================================================================================================
@@ -71,14 +71,14 @@ dow_jones_index1.format_raw_data(input_folder, save_folder)
 
 
 
-# ==========================================================================================================
-# [3.1] feature engineering, add more data (previous week)
-# ==========================================================================================================
-dow_jones_index1 = DowJonesIndexExtended()
-input_file = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_f_engineered')
-save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_f_engineered_more_data')
-dow_jones_index1.f_engineering_add_1_week_data(input_file, save_folder)
-# ==========================================================================================================
+# # ==========================================================================================================
+# # [3.1] feature engineering, add more data (previous week)
+# # ==========================================================================================================
+# dow_jones_index1 = DowJonesIndexExtended()
+# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_f_engineered')
+# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_f_engineered_more_data')
+# dow_jones_index1.f_engineering_add_1_week_data(input_file, save_folder)
+# # ==========================================================================================================
 
 # # # ==========================================================================================================
 # # # [4.] scaling, z-score
@@ -101,14 +101,14 @@ dow_jones_index1.f_engineering_add_1_week_data(input_file, save_folder)
 # # # ==========================================================================================================
 
 
-# # ==========================================================================================================
-# # [5.] data labeling
-# # ==========================================================================================================
-# dow_jones_index1 = DowJonesIndexExtended()
-# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_f_engineered_more_data')
-# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_labeled')
-# dow_jones_index1.label_data(input_file, save_folder)
-# # ==========================================================================================================
+# ==========================================================================================================
+# [5.] data labeling
+# ==========================================================================================================
+dow_jones_index1 = DowJonesIndexExtended()
+input_file = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_f_engineered_more_data')
+save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_labeled')
+dow_jones_index1.label_data(input_file, save_folder)
+# ==========================================================================================================
 
 # # # ==========================================================================================================
 # # # PCA-clf
@@ -120,14 +120,14 @@ dow_jones_index1.f_engineering_add_1_week_data(input_file, save_folder)
 # # # ==========================================================================================================
 
 
-# # ==========================================================================================================
-# # [5.] data regression
-# # ==========================================================================================================
-# dow_jones_index1 = DowJonesIndexExtended()
-# input_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_f_engineered_more_data')
-# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_regression')
-# dow_jones_index1.price_change_regression(input_folder, save_folder)
-# # ==========================================================================================================
+# ==========================================================================================================
+# [5.] data regression
+# ==========================================================================================================
+dow_jones_index1 = DowJonesIndexExtended()
+input_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_f_engineered_more_data')
+save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_regression')
+dow_jones_index1.price_change_regression(input_folder, save_folder)
+# ==========================================================================================================
 
 # # # ==========================================================================================================
 # # # PCA-regression
