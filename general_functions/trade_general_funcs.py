@@ -60,7 +60,13 @@ def split_list_by_percentage(per_tuple, list1):
 
 def calculate_mrse(actual_value_array, pred_value_array):
     '''root-mean-square error sk learn'''
-    rmse = math.sqrt(mean_squared_error(actual_value_array, pred_value_array))
+    # TODO try and except for debug
+    try:
+        rmse = math.sqrt(mean_squared_error(actual_value_array, pred_value_array))
+    except ValueError:
+        print ("actual_value_array: ", actual_value_array)
+        print ("pred_value_array: ", pred_value_array)
+        sys.exit()
     return rmse
 
 

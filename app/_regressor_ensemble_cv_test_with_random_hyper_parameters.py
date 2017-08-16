@@ -37,6 +37,10 @@ from trade_general_funcs import read_pca_component
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+unique_id = 0
+unique_start = 0
+
+
 EXPERIMENTS = 3
 is_standardisation_list = [True, False]
 is_PCA_list = [True, False]
@@ -198,7 +202,8 @@ for is_standardisation, is_PCA, mode in list(itertools.product(is_standardisatio
 
 
         for i, hyper_paramter_tuple in enumerate(hyper_parameter_trail_zip):
-
+            if unique_id < unique_start:
+                continue
             # (0.) PCA n component
             if data_preprocessing == 'pca' or data_preprocessing == 'pca_standardization':
                 random.seed(i + experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
@@ -271,6 +276,7 @@ for is_standardisation, is_PCA, mode in list(itertools.product(is_standardisatio
                 polar_percent_list.append(avg_polar_percent)
 
                 print ("-----------------------------------------------------------------------------------")
+                print ("unique_id", unique_id)
                 print ("is_PCA", is_PCA)
                 print ("is_standardisation", is_standardisation)
                 print ("regressor_ensemble_number: ", ensemble_number)
@@ -340,3 +346,4 @@ for is_standardisation, is_PCA, mode in list(itertools.product(is_standardisatio
             #         f.write("random_state: {}\n".format(random_state))
             # print ("Save txt to {}".format(txt_file_path))
             # ------------------------------------------------------------------------------------------------------------------
+            unique_id += 1

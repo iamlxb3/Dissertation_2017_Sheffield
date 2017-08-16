@@ -37,6 +37,10 @@ from trade_general_funcs import read_pca_component
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+unique_id = 0
+unique_start = 0
+
+
 EXPERIMENTS = 3
 is_standardisation_list = [True, False]
 is_PCA_list = [True, False]
@@ -182,6 +186,8 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
 
         for i, hyper_paramter_tuple in enumerate(hyper_parameter_trail_zip):
+            if unique_id < unique_start:
+                continue
 
             # (0.) PCA n component
             if data_preprocessing == 'pca' or data_preprocessing == 'pca_standardization':
@@ -256,6 +262,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                 accuracy_list.append(avg_accuracy)
 
                 print ("-----------------------------------------------------------------------------------")
+                print ("unique_id", unique_id)
                 print ("is_PCA", is_PCA)
                 print ("is_standardisation", is_standardisation)
                 print ("mode: ", mode)
@@ -323,3 +330,4 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             #         f.write("random_state: {}\n".format(random_state))
             # print ("Save txt to {}".format(txt_file_path))
             # ------------------------------------------------------------------------------------------------------------------
+            unique_id += 1
