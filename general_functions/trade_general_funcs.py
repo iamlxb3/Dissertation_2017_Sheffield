@@ -7,6 +7,7 @@ import collections
 import re
 import itertools
 from sklearn.metrics import mean_squared_error
+from pjslib.logger import logger1
 import sys
 
 
@@ -63,11 +64,14 @@ def calculate_mrse(actual_value_array, pred_value_array):
     # TODO try and except for debug
     try:
         rmse = math.sqrt(mean_squared_error(actual_value_array, pred_value_array))
+        return rmse
     except ValueError:
-        print ("actual_value_array: ", actual_value_array)
-        print ("pred_value_array: ", pred_value_array)
-        sys.exit()
-    return rmse
+        # print ("actual_value_array: ", actual_value_array)
+        # print ("pred_value_array: ", pred_value_array)
+        logger1.info("actual_value_array:{}".format(actual_value_array))
+        logger1.info("pred_value_array:{}".format(pred_value_array))
+        logger1.info("--------------------------------------------")
+        return None
 
 
 def calculate_mrse_PJS(golden_value_array, pred_value_array):

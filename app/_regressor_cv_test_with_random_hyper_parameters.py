@@ -13,6 +13,7 @@ import random
 import os
 import itertools
 import numpy as np
+from pjslib.logger import logger1
 # ==========================================================================================================
 
 # ==========================================================================================================
@@ -238,6 +239,9 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                     mlp_regressor1.trade_rs_cv_load_train_dev_data(random_seed, shift)
                     mlp_regressor1.regressor_train(save_clsfy_path=clf_path)
                     mrse, avg_price_change_tuple, polar_percent = mlp_regressor1.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
+                    if not mrse:
+                        logger1.info("id-{} has None mrese".format(unique_id))
+                        continue
                     shift_n_iter_list.append(mlp_regressor1.mlp_regressor.n_iter_)
                     shift_loss_list.append(mlp_regressor1.mlp_regressor.loss_)
                     shift_rmse_list.append(mrse)
