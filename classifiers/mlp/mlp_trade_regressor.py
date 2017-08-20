@@ -35,10 +35,11 @@ sys.path.append(path2)
 # ==========================================================================================================
 from mlp_trade import MlpTrade
 from mlp_regressor import MlpRegressor_P
-from trade_general_funcs import calculate_mrse
+from trade_general_funcs import calculate_rmse
 from trade_general_funcs import get_avg_price_change
 from trade_general_funcs import create_random_sub_set_list
 from trade_general_funcs import build_hidden_layer_sizes_list
+from trade_general_funcs import compute_average_f1
 # ==========================================================================================================
 
 
@@ -98,7 +99,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
         mlp_regressor = pickle.load(open(save_clsfy_path, "rb"))
         pred_value_list = np.array(mlp_regressor.predict(self.dev_set))
         actual_value_list = np.array(self.dev_value_set)
-        mrse = calculate_mrse(actual_value_list, pred_value_list)
+        rmse = calculate_rmse(actual_value_list, pred_value_list)
         date_list = self.dev_date_set
         stock_id_list = self.dev_stock_id_set
 
@@ -107,14 +108,25 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                                                                                   include_top_list=
                                                                                   include_top_list)
 
-        # count how many predicted value has the same polarity as actual value
+        # compute accuracy in terms of positive and negative
         polar_list = [1 for x, y in zip(pred_value_list, actual_value_list) if x * y >= 0]
         polar_count = len(polar_list)
         polar_percent = polar_count / len(pred_value_list)
         #
 
+        # compute f1
+        pred_label_list = ['pos' if x >= 0 else 'neg' for x in pred_value_list ]
+        actual_label_list = ['pos' if x >= 0 else 'neg' for x in actual_value_list ]
 
-        # self.mres_list.append(mrse)
+        label_tp_fp_tn_dict = compute_average_f1(pred_label_list, actual_label_list)
+        label_f1_list = sorted([(key, x[3]) for key, x in label_tp_fp_tn_dict.items()])
+        f1_list = [x[1] for x in label_f1_list]
+        average_f1 = np.average(f1_list)
+        #
+
+
+
+        # self.mres_list.append(rmse)
         # self.avg_price_change_list.append(avg_price_change_tuple)
         # self.polar_accuracy_list.append(polar_percent)
         # self.var_std_list.append((var_tuple, std_tuple))
@@ -124,8 +136,9 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
             print("----------------------------------------------------------------------------------------")
             print("actual_value_list, ", actual_value_list)
             print("pred_value_list, ", pred_value_list)
-            print("polarity: {}".format(polar_percent))
-            print("mrse: {}".format(mrse))
+            print("accuracy: {}".format(polar_percent))
+            print("average_f1: {}".format(average_f1))
+            print("rmse: {}".format(rmse))
             print("avg_price_change: {}".format(avg_price_change_tuple))
             print("----------------------------------------------------------------------------------------")
         else:
@@ -133,7 +146,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
             # print("Testing complete! Testing Set size: {}".format(len(self.r_dev_value_set)))
             # <uncomment for debugging>
     # ------------------------------------------------------------------------------------------------------------------
-        return mrse, avg_price_change_tuple, polar_percent
+        return rmse, avg_price_change_tuple, polar_percent, average_f1
 
     def regressor_dev_test(self, dev_set, dev_value_set, dev_date_set, dev_stock_id_set, save_clsfy_path="mlp_trade_regressor", is_cv=False, include_top_list = None):
         # test mode
@@ -144,7 +157,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
         mlp_regressor = self.mlp_regressor
         pred_value_list = np.array(mlp_regressor.predict(dev_set))
         actual_value_list = np.array(dev_value_set)
-        mrse = calculate_mrse(actual_value_list, pred_value_list)
+        mrse = calculate_rmse(actual_value_list, pred_value_list)
         date_list = dev_date_set
         stock_id_list = dev_stock_id_set
 

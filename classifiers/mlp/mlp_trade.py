@@ -233,7 +233,7 @@ class MlpTrade(MultilayerPerceptron):
     def trade_feed_and_separate_data(self, folder, dev_per=0.1, data_per=1.0, feature_switch_tuple=None,
                                      random_seed='normal', mode='reg', is_production = False,
                                      is_standardisation = True, is_PCA = True, is_test_folder = False,
-                                     standardisation_file_path = '', pca_file_path = ''):
+                                     standardisation_file_path = '', pca_file_path = '', pca_n_component=None):
         '''feed and seperate data in the normal order
         '''
         # (1.) read all the data, feature customizable
@@ -265,9 +265,10 @@ class MlpTrade(MultilayerPerceptron):
             trans_fit, trans_obj = self.mlp_data_pre_processing(self.training_set, self.dev_set, is_standardisation
                                                                 , is_PCA,
                                                                 standardisation_file_path = standardisation_file_path,
-                                                                pca_file_path = pca_file_path)
-
+                                                                pca_file_path = pca_file_path,
+                                                                pca_n_component=pca_n_component)
             self._update_train_dev_value_set(trans_fit, trans_obj)
+            
         else:
             if standardisation_file_path:
                 standardisation = pickle.load(open(standardisation_file_path, "rb"))

@@ -219,7 +219,8 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             rmse_list = []
             avg_pc_list = []
             random_state_list = []
-            polar_percent_list = []
+            accuracy_list = []
+            avg_f1_list = []
 
 
             for random_state in range(random_state_total):
@@ -229,33 +230,35 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                 shift_loss_list = []
                 shift_rmse_list = []
                 shift_avg_pc_list = []
-                shift_polar_percent_list = []
+                shift_accuracy_list = []
+                shift_avg_f1_list = []
 
-                mlp_regressor1.set_regressor_test(hidden_layer_sizes, tol=tol, learning_rate_init=learning_rate_init,
+                mlp_regressor1.set_regressor(hidden_layer_sizes, tol=tol, learning_rate_init=learning_rate_init,
                                                   random_state=random_state,
-                                   verbose = False, learning_rate = learning_rate, early_stopping =early_stopping, alpha= alpha,
-                                                  validation_fraction = validation_fraction, activation = activation_function)
+                verbose = False, learning_rate = learning_rate, early_stopping =early_stopping, alpha= alpha,
+                validation_fraction = validation_fraction, activation = activation_function)
 
                 for shift in mlp_regressor1.validation_dict[random_seed].keys():
                     mlp_regressor1.trade_rs_cv_load_train_dev_data(random_seed, shift)
                     mlp_regressor1.regressor_train(save_clsfy_path=clf_path)
-                    mrse, avg_price_change_tuple, polar_percent = mlp_regressor1.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
-                    if not mrse:
-                        logger1.info("id-{} has None mrese".format(unique_id))
+                    rmse, avg_price_change_tuple, accuracy, average_f1 = mlp_regressor1.regressor_dev(save_clsfy_path=clf_path,
+                                                                                                      is_cv=True, include_top_list=include_top_list)
+                    if not rmse:
+                        logger1.info("id-{}, shift-{} has None rmse".format(unique_id, shift))
                         continue
                     shift_n_iter_list.append(mlp_regressor1.mlp_regressor.n_iter_)
                     shift_loss_list.append(mlp_regressor1.mlp_regressor.loss_)
-                    shift_rmse_list.append(mrse)
+                    shift_rmse_list.append(rmse)
                     shift_avg_pc_list.append(avg_price_change_tuple[0])
-                    shift_polar_percent_list.append(polar_percent)
-
+                    shift_accuracy_list.append(accuracy)
+                    shift_avg_f1_list.append(average_f1)
 
                 avg_n_iter = np.average(shift_n_iter_list)
                 avg_loss= np.average(shift_loss_list)
-                avg_rmse = np.average(np.average(shift_rmse_list))
+                avg_rmse = np.average(shift_rmse_list)
                 avg_pc = np.average(shift_avg_pc_list)
-                avg_polar_percent = np.average(np.average(shift_polar_percent_list))
-
+                avg_accuracy = np.average(shift_accuracy_list)
+                avg_avg_f1 = np.average(shift_avg_f1_list)
 
 
                 random_state_list.append(random_state)
@@ -263,7 +266,8 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                 loss_list.append(avg_loss)
                 rmse_list.append(avg_rmse)
                 avg_pc_list.append(avg_pc)
-                polar_percent_list.append(avg_polar_percent)
+                accuracy_list.append(avg_accuracy)
+                avg_f1_list.append(avg_avg_f1)
 
                 print ("-----------------------------------------------------------------------------------")
                 print ("unique_id", unique_id)
@@ -282,12 +286,14 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                 print ("avg_loss: ", avg_loss)
                 print ("avg_rmse: ", avg_rmse)
                 print ("avg_pc: ", avg_pc)
-                print ("avg_polar_percent: ", avg_polar_percent)
+                print ("avg_accuracy: ", avg_accuracy)
+                print ("avg_avg_f1: ", avg_avg_f1)
                 print ("Testing percent: {:.7f}%".format(100*i/TRAILS))
                 print ("experiment: {}/{}".format(experiment, EXPERIMENTS))
 
             # ==========================================================================================================
-            write_list = list(zip(loss_list, n_iter_list, rmse_list, avg_pc_list, polar_percent_list, random_state_list))
+            write_list = list(zip(loss_list, n_iter_list, rmse_list, avg_pc_list,
+                                  accuracy_list, avg_f1_list, random_state_list))
             write_list = sorted(write_list, key = lambda x:x[0])
 
 

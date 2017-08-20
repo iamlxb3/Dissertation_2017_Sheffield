@@ -59,7 +59,7 @@ def split_list_by_percentage(per_tuple, list1):
     return split_list
 
 
-def calculate_mrse(actual_value_array, pred_value_array):
+def calculate_rmse(actual_value_array, pred_value_array):
     '''root-mean-square error sk learn'''
     # TODO try and except for debug
     try:

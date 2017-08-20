@@ -34,7 +34,7 @@ sys.path.append(path2)
 # local package import
 # ==========================================================================================================
 from mlp_trade_regressor import MlpTradeRegressor
-from trade_general_funcs import calculate_mrse
+from trade_general_funcs import calculate_rmse
 from trade_general_funcs import get_avg_price_change
 from trade_general_funcs import create_random_sub_set_list
 from trade_general_funcs import build_hidden_layer_sizes_list
@@ -99,7 +99,7 @@ class MlpTradeEnsembleRegressor(MlpTradeRegressor):
         mlp_regressor = pickle.load(open(save_clsfy_path, "rb"))
         pred_value_list = np.array(mlp_regressor.predict(self.dev_set))
         actual_value_list = np.array(self.dev_value_set)
-        mrse = calculate_mrse(actual_value_list, pred_value_list)
+        mrse = calculate_rmse(actual_value_list, pred_value_list)
         date_list = self.dev_date_set
         stock_id_list = self.dev_stock_id_set
 

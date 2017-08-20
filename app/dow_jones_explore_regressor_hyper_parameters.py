@@ -150,12 +150,18 @@ def save_hyper_parameter_result_to_file_regressor(hyper_parameter_list, save_pat
                 f.write('---------------------------\n')
                 evaluation_metrics_list = ['' for x in list(evaluation_metrics_tuple)]
                 #evaluation_metrics_list = [str(x) for x in list(evaluation_metrics_tuple)]
-                evaluation_metrics_list[0] = 'loss: {}, var: {}, std: {}'.format(evaluation_metrics_tuple[0][0],evaluation_metrics_tuple[0][1],evaluation_metrics_tuple[0][2])
-                evaluation_metrics_list[1] = 'iteration_step: {}, var: {}, std: {}'.format(evaluation_metrics_tuple[1][0],evaluation_metrics_tuple[1][1],evaluation_metrics_tuple[1][2])
-                evaluation_metrics_list[2] = 'rmse: {}, var: {}, std: {}'.format(evaluation_metrics_tuple[2][0],evaluation_metrics_tuple[2][1],evaluation_metrics_tuple[2][2])
-                evaluation_metrics_list[3] = 'avg_pc: {}, var: {}, std: {}'.format(evaluation_metrics_tuple[3][0],evaluation_metrics_tuple[3][1],evaluation_metrics_tuple[3][2])
-                evaluation_metrics_list[4] = 'hit: {}, var: {}, std: {}'.format(evaluation_metrics_tuple[4][0],evaluation_metrics_tuple[4][1],evaluation_metrics_tuple[4][2])
-
+                evaluation_metrics_list[0] = 'loss: {}, var: {}, std: {}'.\
+                    format(evaluation_metrics_tuple[0][0],evaluation_metrics_tuple[0][1],evaluation_metrics_tuple[0][2])
+                evaluation_metrics_list[1] = 'iteration_step: {}, var: {}, std: {}'.\
+                    format(evaluation_metrics_tuple[1][0],evaluation_metrics_tuple[1][1],evaluation_metrics_tuple[1][2])
+                evaluation_metrics_list[2] = 'rmse: {}, var: {}, std: {}'.\
+                    format(evaluation_metrics_tuple[2][0],evaluation_metrics_tuple[2][1],evaluation_metrics_tuple[2][2])
+                evaluation_metrics_list[3] = 'avg_pc: {}, var: {}, std: {}'.\
+                    format(evaluation_metrics_tuple[3][0],evaluation_metrics_tuple[3][1],evaluation_metrics_tuple[3][2])
+                evaluation_metrics_list[4] = 'hit: {}, var: {}, std: {}'.\
+                    format(evaluation_metrics_tuple[4][0],evaluation_metrics_tuple[4][1],evaluation_metrics_tuple[4][2])
+                evaluation_metrics_list[5] = 'average_f1: {}, var: {}, std: {}'.\
+                    format(evaluation_metrics_tuple[5][0],evaluation_metrics_tuple[5][1],evaluation_metrics_tuple[5][2])
                 evaluation_metrics_tuple_str = '\n'.join(evaluation_metrics_list)
                 f.write(evaluation_metrics_tuple_str + '\n')
             else:
@@ -169,7 +175,8 @@ def save_hyper_parameter_result_to_file_regressor(hyper_parameter_list, save_pat
                 evaluation_metrics_list[2] = 'rmse: ' + evaluation_metrics_list[2]
                 evaluation_metrics_list[3] = 'avg_pc: ' + evaluation_metrics_list[3]
                 evaluation_metrics_list[4] = 'hit: ' + evaluation_metrics_list[4]
-                evaluation_metrics_list[5] = 'random_state: ' + evaluation_metrics_list[5]
+                evaluation_metrics_list[5] = 'average_f1: ' + evaluation_metrics_list[5]
+                evaluation_metrics_list[6] = 'random_state: ' + evaluation_metrics_list[6]
                 evaluation_metrics_tuple_str = '\n'.join(evaluation_metrics_list)
                 f.write(evaluation_metrics_tuple_str + '\n')
 # ----------------------------------------------------------------------------------------------------------------------
@@ -197,6 +204,10 @@ save_hyper_parameter_result_to_file_regressor(hyper_parameter_avg_list_sort_by_a
 # (3.) sort by hit
 hyper_parameter_avg_list_sort_by_hit = sorted(hyper_parameter_avg_list, key = lambda x:x[1][4], reverse=True)
 save_hyper_parameter_result_to_file_regressor(hyper_parameter_avg_list_sort_by_hit, hyper_parameter_avg_hit_save_path)
+
+# (4.) sort by avg_f1
+hyper_parameter_avg_list_sort_by_avg_f1 = sorted(hyper_parameter_avg_list, key = lambda x:x[1][5], reverse=True)
+save_hyper_parameter_result_to_file_regressor(hyper_parameter_avg_list_sort_by_avg_f1, hyper_parameter_avg_hit_save_path)
 # ----------------------------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -223,6 +234,11 @@ save_hyper_parameter_result_to_file_regressor(hyper_parameter_best_list_sort_by_
 hyper_parameter_best_list_sort_by_hit = sorted(hyper_parameter_best_list, key = lambda x:x[1][4], reverse=True)
 save_hyper_parameter_result_to_file_regressor(hyper_parameter_best_list_sort_by_hit,
                                               hyper_parameter_best_hit_save_path, is_avg = False)
+
+# (4.) sort by avg_f1
+hyper_parameter_avg_list_sort_by_avg_f1 = sorted(hyper_parameter_avg_list, key = lambda x:x[1][5], reverse=True)
+save_hyper_parameter_result_to_file_regressor(hyper_parameter_avg_list_sort_by_avg_f1, hyper_parameter_avg_hit_save_path,
+                                              is_avg = False)
 # ----------------------------------------------------------------------------------------------------------------------
 
 

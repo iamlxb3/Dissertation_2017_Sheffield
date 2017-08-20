@@ -26,7 +26,7 @@ sys.path.append(mlp_path)
 # ==========================================================================================================
 # local package import
 # ==========================================================================================================
-from trade_general_funcs import calculate_mrse
+from trade_general_funcs import calculate_rmse
 # ==========================================================================================================
 
 
@@ -39,7 +39,7 @@ y_actual = np.array([1,2,3.2,8.7,5.5,112])
 y_predicted= np.array([2,3.9,4.1,0,34.3,9.9])
 
 rms1 = math.sqrt(mean_squared_error(y_actual, y_predicted))
-rms2 = calculate_mrse(y_actual, y_predicted)
+rms2 = calculate_rmse(y_actual, y_predicted)
 
 print ("rms1: {}".format(rms1))
 print ("rms2: {}".format(rms2))
