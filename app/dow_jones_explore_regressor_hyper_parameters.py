@@ -55,7 +55,8 @@ parent_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # read data into dictionary
 # ----------------------------------------------------------------------------------------------------------------------
 data_set = 'dow_jones'
-classifier = 'adaboost_regressor'
+#classifier = 'adaboost_regressor'
+classifier = 'regressor'
 data_preprocessing = 'pca_standardization'
 # data_preprocessing = 'origin'
 # data_preprocessing = 'pca'
@@ -123,6 +124,8 @@ hyper_parameter_avg_avg_pc_save_path = "{}_sort_by_average_avg_pc.txt".format(da
 hyper_parameter_avg_avg_pc_save_path = os.path.join(hyper_parameter_result_save_folder, hyper_parameter_avg_avg_pc_save_path)
 hyper_parameter_avg_hit_save_path = "{}_sort_by_average_hit.txt".format(data_preprocessing)
 hyper_parameter_avg_hit_save_path = os.path.join(hyper_parameter_result_save_folder, hyper_parameter_avg_hit_save_path)
+hyper_parameter_avg_avg_f1_save_path = "{}_sort_by_average_avg_f1.txt".format(data_preprocessing)
+hyper_parameter_avg_avg_f1_save_path = os.path.join(hyper_parameter_result_save_folder, hyper_parameter_avg_avg_f1_save_path)
 #
 # sort by best
 hyper_parameter_lowest_loss_save_path = "{}_sort_by_lowest_loss.txt".format(data_preprocessing)
@@ -133,6 +136,8 @@ hyper_parameter_best_avg_pc_save_path = "{}_sort_by_best_avg_pc.txt".format(data
 hyper_parameter_best_avg_pc_save_path = os.path.join(hyper_parameter_result_save_folder, hyper_parameter_best_avg_pc_save_path)
 hyper_parameter_best_hit_save_path = "{}_sort_by_best_hit.txt".format(data_preprocessing)
 hyper_parameter_best_hit_save_path = os.path.join(hyper_parameter_result_save_folder, hyper_parameter_best_hit_save_path)
+hyper_parameter_best_avg_f1_save_path = "{}_sort_by_best_avg_f1.txt".format(data_preprocessing)
+hyper_parameter_best_avg_f1_save_path = os.path.join(hyper_parameter_result_save_folder, hyper_parameter_best_avg_f1_save_path)
 #
 
 
@@ -207,7 +212,7 @@ save_hyper_parameter_result_to_file_regressor(hyper_parameter_avg_list_sort_by_h
 
 # (4.) sort by avg_f1
 hyper_parameter_avg_list_sort_by_avg_f1 = sorted(hyper_parameter_avg_list, key = lambda x:x[1][5], reverse=True)
-save_hyper_parameter_result_to_file_regressor(hyper_parameter_avg_list_sort_by_avg_f1, hyper_parameter_avg_hit_save_path)
+save_hyper_parameter_result_to_file_regressor(hyper_parameter_avg_list_sort_by_avg_f1, hyper_parameter_avg_avg_f1_save_path)
 # ----------------------------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -236,8 +241,8 @@ save_hyper_parameter_result_to_file_regressor(hyper_parameter_best_list_sort_by_
                                               hyper_parameter_best_hit_save_path, is_avg = False)
 
 # (4.) sort by avg_f1
-hyper_parameter_avg_list_sort_by_avg_f1 = sorted(hyper_parameter_avg_list, key = lambda x:x[1][5], reverse=True)
-save_hyper_parameter_result_to_file_regressor(hyper_parameter_avg_list_sort_by_avg_f1, hyper_parameter_avg_hit_save_path,
+hyper_parameter_avg_list_sort_by_avg_f1 = sorted(hyper_parameter_best_list, key = lambda x:x[1][5], reverse=True)
+save_hyper_parameter_result_to_file_regressor(hyper_parameter_avg_list_sort_by_avg_f1, hyper_parameter_best_avg_f1_save_path,
                                               is_avg = False)
 # ----------------------------------------------------------------------------------------------------------------------
 
