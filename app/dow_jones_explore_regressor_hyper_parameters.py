@@ -149,7 +149,6 @@ def save_hyper_parameter_result_to_file_regressor(hyper_parameter_list, save_pat
     with open(save_path, 'w') as f:
         for hyper_parameter_tuple, evaluation_metrics_tuple in hyper_parameter_list:
             if is_avg:
-                f.write('===========================\n')
                 hyper_parameter_tuple_str = '\n'.join(hyper_parameter_tuple)
                 f.write(hyper_parameter_tuple_str + '\n')
                 f.write('---------------------------\n')
@@ -169,8 +168,8 @@ def save_hyper_parameter_result_to_file_regressor(hyper_parameter_list, save_pat
                     format(evaluation_metrics_tuple[5][0],evaluation_metrics_tuple[5][1],evaluation_metrics_tuple[5][2])
                 evaluation_metrics_tuple_str = '\n'.join(evaluation_metrics_list)
                 f.write(evaluation_metrics_tuple_str + '\n')
-            else:
                 f.write('===========================\n')
+            else:
                 hyper_parameter_tuple_str = '\n'.join(hyper_parameter_tuple)
                 f.write(hyper_parameter_tuple_str + '\n')
                 f.write('---------------------------\n')
@@ -184,6 +183,7 @@ def save_hyper_parameter_result_to_file_regressor(hyper_parameter_list, save_pat
                 evaluation_metrics_list[6] = 'random_state: ' + evaluation_metrics_list[6]
                 evaluation_metrics_tuple_str = '\n'.join(evaluation_metrics_list)
                 f.write(evaluation_metrics_tuple_str + '\n')
+                f.write('===========================\n')
 # ----------------------------------------------------------------------------------------------------------------------
 
 

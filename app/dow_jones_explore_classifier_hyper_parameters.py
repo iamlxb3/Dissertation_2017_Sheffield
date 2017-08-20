@@ -56,7 +56,7 @@ parent_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ----------------------------------------------------------------------------------------------------------------------
 data_set = 'dow_jones'
 #classifier = 'classifier'
-classifier = 'classifier1'
+classifier = 'classifier'
 data_preprocessing = 'pca_standardization'
 # data_preprocessing = 'origin'
 # data_preprocessing = 'pca'
@@ -143,22 +143,23 @@ hyper_parameter_best_accuracy_save_path = os.path.join(hyper_parameter_result_sa
 def save_hyper_parameter_result_to_file_regressor(hyper_parameter_list, save_path, is_avg = True):
     with open(save_path, 'w') as f:
         for hyper_parameter_tuple, evaluation_metrics_tuple in hyper_parameter_list:
+
             if is_avg:
-                f.write('===========================\n')
                 hyper_parameter_tuple_str = '\n'.join(hyper_parameter_tuple)
                 f.write(hyper_parameter_tuple_str + '\n')
                 f.write('---------------------------\n')
-                evaluation_metrics_list = ['' for x in list(evaluation_metrics_tuple)]
+                evaluation_metrics_list = ['' for x in list(evaluation_metrics_tuple)][:-1] # get rid of random state
                 #evaluation_metrics_list = [str(x) for x in list(evaluation_metrics_tuple)]
                 evaluation_metrics_list[0] = 'loss: {}, var: {}, std: {}'.format(evaluation_metrics_tuple[0][0],evaluation_metrics_tuple[0][1],evaluation_metrics_tuple[0][2])
                 evaluation_metrics_list[1] = 'iteration_step: {}, var: {}, std: {}'.format(evaluation_metrics_tuple[1][0],evaluation_metrics_tuple[1][1],evaluation_metrics_tuple[1][2])
                 evaluation_metrics_list[2] = 'f1: {}, var: {}, std: {}'.format(evaluation_metrics_tuple[2][0],evaluation_metrics_tuple[2][1],evaluation_metrics_tuple[2][2])
-                evaluation_metrics_list[3] = 'accuracy' \
-                                             ': {}, var: {}, std: {}'.format(evaluation_metrics_tuple[3][0],evaluation_metrics_tuple[3][1],evaluation_metrics_tuple[3][2])
+                evaluation_metrics_list[3] = 'accuracy: {}, var: {}, std: {}'.format(evaluation_metrics_tuple[3][0],evaluation_metrics_tuple[3][1],evaluation_metrics_tuple[3][2])
+
                 evaluation_metrics_tuple_str = '\n'.join(evaluation_metrics_list)
+
                 f.write(evaluation_metrics_tuple_str + '\n')
-            else:
                 f.write('===========================\n')
+            else:
                 hyper_parameter_tuple_str = '\n'.join(hyper_parameter_tuple)
                 f.write(hyper_parameter_tuple_str + '\n')
                 f.write('---------------------------\n')
@@ -170,6 +171,7 @@ def save_hyper_parameter_result_to_file_regressor(hyper_parameter_list, save_pat
                 evaluation_metrics_list[4] = 'random_state: ' + evaluation_metrics_list[4]
                 evaluation_metrics_tuple_str = '\n'.join(evaluation_metrics_list)
                 f.write(evaluation_metrics_tuple_str + '\n')
+                f.write('===========================\n')
 # ----------------------------------------------------------------------------------------------------------------------
 
 
