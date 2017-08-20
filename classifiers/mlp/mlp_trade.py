@@ -367,6 +367,7 @@ class MlpTrade(MultilayerPerceptron):
         print("shift_num: ", shift_num)
         print("window_size: ", window_size)
         print("shifting_size: ", shifting_size)
+        print("Validation size: ", shifting_size*shift_num)
 
         for shift in range(shift_num):
 
@@ -375,7 +376,7 @@ class MlpTrade(MultilayerPerceptron):
             training_date_end_index = training_date_start_index + window_size
             dev_date_end_index = training_date_end_index + shifting_size
             if dev_date_end_index > len(sorted_date_list) - 1:
-                print ("Error! dev_date_end_index exceed! Please check shift_num or shifting_size_percent!")
+                print ("WARNING! dev_date_end_index exceed! Dev set of different shift may have different size!")
             training_date_list = sorted_date_list[training_date_start_index:training_date_end_index]
             dev_date_list = sorted_date_list[training_date_end_index:dev_date_end_index]
 

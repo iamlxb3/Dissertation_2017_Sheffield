@@ -13,7 +13,6 @@ import random
 import os
 import itertools
 import numpy as np
-from pjslib.logger import logger1
 # ==========================================================================================================
 
 # ==========================================================================================================
@@ -29,7 +28,7 @@ sys.path.append(path2)
 # ==========================================================================================================
 # local package import
 # ==========================================================================================================
-from mlp_trade_regressor import MlpTradeRegressor
+from mlp_trade_classifier import MlpTradeClassifier
 from trade_general_funcs import get_full_feature_switch_tuple
 from trade_general_funcs import read_pca_component
 
@@ -41,6 +40,7 @@ from trade_general_funcs import read_pca_component
 unique_id = 0
 unique_start = 0
 
+
 EXPERIMENTS = 3
 is_standardisation_list = [True, False]
 is_PCA_list = [True, False]
@@ -51,26 +51,30 @@ EXPERIMENT_RANDOM_SEED_OFFSET = 38453845
 data_set = 'dow_jones'
 random_state_total = 50
 tol = 1e-10
-classifier = 'regressor'
-input_folder = os.path.join('dow_jones_index_extended', 'dow_jones_index_extended_regression')
+classifier = 'classifier1'
+shift_num = 50
+shifting_size_percent = 0.01
+
+input_folder = os.path.join('dow_jones_index_extended', 'dow_jones_index_extended_labeled')
 input_folder = os.path.join(parent_folder, 'data', input_folder)
 
 
 # ==========================================================================================================
 # Build MLP classifier for a-share data, save the mlp to local
 # ==========================================================================================================
+is_standardisation = True
+is_PCA = True
+
 for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list, is_PCA_list)):
 
-
-
     # (1.) build classifer
-    mlp_regressor1 = MlpTradeRegressor()
+    mlp_regressor1 = MlpTradeClassifier()
     clsfy_name = '{}_hyper_parameter_{}'.format(data_set, classifier)
     clf_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
 
 
     # (2.) GET TRANINING SET
-    data_per = 1.0 # the percentage of data using for training and testing
+    data_per = 1.0 # the percentage of data using for training, validation and testing
     #dev_per = 0.0 # the percentage of data using for developing
 
 
@@ -78,10 +82,10 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
     feature_switch_tuple_all_1 = get_full_feature_switch_tuple(input_folder)
 
     # (3.)
-    samples_feature_list, samples_value_list, \
-    date_str_list, stock_id_list = mlp_regressor1._feed_data(input_folder, data_per=data_per,
-                                                   feature_switch_tuple=feature_switch_tuple_all_1,
-                                                   is_random=False)
+    samples_feature_list, samples_value_list, date_str_list, stock_id_list = mlp_regressor1._feed_data(input_folder,
+                                                                  data_per=data_per,
+                                                                  feature_switch_tuple=feature_switch_tuple_all_1,
+                                                                is_random=False, mode='clf')
 
 
     # (4.)
@@ -96,12 +100,9 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
     else:
         print ("Check data preprocessing switch")
         sys.exit()
-    shift_num = 5
-    shifting_size_percent = 0.1
+
     pca_n_component_max = read_pca_component(input_folder)
 
-
-    include_top_list = [1]
 
     # ----------------------------------------------------------------------------------------------------------------------
     # generator builder
@@ -185,6 +186,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             if unique_id < unique_start:
                 unique_id += 1
                 continue
+
             # (0.) PCA n component
             if data_preprocessing == 'pca' or data_preprocessing == 'pca_standardization':
                 random.seed(i + experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
@@ -198,7 +200,6 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                                                                shift_num=shift_num,
                                                                is_standardisation=is_standardisation, is_PCA=is_PCA,
                                                                pca_n_component=pca_n_component)
-
 
 
 
@@ -216,10 +217,9 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             trail = i
             n_iter_list = []
             loss_list = []
-            rmse_list = []
-            avg_pc_list = []
+            f1_list = []
+            accuracy_list = []
             random_state_list = []
-            polar_percent_list = []
 
 
             for random_state in range(random_state_total):
@@ -227,46 +227,39 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
                 shift_n_iter_list = []
                 shift_loss_list = []
-                shift_rmse_list = []
-                shift_avg_pc_list = []
-                shift_polar_percent_list = []
+                shift_f1_list = []
+                shift_accuracy_list = []
 
-                mlp_regressor1.set_regressor_test(hidden_layer_sizes, tol=tol, learning_rate_init=learning_rate_init,
+
+                mlp_regressor1.set_mlp_clf(hidden_layer_sizes, tol=tol, learning_rate_init=learning_rate_init,
                                                   random_state=random_state,
                                    verbose = False, learning_rate = learning_rate, early_stopping =early_stopping, alpha= alpha,
                                                   validation_fraction = validation_fraction, activation = activation_function)
 
                 for shift in mlp_regressor1.validation_dict[random_seed].keys():
                     mlp_regressor1.trade_rs_cv_load_train_dev_data(random_seed, shift)
-                    mlp_regressor1.regressor_train(save_clsfy_path=clf_path)
-                    mrse, avg_price_change_tuple, polar_percent = mlp_regressor1.regressor_dev(save_clsfy_path=clf_path, is_cv=True, include_top_list=include_top_list)
-                    if not mrse:
-                        logger1.info("id-{} has None mrese".format(unique_id))
-                        continue
-                    shift_n_iter_list.append(mlp_regressor1.mlp_regressor.n_iter_)
-                    shift_loss_list.append(mlp_regressor1.mlp_regressor.loss_)
-                    shift_rmse_list.append(mrse)
-                    shift_avg_pc_list.append(avg_price_change_tuple[0])
-                    shift_polar_percent_list.append(polar_percent)
+                    n_iter, loss = mlp_regressor1.clf_train(save_clsfy_path=clf_path)
+                    average_f1, accuracy = mlp_regressor1.clf_dev(save_clsfy_path=clf_path, is_cv=True, is_return=True)
+                    shift_n_iter_list.append(n_iter)
+                    shift_loss_list.append(loss)
+                    shift_f1_list.append(average_f1)
+                    shift_accuracy_list.append(accuracy)
 
 
                 avg_n_iter = np.average(shift_n_iter_list)
                 avg_loss= np.average(shift_loss_list)
-                avg_rmse = np.average(np.average(shift_rmse_list))
-                avg_pc = np.average(shift_avg_pc_list)
-                avg_polar_percent = np.average(np.average(shift_polar_percent_list))
-
+                avg_f1 = np.average(shift_f1_list)
+                avg_accuracy = np.average(shift_accuracy_list)
 
 
                 random_state_list.append(random_state)
                 n_iter_list.append(avg_n_iter)
                 loss_list.append(avg_loss)
-                rmse_list.append(avg_rmse)
-                avg_pc_list.append(avg_pc)
-                polar_percent_list.append(avg_polar_percent)
+                f1_list.append(avg_f1)
+                accuracy_list.append(avg_accuracy)
 
                 print ("-----------------------------------------------------------------------------------")
-                print ("unique_id", unique_id)
+                print ("unique_id ", unique_id)
                 print ("is_PCA", is_PCA)
                 print ("is_standardisation", is_standardisation)
                 print ("pca_n_component: ", pca_n_component)
@@ -280,21 +273,20 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                 print ("hidden_layer_sizes: ", hidden_layer_sizes)
                 print ("avg_n_iter: ", avg_n_iter)
                 print ("avg_loss: ", avg_loss)
-                print ("avg_rmse: ", avg_rmse)
-                print ("avg_pc: ", avg_pc)
-                print ("avg_polar_percent: ", avg_polar_percent)
+                print ("avg_f1: ", avg_f1)
+                print ("avg_accuracy: ", avg_accuracy)
                 print ("Testing percent: {:.7f}%".format(100*i/TRAILS))
                 print ("experiment: {}/{}".format(experiment, EXPERIMENTS))
 
             # ==========================================================================================================
-            write_list = list(zip(loss_list, n_iter_list, rmse_list, avg_pc_list, polar_percent_list, random_state_list))
+            write_list = list(zip(loss_list, n_iter_list, f1_list, accuracy_list, random_state_list))
             write_list = sorted(write_list, key = lambda x:x[0])
 
 
             hidden_layer_write_str = '_'.join([str(x) for x in hidden_layer_sizes])
 
-            write_tuple = (experiment, trail, random_state_total, pca_n_component, activation_function, alpha, learning_rate, learning_rate_init, early_stopping,
-                           validation_fraction, hidden_layer_write_str)
+            write_tuple = (experiment, trail, random_state_total, pca_n_component, activation_function, alpha,
+                           learning_rate, learning_rate_init, early_stopping,validation_fraction, hidden_layer_write_str)
             save_folder = os.path.join(parent_folder, 'hyper_parameter_test', data_set, classifier, data_preprocessing)
             csv_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.csv'.format(*write_tuple))
             txt_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.txt'.format(*write_tuple))
@@ -333,4 +325,5 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             #         f.write("random_state: {}\n".format(random_state))
             # print ("Save txt to {}".format(txt_file_path))
             # ------------------------------------------------------------------------------------------------------------------
+
             unique_id += 1

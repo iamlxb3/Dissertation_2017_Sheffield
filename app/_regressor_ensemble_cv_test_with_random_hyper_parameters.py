@@ -205,6 +205,7 @@ for is_standardisation, is_PCA, mode in list(itertools.product(is_standardisatio
 
         for i, hyper_paramter_tuple in enumerate(hyper_parameter_trail_zip):
             if unique_id < unique_start:
+                unique_id += 1
                 continue
             # (0.) PCA n component
             if data_preprocessing == 'pca' or data_preprocessing == 'pca_standardization':

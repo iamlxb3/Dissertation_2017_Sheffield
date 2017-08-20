@@ -55,7 +55,8 @@ parent_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # read data into dictionary
 # ----------------------------------------------------------------------------------------------------------------------
 data_set = 'dow_jones'
-classifier = 'classifier'
+#classifier = 'classifier'
+classifier = 'classifier1'
 data_preprocessing = 'pca_standardization'
 # data_preprocessing = 'origin'
 # data_preprocessing = 'pca'

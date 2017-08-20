@@ -38,7 +38,7 @@ from trade_general_funcs import read_pca_component
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 unique_id = 0
-unique_start = 0
+unique_start = 1103
 
 
 EXPERIMENTS = 3
@@ -52,6 +52,9 @@ data_set = 'dow_jones'
 random_state_total = 50
 tol = 1e-10
 classifier = 'classifier'
+shift_num = 5
+shifting_size_percent = 0.1
+
 input_folder = os.path.join('dow_jones_index_extended', 'dow_jones_index_extended_labeled')
 input_folder = os.path.join(parent_folder, 'data', input_folder)
 
@@ -97,8 +100,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
     else:
         print ("Check data preprocessing switch")
         sys.exit()
-    shift_num = 5
-    shifting_size_percent = 0.1
+
     pca_n_component_max = read_pca_component(input_folder)
 
 
@@ -182,6 +184,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
         for i, hyper_paramter_tuple in enumerate(hyper_parameter_trail_zip):
             if unique_id < unique_start:
+                unique_id += 1
                 continue
 
             # (0.) PCA n component
@@ -197,7 +200,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                                                                shift_num=shift_num,
                                                                is_standardisation=is_standardisation, is_PCA=is_PCA,
                                                                pca_n_component=pca_n_component)
-
+            sys.exit()
 
 
 

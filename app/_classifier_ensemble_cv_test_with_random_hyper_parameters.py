@@ -187,6 +187,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
         for i, hyper_paramter_tuple in enumerate(hyper_parameter_trail_zip):
             if unique_id < unique_start:
+                unique_id += 1
                 continue
 
             # (0.) PCA n component
