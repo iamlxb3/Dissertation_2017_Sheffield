@@ -158,7 +158,7 @@ for hyper_parameter in hyper_parameter_list:
 
     # ax1
     ax1.plot(hyper_parameter_chosen_list, avg_f1_list, 'x', label = 'average_f1')
-    ax1.set_title('{} correlation'.format(hyper_parameter))
+    ax1.set_title('{} correlation with {}'.format(hyper_parameter, data_preprocessing))
     ax1.set_xlabel('{}'.format(hyper_parameter))
     ax1.legend()
     #
@@ -274,7 +274,7 @@ for hyper_parameter in hyper_parameter_list:
 
     # ax1
     ax1.plot(hyper_parameter_chosen_list, avg_f1_list, 'x', label = 'average_f1')
-    ax1.set_title('{} correlation'.format(hyper_parameter))
+    ax1.set_title('{} correlation with {}'.format(hyper_parameter, data_preprocessing))
     ax1.set_xlabel('{}'.format(hyper_parameter))
     ax1.legend()
     #
@@ -397,7 +397,7 @@ for hyper_parameter in hyper_parameter_list:
 
     # ax1
     ax1.plot(hyper_parameter_chosen_list, avg_f1_list, 'x', label = 'average_f1')
-    ax1.set_title('{} correlation'.format(hyper_parameter))
+    ax1.set_title('{} correlation with {}'.format(hyper_parameter, data_preprocessing))
     ax1.set_xlabel('{}'.format(hyper_parameter))
     ax1.legend()
     #
@@ -419,6 +419,109 @@ plt.show()
 
 
 
+# ==========================================================================================================
+# (4.) # loss, iteration
+# ==========================================================================================================
+hyper_parameter_list = ['loss','iteration']
+mode = 'avg' #best，avg
+
+for hyper_parameter in hyper_parameter_list:
+    # hyper parameters
+    hyper_parameter_index = hyper_parameter_dict['hidden_layer_write_str']
+    hyper_parameter_chosen_list = []
+    #
+
+    sort_by_avg_file = os.path.join(result_folder, '{}_sort_by_average_accuracy.txt'.format(data_preprocessing))
+    sort_by_best_file = os.path.join(result_folder, '{}_sort_by_best_accuracy.txt'.format(data_preprocessing))
+    file = sort_by_avg_file
+
+    if mode == 'avg':
+        file = sort_by_avg_file
+    elif mode == 'best':
+        file = sort_by_best_file
+
+
+
+
+    # result
+    avg_f1_list = []
+    accuracy_list = []
+    loss_list = []
+    iteration_step_list = []
+    #
+
+    # push data into list
+    with open(file, 'r') as f:
+        metric_result_list = []
+        is_result = False
+        for line in f:
+            line = line.strip()
+            if line == '===========================':
+                avg_f1_list.append(metric_result_list[2])
+                accuracy_list.append(metric_result_list[3])
+                loss_list.append(metric_result_list[0])
+                iteration_step_list.append(metric_result_list[1])
+                #print ("metric_result_list: ", metric_result_list)
+                #
+                is_result = False
+            elif line == '---------------------------':
+                is_result = True
+                metric_result_list = []
+            else:
+                if not is_result:
+                    pass
+                else:
+                    #print('line: ', line)
+                    value = re.findall(r': ([0-9\.]+)', line)[0]
+                    if mode == 'avg':
+                        var = re.findall(r': ([0-9\.]+)', line)[1]
+                        std = re.findall(r': ([0-9\.]+)', line)[2]
+                    if mode == 'best':
+                        metric_result_list.append(value)
+                    elif mode == 'avg':
+                        metric_result_list.append((value,var,std))
+
+
+    # ----------------------------------------------------------------------------------------------------------
+    # plot
+    # ----------------------------------------------------------------------------------------------------------
+
+    f1, (ax1,ax2) = plt.subplots(2, sharex=True, sharey=True)
+
+
+    if mode == 'avg':
+        avg_f1_list = [x[0] for x in avg_f1_list]
+        accuracy_list = [x[0] for x in accuracy_list]
+        loss_list = [x[0] for x in loss_list]
+        iteration_step_list = [x[0] for x in iteration_step_list]
+
+
+    # ax1
+    if hyper_parameter == 'loss':
+        ax1.plot(loss_list, avg_f1_list, 'x', label = 'average_f1')
+    elif hyper_parameter == 'iteration':
+        ax1.plot(iteration_step_list, avg_f1_list, 'x', label = 'average_f1')
+    ax1.set_title('{} correlation with {}'.format(hyper_parameter, data_preprocessing))
+    ax1.set_xlabel('{}'.format(hyper_parameter))
+    ax1.legend()
+    #
+
+    # ax2
+    if hyper_parameter == 'loss':
+        ax2.plot(loss_list, accuracy_list, 'x', label = 'accuracy')
+    elif hyper_parameter == 'iteration':
+        ax2.plot(iteration_step_list, accuracy_list, 'x', label = 'accuracy')
+    ax2.set_xlabel('{}'.format(hyper_parameter))
+    ax2.legend()
+    #
+
+    save_fig_path = '{}-{}-{}-{}.png'.format(data_preprocessing, model, hyper_parameter, mode)
+    save_fig_path = os.path.join(save_folder, save_fig_path)
+    plt.savefig(save_fig_path)
+    # ----------------------------------------------------------------------------------------------------------
+
+plt.show()
+# ==========================================================================================================
 
 
 
