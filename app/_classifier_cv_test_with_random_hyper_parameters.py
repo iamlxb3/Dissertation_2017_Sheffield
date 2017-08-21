@@ -200,9 +200,6 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                                                                shift_num=shift_num,
                                                                is_standardisation=is_standardisation, is_PCA=is_PCA,
                                                                pca_n_component=pca_n_component)
-            sys.exit()
-
-
 
             activation_function = hyper_paramter_tuple[0]
             alpha = hyper_paramter_tuple[1]

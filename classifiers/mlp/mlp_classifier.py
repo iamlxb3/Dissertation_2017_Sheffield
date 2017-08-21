@@ -112,8 +112,8 @@ class MlpClassifier_P(MultilayerPerceptron):
         label_tp_fp_tn_dict = compute_average_f1(pred_label_list, self.dev_value_set)
         label_f1_list = sorted([(key, x[3]) for key, x in label_tp_fp_tn_dict.items()])
         f1_list = [x[1] for x in label_f1_list]
-        #average_f1 = np.average(f1_list)
-        average_f1 = f1_list[0] # using F-measure
+        average_f1 = np.average(f1_list)
+        #average_f1 = f1_list[0] # using F-measure
         #
 
         # (4.) compute accuracy

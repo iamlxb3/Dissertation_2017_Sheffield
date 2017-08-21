@@ -49,7 +49,7 @@ clsfy_name = 'dow_jones_mlp_trade_classifier_window_shift'
 clf_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
 
 # (2.) data folder
-data_folder = os.path.join('dow_jones_index','dow_jones_index_labeled')
+data_folder = os.path.join('dow_jones_index_extended','dow_jones_index_extended_labeled')
 data_folder = os.path.join(parent_folder, 'data', data_folder)
 #
 
@@ -71,7 +71,7 @@ mlp_classifier1.trade_feed_and_separate_data_window_shift(data_folder, data_per=
 random_seed = 'window_shift'
 average_f1_list = []
 accuracy_list = []
-is_baseline = False
+is_baseline = True
 for shift in mlp_classifier1.validation_dict[random_seed].keys():
     mlp_classifier1.trade_rs_cv_load_train_dev_data(random_seed, shift)
     if is_baseline:

@@ -66,7 +66,7 @@ class Deleter:
 
 parent_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-hyper_parameter_folder = 'hyper_parameter_test'
+hyper_parameter_folder = 'hyper_parameter_correlation_test'
 
 hyper_parameter_folder = os.path.join(parent_folder, hyper_parameter_folder)
 hyper_parameter_folder_list = [hyper_parameter_folder]
