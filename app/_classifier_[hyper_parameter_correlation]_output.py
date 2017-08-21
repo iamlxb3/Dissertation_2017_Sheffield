@@ -377,12 +377,14 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             # ==========================================================================================================
 
             hidden_layer_write_str = '_'.join([str(x) for x in hidden_layer_sizes])
+            hidden_layer_depth = len(hidden_layer_sizes)
+            hidden_layer_nodes = sum(hidden_layer_sizes)
 
             write_tuple = (experiment, trail, random_state_total, pca_n_component, activation_function, alpha,
                            learning_rate, learning_rate_init, early_stopping,validation_fraction, hidden_layer_write_str
-                           , random_state)
+                           , hidden_layer_depth, hidden_layer_nodes, random_state)
             save_folder = os.path.join(save_folder_temp, data_preprocessing,CHOSEN_HYPER_PARAMETER)
-            csv_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.csv'.format(*write_tuple))
+            csv_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.csv'.format(*write_tuple))
 
 
 
