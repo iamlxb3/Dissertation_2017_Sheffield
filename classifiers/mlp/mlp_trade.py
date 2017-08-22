@@ -328,7 +328,8 @@ class MlpTrade(MultilayerPerceptron):
         print("Create validation_dict sucessfully! {}-fold cross validation".format(validation_num))
 
     def create_train_dev_vdict_window_shift(self, samples_feature_list, samples_value_list,
-                                            date_str_list, stock_id_list, shifting_size = 1, is_cv=True, shifting_size_percent = 0.1,
+                                            date_str_list, stock_id_list, shifting_size = 1,training_window_size = 22,
+                                            is_cv=True, shifting_size_percent = 0.1,
                                             shift_num = 5, is_standardisation = True, is_PCA = True,
                                             pca_n_component = None, training_set_percent = 1.0):
 
@@ -356,11 +357,16 @@ class MlpTrade(MultilayerPerceptron):
             sys.exit()
 
 
-        window_size = date_num - shifting_size*shift_num
+        window_size_max = date_num - shifting_size*shift_num
+        if not training_window_size:
+            training_window_size = window_size_max
+        else:
+            pass
 
-        if shifting_size >= (1/2)*window_size:
+
+        if shifting_size >= (1/2)*training_window_size:
             print("Training set too small!! Training set should be at least 2 times as big as testing set")
-            print ("Training set size: {}, testing set size: {}".format(window_size, shifting_size))
+            print ("training_window_size: {}, testing set size: {}".format(training_window_size, shifting_size))
             sys.exit()
         #
 
@@ -368,16 +374,30 @@ class MlpTrade(MultilayerPerceptron):
 
         print("date_num: ", date_num)
         print("shift_num: ", shift_num)
-        print("window_size: ", window_size)
+        print("window_size_max: ", window_size_max)
+        print("training_window_size: ", training_window_size)
         print("shifting_size: ", shifting_size)
         print("Validation size: ", shifting_size*shift_num)
 
         for shift in range(shift_num):
 
             # (1.) get the training and dev date
-            training_date_start_index = shift*shifting_size
-            training_date_end_index = training_date_start_index + window_size
+            if training_window_size:
+                training_date_start_index = shift * shifting_size + (window_size_max - training_window_size)
+            else:
+                training_date_start_index = shift*shifting_size
+            if training_window_size:
+                training_date_end_index = shift * shifting_size + window_size_max
+            else:
+                training_date_end_index = training_date_start_index + window_size_max
+
             dev_date_end_index = training_date_end_index + shifting_size
+
+            # print ("training_date_start_index: ", training_date_start_index)
+            # print ("training_date_end_index: ", training_date_end_index)
+            # print ("dev_date_end_index: ", dev_date_end_index)
+            # sys.exit()
+
             if dev_date_end_index > len(sorted_date_list) - 1:
                 print ("WARNING! dev_date_end_index exceed! Dev set of different shift may have different size!")
             training_date_list = sorted_date_list[training_date_start_index:training_date_end_index]
