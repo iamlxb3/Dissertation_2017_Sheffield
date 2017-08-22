@@ -146,10 +146,65 @@ class MlpClassifier_P(MultilayerPerceptron):
             print("average_f1: ", average_f1)
             print("accuracy: ", accuracy)
             print("=================================================================")
+            return average_f1, accuracy
         #
 
         if is_return:
             return average_f1, accuracy
+
+    def clf_dev_for_moving_window_test(self, save_clsfy_path="mlp_trade_classifier"):
+
+        # (1.) read classifier
+        mlp = pickle.load(open(save_clsfy_path, "rb"))
+        #
+
+        # (2.) get pred label list
+        pred_label_list = mlp.predict(self.dev_set)
+        #
+
+        # (3.) compute the average f-measure
+        pred_label_dict = collections.defaultdict(lambda: 0)
+        for pred_label in pred_label_list:
+            pred_label_dict[pred_label] += 1
+        label_tp_fp_tn_dict = compute_average_f1(pred_label_list, self.dev_value_set)
+        label_f1_list = sorted([(key, x[3]) for key, x in label_tp_fp_tn_dict.items()])
+        f1_list = [x[1] for x in label_f1_list]
+        average_f1 = np.average(f1_list)
+        #average_f1 = f1_list[0] # using F-measure
+        #
+
+        # (4.) compute accuracy
+        correct = 0
+        for i, pred_label in enumerate(pred_label_list):
+            if pred_label == self.dev_value_set[i]:
+                correct += 1
+        accuracy = correct / len(self.dev_value_set)
+        #
+
+        # (5.) count the occurrence for each label
+        dev_label_dict = collections.defaultdict(lambda: 0)
+        for dev_label in self.dev_value_set:
+            dev_label_dict[dev_label] += 1
+        #
+
+        # # (6.) save result for 1-fold
+        # self.average_f1_list.append(average_f1)
+        # self.accuracy_list.append(accuracy)
+        # #
+
+        # print
+        print("\n=================================================================")
+        print("Dev set result!")
+        print("=================================================================")
+        print("dev_label_dict: {}".format(list(dev_label_dict.items())))
+        print("pred_label_dict: {}".format(list(pred_label_dict.items())))
+        print("label_f1_list: {}".format(label_f1_list))
+        print("average_f1: ", average_f1)
+        print("accuracy: ", accuracy)
+        print("=================================================================")
+        return list(pred_label_list), list(self.dev_value_set)
+
+
 
     def baseline_clf_dev(self, target_folder):
         file1 = os.listdir(target_folder)[0]

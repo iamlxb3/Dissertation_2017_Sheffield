@@ -231,3 +231,34 @@ def read_pca_component(folder_path):
         feature_num = len(feature_list)
     print ("Read PCA n-component {}".format(feature_num))
     return feature_num
+
+def compute_f1_accuracy(predict_list, actual_list):
+    # (3.) compute the average f-measure
+    label_tp_fp_tn_dict = compute_average_f1(predict_list, actual_list)
+    label_f1_list = sorted([(key, x[3]) for key, x in label_tp_fp_tn_dict.items()])
+    f1_list = [x[1] for x in label_f1_list]
+    average_f1 = np.average(f1_list)
+    # average_f1 = f1_list[0] # using F-measure
+    #
+
+    # (4.) compute accuracy
+    correct = 0
+    for i, pred_label in enumerate(predict_list):
+        if pred_label == actual_list[i]:
+            correct += 1
+    accuracy = correct / len(actual_list)
+    #
+
+    # (5.) count the occurrence for each label
+    pred_label_dict = collections.defaultdict(lambda: 0)
+    for pred_label in predict_list:
+        pred_label_dict[pred_label] += 1
+
+
+    dev_label_dict = collections.defaultdict(lambda: 0)
+    for dev_label in actual_list:
+        dev_label_dict[dev_label] += 1
+    #
+
+
+    return average_f1, accuracy, pred_label_dict, dev_label_dict

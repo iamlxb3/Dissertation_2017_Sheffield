@@ -40,17 +40,18 @@ from trade_general_funcs import read_pca_component
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 unique_id = 0
-unique_start = 0
+unique_start = 9
 
 # CHOSEN_HYPER_PARAMETER
-#CHOSEN_HYPER_PARAMETER = 'learning_rate_init_constant'
+#CHOSEN_HYPER_PARAMETER = 'learning_rate'
+CHOSEN_HYPER_PARAMETER = 'learning_rate_init_constant'
 #CHOSEN_HYPER_PARAMETER = 'learning_rate_init_invscaling'
 #CHOSEN_HYPER_PARAMETER = 'activation_function'
 #CHOSEN_HYPER_PARAMETER = 'alpha'
 #CHOSEN_HYPER_PARAMETER = 'early_stopping'
 #CHOSEN_HYPER_PARAMETER = 'validation_fraction'
 #CHOSEN_HYPER_PARAMETER = 'pca_n_component'
-CHOSEN_HYPER_PARAMETER = 'hidden_layer_depth'
+#CHOSEN_HYPER_PARAMETER = 'hidden_layer_depth'
 
 
 
@@ -63,7 +64,7 @@ TRAILS= 128
 pca_min_component = 8
 RANDOM_SEED_OFFSET = 54385438
 EXPERIMENT_RANDOM_SEED_OFFSET = 38453845
-data_set = 'dow_jones'
+data_set = 'dow_jones_extended'
 random_state_total = 50
 tol = 1e-10
 classifier = 'classifier'
@@ -179,7 +180,11 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
         # (3.) learning_rate
         learning_rate_list = ['constant', 'invscaling']
-        if CHOSEN_HYPER_PARAMETER == 'learning_rate_init_constant':
+        if CHOSEN_HYPER_PARAMETER == 'learning_rate':
+            learning_rate_random_sample_generator = build_generator_from_pool(learning_rate_list, TRAILS,
+                                                                                    experiment_count,
+                                                                                    even_split=True)
+        elif CHOSEN_HYPER_PARAMETER == 'learning_rate_init_constant':
             learning_rate_random_sample_generator = build_generator_from_pool(learning_rate_list, TRAILS,
                                                                                     experiment_count, constant=True,
                                                                                     constant_value='constant')
@@ -289,12 +294,12 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
             # read hyper parameters
             activation_function = hyper_paramter_tuple[0]
-            alpha = hyper_paramter_tuple[1]
+            alpha = float("{:7f}".format(hyper_paramter_tuple[1]))
             learning_rate = hyper_paramter_tuple[2]
-            learning_rate_init = hyper_paramter_tuple[3]
+            learning_rate_init = float("{:7f}".format(hyper_paramter_tuple[3]))
             early_stopping = hyper_paramter_tuple[4]
             if early_stopping:
-                validation_fraction = hyper_paramter_tuple[5]
+                validation_fraction = float("{:7f}".format(hyper_paramter_tuple[5]))
             else:
                 validation_fraction = 0.0
             hidden_layer_sizes = hyper_paramter_tuple[6]
@@ -386,7 +391,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             save_folder = os.path.join(save_folder_temp, data_preprocessing,CHOSEN_HYPER_PARAMETER)
             csv_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.csv'.format(*write_tuple))
 
-
+            print ("csv_file_path: ", csv_file_path)
 
             with open(csv_file_path, 'w') as f:
                 write_list = [avg_loss, avg_n_iter, avg_f1, avg_accuracy]

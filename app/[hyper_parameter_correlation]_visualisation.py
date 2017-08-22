@@ -76,20 +76,22 @@ hyper_parameter_dict = {'pca_n_component':3,
                         'activation_function':4,
                         'alpha':5,
                         'learning_rate':6,
-                        'learning_rate_init':7,
+                        'learning_rate_init_constant':7,
+                        'learning_rate_init_invscaling': 7,
                         'early_stopping':8,
                         'validation_fraction':9,
                         'hidden_layer_write_str':10,
                         'random_state': -1,
-                        'hidden_layer_nodes': -2,
                         'hidden_layer_depth': -3,
                         }
 
-
+early_stopping_dict = {'True': 1, 'False': 0}
+activation_function_dict = {'identity': 0, 'logistic': 1, 'tanh': 3, 'relu': 4}
+learning_rate_dict = {'invscaling': 0, 'constant': 1}
 # ==========================================================================================================
 # (1.) [learning rate, pca_n_component, alpha] correlation
 # ==========================================================================================================
-hyper_parameter_list = ['validation_fraction']
+hyper_parameter_list = ['learning_rate']
 mode = 'avg' #best，avg
 
 for hyper_parameter in hyper_parameter_list:
@@ -113,7 +115,13 @@ for hyper_parameter in hyper_parameter_list:
         file_name = file_name_list[i]
         file_name = file_name[:-4]
         hyper_parameter_list_from_file_name = file_name.split('_')
-        hyper_parameter_value = float(hyper_parameter_list_from_file_name[hyper_parameter_index])
+        if hyper_parameter == 'early_stopping' or hyper_parameter == 'activation_function'\
+            or hyper_parameter == 'learning_rate':
+            hyper_parameter_value = hyper_parameter_list_from_file_name[hyper_parameter_index]
+
+
+        else:
+            hyper_parameter_value = float(hyper_parameter_list_from_file_name[hyper_parameter_index])
         with open (file_path,'r') as f:
             metrics_list = f.readlines()[0].strip().split(',')
             loss = float(metrics_list[0]) # result from the moving-window cross validation
@@ -133,13 +141,31 @@ for hyper_parameter in hyper_parameter_list:
 
 
     # (0.) get the X, Y for plot
-    hyper_parameter_value_list = sorted(list(hyper_parameter_dict.keys()))
+    hyper_parameter_value_list = []
+    hyper_parameter_xticks = []
     f1_mean_list = []
     f1_std_list = []
     accuracy_mean_list = []
     accuracy_std_list = []
 
+
+
     for hyper_parameter_value in sorted(list(hyper_parameter_dict.keys())):
+        if hyper_parameter == 'early_stopping':
+            hyper_parameter_value_temp_id = early_stopping_dict[hyper_parameter_value]
+            hyper_parameter_value_list.append(hyper_parameter_value_temp_id)
+            hyper_parameter_xticks.append(hyper_parameter_value)
+        elif hyper_parameter == 'activation_function':
+            hyper_parameter_value_temp_id = activation_function_dict[hyper_parameter_value]
+            hyper_parameter_value_list.append(hyper_parameter_value_temp_id)
+            hyper_parameter_xticks.append(hyper_parameter_value)
+        elif hyper_parameter == 'learning_rate':
+            hyper_parameter_value_temp_id = learning_rate_dict[hyper_parameter_value]
+            hyper_parameter_value_list.append(hyper_parameter_value_temp_id)
+            hyper_parameter_xticks.append(hyper_parameter_value)
+        else:
+            hyper_parameter_value_list.append(hyper_parameter_value)
+
         f1_list = hyper_parameter_dict[hyper_parameter_value]['f1']
 
         f1_mean = np.average(f1_list)
@@ -159,15 +185,18 @@ for hyper_parameter in hyper_parameter_list:
     # ax1
     f1, (ax1,ax2) = plt.subplots(2, sharex=True, sharey=True)
     #ax1.plot(hyper_parameter_value_list, f1_mean_list, 'x', label = 'average_f1_mean')
-    print ('hyper_parameter_value_list: ', hyper_parameter_value_list)
-    ax1.errorbar(hyper_parameter_value_list, f1_mean_list, f1_std_list, fmt='-o', capsize=5)
+    if hyper_parameter == 'early_stopping' or hyper_parameter == 'activation_function' \
+            or hyper_parameter == 'learning_rate':
+        plt.xticks(hyper_parameter_value_list, hyper_parameter_xticks)
+    ax1.errorbar(hyper_parameter_value_list, f1_mean_list, f1_std_list, fmt='-o', capsize=5, label = 'average_f1')
     ax1.set_title('{} correlation with {}'.format(hyper_parameter, data_preprocessing))
     ax1.set_xlabel('{}'.format(hyper_parameter))
     ax1.legend()
     #
 
     # ax2
-    ax2.plot(hyper_parameter_value_list, accuracy_mean_list, 'x', label = 'accuracy_mean')
+    #ax2.plot(hyper_parameter_value_list, accuracy_mean_list, 'x', label = 'accuracy_mean')
+    ax2.errorbar(hyper_parameter_value_list, accuracy_mean_list, accuracy_std_list, fmt='-o', capsize=5, label = 'accuracy')
     ax2.set_xlabel('{}'.format(hyper_parameter))
     ax2.legend()
     #
@@ -176,6 +205,7 @@ for hyper_parameter in hyper_parameter_list:
     save_fig_path = os.path.join(save_folder, save_fig_path)
     plt.savefig(save_fig_path)
     # ----------------------------------------------------------------------------------------------------------
+
 plt.show()
 # ==========================================================================================================
 

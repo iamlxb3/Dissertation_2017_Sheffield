@@ -460,3 +460,163 @@ class MlpTrade(MultilayerPerceptron):
         self.dev_stock_id_set = self.validation_dict[random_seed][cv_index]['dev_stock_id_set']
     # ------------------------------------------------------------------------------------------------------------------
 
+    def trade_feed_and_separate_data_for_test(self, training_folder, testing_folder, data_per=1.0, feature_switch_tuple=None,
+                                     mode='reg', is_production=False,
+                                     is_standardisation=True, is_PCA=True, is_test_folder=False,
+                                     standardisation_file_path='', pca_file_path='', pca_n_component=None
+                                              ,days_to_predict = None, is_moving_window = False,
+                                              window_size = 1, window_index =0, week_for_predict = None):
+        '''feed and seperate data in the normal order
+        '''
+
+
+        # (1.a) read training data
+        t_samples_feature_list, t_samples_value_list, \
+        t_date_str_list, t_stock_id_list = self._feed_data(training_folder, data_per=data_per,
+                                                       feature_switch_tuple=feature_switch_tuple,
+                                                       is_random=False, mode=mode)
+        # (1.b) read test data
+        test_samples_feature_list, test_samples_value_list, \
+        test_date_str_list, test_stock_id_list = self._feed_data(testing_folder, data_per=data_per,
+                                                                 feature_switch_tuple=feature_switch_tuple,
+                                                                 is_random=False, mode=mode)
+
+        if is_moving_window:
+            total_week_in_training = len(set(t_date_str_list))
+            if week_for_predict > total_week_in_training:
+                print ("week for predict: {} too big!!, week total in training: {}".
+                       format(week_for_predict,total_week_in_training))
+                sys.exit()
+
+            # get the test set for prediction
+            test_date_str_set = set(test_date_str_list)
+            test_date_str_sorted = sorted(list(test_date_str_set))
+            test_date_move_window_str_list = test_date_str_sorted[window_index*window_size:window_index*window_size+window_size]
+            #
+
+            # get the part of the test set which should be moved to training, include the test set for testing
+            move_samples_feature_list = []
+            move_samples_value_list = []
+            move_date_str_list = []
+            move_stock_id_list = []
+            date_str_threshold = test_date_move_window_str_list[-1]
+
+            for i, date_str in enumerate(test_date_str_list):
+
+                if date_str > date_str_threshold:
+                    continue
+                else:
+                    move_samples_feature_list.append(test_samples_feature_list[i])
+                    move_samples_value_list.append(test_samples_value_list[i])
+                    move_date_str_list.append(test_date_str_list[i])
+                    move_stock_id_list.append(test_stock_id_list[i])
+
+            #total_move_week = ((len(set(test_date_str_list)) / window_size) - 1)*window_size
+            # if total_week_in_training - total_move_week <= week_for_predict:
+            #     print ("Not enough week for training!!"
+            #            "total_week_in_training: {}, total_move_week: {}, week_for_predict: {}".
+            #            format(total_week_in_training,total_move_week,week_for_predict))
+            #     sys.exit()
+
+            # sort the training set
+            train_date_sort_list  = sorted(list(zip(t_samples_feature_list,t_samples_value_list,t_date_str_list,
+                                                    t_stock_id_list)),key = lambda x:x[2])
+            t_samples_feature_list, t_samples_value_list, t_date_str_list, t_stock_id_list =\
+                list(zip(*train_date_sort_list))
+
+            # sort the move set
+            move_date_sort_list = sorted(list(zip(move_samples_feature_list,move_samples_value_list,
+                                                   move_date_str_list,move_stock_id_list))
+                                     ,key = lambda x:x[2])
+
+            move_samples_feature_list, move_samples_value_list, move_date_str_list, move_stock_id_list = \
+                list(zip(*move_date_sort_list))
+
+            samples_feature_list_temp = t_samples_feature_list + move_samples_feature_list
+            samples_value_list_temp = t_samples_value_list + move_samples_value_list
+            date_str_list_temp = t_date_str_list + move_date_str_list
+            stock_id_list_temp = t_stock_id_list + move_stock_id_list
+
+            # get the right number of week for prediction
+            if week_for_predict:
+                samples_feature_list = []
+                samples_value_list = []
+                date_str_list = []
+                stock_id_list = []
+
+                week_for_training_test_set = set(date_str_list_temp)
+                week_for_training_test_list = sorted(list(week_for_training_test_set))[-week_for_predict-window_size:]
+                week_begin = week_for_training_test_list[0]
+                week_end = week_for_training_test_list[-1]
+
+
+                for i, date_str in enumerate(date_str_list_temp):
+                    if date_str >= week_begin and date_str <= week_end:
+                        dev_date_set = set(test_date_move_window_str_list)
+                        samples_feature_list.append(samples_feature_list_temp[i])
+                        samples_value_list.append(samples_value_list_temp[i])
+                        date_str_list.append(date_str)
+                        stock_id_list.append(stock_id_list_temp[i])
+                    else:
+                        continue
+
+            else:
+                dev_date_set = set(test_date_move_window_str_list)
+                samples_feature_list = samples_feature_list_temp
+                samples_value_list = samples_value_list_temp
+                date_str_list = date_str_list_temp
+                stock_id_list = stock_id_list_temp
+
+
+        else:
+            dev_date_set = set(test_date_str_list)
+
+            if week_for_predict:
+                t_samples_feature_list_shortened = []
+                t_samples_value_list_shortened = []
+                t_date_str_list_shortened = []
+                t_stock_id_list_shortened = []
+                t_date_str_list_sorted = sorted(list(set(t_date_str_list)))
+                t_date_str_for_training = t_date_str_list_sorted[-week_for_predict:]
+                t_date_threshold = t_date_str_for_training[0]
+
+                for i, date_str in enumerate(t_date_str_list):
+                    if date_str >= t_date_threshold:
+                        t_samples_feature_list_shortened.append(t_samples_feature_list[i])
+                        t_samples_value_list_shortened.append(t_samples_value_list[i])
+                        t_date_str_list_shortened.append(date_str)
+                        t_stock_id_list_shortened.append(t_stock_id_list[i])
+                samples_feature_list = t_samples_feature_list_shortened + test_samples_feature_list
+                samples_value_list = t_samples_value_list_shortened + test_samples_value_list
+                date_str_list = t_date_str_list_shortened + test_date_str_list
+                stock_id_list = t_stock_id_list_shortened + test_stock_id_list
+            else:
+                samples_feature_list = t_samples_feature_list + test_samples_feature_list
+                samples_value_list = t_samples_value_list + test_samples_value_list
+                date_str_list = t_date_str_list + test_date_str_list
+                stock_id_list = t_stock_id_list + test_stock_id_list
+
+
+
+        # (3.) load_train_dev_data_for_1_validation
+        self.load_train_dev_trade_data_for_1_validation(samples_feature_list, samples_value_list,
+                                                        date_str_list, stock_id_list, dev_date_set,
+                                                        is_production=is_production)
+
+
+        print ("Training and test date set {}".format(sorted(list(set(date_str_list)))))
+        print ("Test date set {}".format(sorted(list(set(dev_date_set)))))
+
+
+        # (4.) data pre_processing
+        self.training_set = np.array(self.training_set)
+        self.dev_set = np.array(self.dev_set)
+
+        trans_fit, trans_obj = self.mlp_data_pre_processing(self.training_set, self.dev_set, is_standardisation
+                                                            , is_PCA,
+                                                            standardisation_file_path=standardisation_file_path,
+                                                            pca_file_path=pca_file_path,
+                                                            pca_n_component=pca_n_component)
+
+        self._update_train_dev_value_set(trans_fit, trans_obj)
+
