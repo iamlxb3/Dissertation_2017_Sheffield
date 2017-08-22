@@ -12,6 +12,7 @@ import sys
 import random
 import os
 import itertools
+import math
 import numpy as np
 # ==========================================================================================================
 
@@ -49,11 +50,14 @@ PCA_MIN_COMPONENT = 8
 RANDOM_SEED_OFFSET = 54385438
 EXPERIMENT_RANDOM_SEED_OFFSET = 38453845
 data_set = 'dow_jones'
-random_state_total = 50
+random_state_total = 20
 tol = 1e-10
 classifier = 'classifier'
-shift_num = 5
-shifting_size_percent = 0.1
+
+# shifting_size = 10 #5,50
+# shift_num = 20 #1,20
+
+
 
 input_folder = os.path.join('dow_jones_index_extended', 'dow_jones_index_extended_labeled')
 input_folder = os.path.join(parent_folder, 'data', input_folder)
@@ -113,6 +117,28 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             random_sample = random.sample(random_pool, 1)[0]
             yield random_sample
 
+    def build_generator_for_shift(shift_size_pool,shift_number_pool, max_num, trails, experiment_count):
+        for i in range(trails):
+            best_shift_found = False
+            j = 0
+            while not best_shift_found:
+                j += 1
+                random.seed(j+i+experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET+RANDOM_SEED_OFFSET)
+                shift_size = random.sample(shift_size_pool, 1)[0]
+                max_shift_number = int(math.floor(max_num/shift_size))
+                random.seed(j+i+experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET+RANDOM_SEED_OFFSET)
+                shift_number_pool = [x for x in range(shift_number_pool[0], max_shift_number)]
+                shift_number = random.sample(shift_number_pool, 1)[0]
+                training_date_num = max_num-shift_number*shift_size
+                if training_date_num > 2.5*shift_size:
+                    best_shift_found = True
+                else:
+                    print ("Training_size too small! training_date_num: {}, shift_size:{}, shift_number:{}"
+                           .format(training_date_num,shift_size,shift_number))
+
+            yield shift_size, shift_number
+
+
     def build_generator_from_range(target_range, trails, experiment_count):
         for i in range(trails):
             random.seed(i+experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET+RANDOM_SEED_OFFSET)
@@ -149,10 +175,17 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
         validation_fraction_range = (0.1, 0.3)
         validation_fraction_random_sample_generator = build_generator_from_range(validation_fraction_range, TRAILS,
                                                                                  experiment_count)
+        # (6.) shift size
+        max_date = 250
+        shifting_size_range = [x for x in range(1,20)]  # 5,50
+        shift_num_range = [x for x in range(5,50)]  # 1,20
+        shifting_random_sample_generator = build_generator_for_shift(shifting_size_range, shift_num_range,
+                                                                          max_date, TRAILS, experiment_count)
 
         # (7.) HIDDEN LAYERS
-        hidden_layer_depth = (1,3)
+        hidden_layer_depth = (1,2)
         hidden_layer_node  = (20,400)
+
 
         def hidden_layer_generator(hidden_layer_depth, hidden_layer_node, experiment_count):
             for i in range(TRAILS):
@@ -174,7 +207,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
         hyper_parameter_trail_zip = zip(activation_random_sample_generator, alpha_random_sample_generator,
                                               learning_rate_random_sample_generator, learning_rate_init_random_sample_generator,
                                               early_stopping_random_sample_generator, validation_fraction_random_sample_generator,
-                                        hidden_layer_size)
+                                        hidden_layer_size,shifting_random_sample_generator)
 
         # hyper_parameter_size = len(hyper_parameter_trail_list)
         # print ("hyper_parameter_size: ", hyper_parameter_size)
@@ -194,20 +227,22 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             else:
                 pca_n_component = None
 
+            shifting_size, shift_num = hyper_paramter_tuple[7]
+
             mlp_regressor1.create_train_dev_vdict_window_shift(samples_feature_list, samples_value_list,
                                                                date_str_list, stock_id_list, is_cv=True,
-                                                               shifting_size_percent=shifting_size_percent,
+                                                               shifting_size=shifting_size,
                                                                shift_num=shift_num,
                                                                is_standardisation=is_standardisation, is_PCA=is_PCA,
                                                                pca_n_component=pca_n_component)
 
             activation_function = hyper_paramter_tuple[0]
-            alpha = hyper_paramter_tuple[1]
+            alpha = float("{:7f}".format(hyper_paramter_tuple[1]))
             learning_rate = hyper_paramter_tuple[2]
-            learning_rate_init = hyper_paramter_tuple[3]
+            learning_rate_init = float("{:7f}".format(hyper_paramter_tuple[3]))
             early_stopping = hyper_paramter_tuple[4]
             if early_stopping:
-                validation_fraction = hyper_paramter_tuple[5]
+                validation_fraction = float("{:7f}".format(hyper_paramter_tuple[5]))
             else:
                 validation_fraction = 0.0
             hidden_layer_sizes = hyper_paramter_tuple[6]
@@ -258,6 +293,8 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
                 print ("-----------------------------------------------------------------------------------")
                 print ("unique_id ", unique_id)
+                print ("shifting_size: ", shifting_size)
+                print ("shift_num: ", shift_num)
                 print ("is_PCA", is_PCA)
                 print ("is_standardisation", is_standardisation)
                 print ("pca_n_component: ", pca_n_component)
@@ -284,10 +321,11 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             hidden_layer_write_str = '_'.join([str(x) for x in hidden_layer_sizes])
 
             write_tuple = (experiment, trail, random_state_total, pca_n_component, activation_function, alpha,
-                           learning_rate, learning_rate_init, early_stopping,validation_fraction, hidden_layer_write_str)
+                           learning_rate, learning_rate_init, early_stopping,validation_fraction,
+                           shifting_size, shift_num, hidden_layer_write_str)
             save_folder = os.path.join(parent_folder, 'hyper_parameter_test', data_set, classifier, data_preprocessing)
-            csv_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.csv'.format(*write_tuple))
-            txt_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.txt'.format(*write_tuple))
+            csv_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.csv'.format(*write_tuple))
+            txt_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.txt'.format(*write_tuple))
 
 
 
