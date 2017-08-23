@@ -40,46 +40,46 @@ from dow_jones_index import DowJonesIndex
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-# # ==========================================================================================================
-# # [1.] format raw data
-# # ==========================================================================================================
-# dow_jones_index1 = DowJonesIndex()
-# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_original',
-#                           'dow_jones_index.data')
-# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_raw')
-# dow_jones_index1.format_raw_data(input_file, save_folder)
-# # ==========================================================================================================
+# ==========================================================================================================
+# [1.] format raw data
+# ==========================================================================================================
+dow_jones_index1 = DowJonesIndex()
+input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_original',
+                          'dow_jones_index.data')
+save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_raw')
+dow_jones_index1.format_raw_data(input_file, save_folder)
+# ==========================================================================================================
 
 
-# # ==========================================================================================================
-# # [2.] fill in nan data
-# # ==========================================================================================================
-# dp1 = DataPp()
-# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index','dow_jones_index_raw')
-# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_fill_nan')
-# dp1.fill_in_nan_data(input_file, save_folder)
-# # ==========================================================================================================
+# ==========================================================================================================
+# [2.] fill in nan data
+# ==========================================================================================================
+dp1 = DataPp()
+input_file = os.path.join(parent_folder, 'data', 'dow_jones_index','dow_jones_index_raw')
+save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_fill_nan')
+dp1.fill_in_nan_data(input_file, save_folder)
+# ==========================================================================================================
 
 
-# # ==========================================================================================================
-# # [3.] feature engineering
-# # ==========================================================================================================
-# dow_jones_index1 = DowJonesIndex()
-# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_fill_nan')
-# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered')
-# dow_jones_index1.feature_engineering(input_file, save_folder)
-# # ==========================================================================================================
+# ==========================================================================================================
+# [3.] feature engineering
+# ==========================================================================================================
+dow_jones_index1 = DowJonesIndex()
+input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_fill_nan')
+save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered')
+dow_jones_index1.feature_engineering(input_file, save_folder)
+# ==========================================================================================================
 
 
 
-# # ==========================================================================================================
-# # [3.1] feature engineering, add more data (previous week)
-# # ==========================================================================================================
-# dow_jones_index1 = DowJonesIndex()
-# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered')
-# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered_more_data')
-# dow_jones_index1.f_engineering_add_1_week_data(input_file, save_folder)
-# # ==========================================================================================================
+# ==========================================================================================================
+# [3.1] feature engineering, add more data (previous week)
+# ==========================================================================================================
+dow_jones_index1 = DowJonesIndex()
+input_file = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered')
+save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index', 'dow_jones_index_f_engineered_more_data')
+dow_jones_index1.f_engineering_add_1_week_data(input_file, save_folder)
+# ==========================================================================================================
 
 # # # ==========================================================================================================
 # # # [4.] scaling, z-score
