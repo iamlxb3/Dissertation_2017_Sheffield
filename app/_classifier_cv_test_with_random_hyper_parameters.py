@@ -1,5 +1,5 @@
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# Build the MLP regressor.
+# Build the MLP classifier.
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # (c) 2017 PJS, University of Sheffield, iamlxb3@gmail.com
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -56,7 +56,8 @@ random_state_total = 20
 tol = 1e-10
 classifier = 'classifier'
 training_window_min = 30 # weeks
-training_window_max = 102 # weeks, make sure shift_size*shift_num is fixed
+training_window_max = 74 # weeks, make sure shift_size*shift_num is fixed
+is_training_window_flexible = False
 shifting_size_min = 5
 shifting_size_max = 30
 # read total_date_num for training and validation
@@ -69,9 +70,10 @@ for f_path in file_path_list:
     date_str_list.append(date_str)
 date_str_set = set(date_str_list)
 total_date_num = len(date_str_set) # weeks
+print ("total_date_num: ", total_date_num)
 #
 
-is_training_window_flexible = False
+
 
 
 

@@ -47,6 +47,8 @@ class DowJonesIndexExtended:
         pass
 
     def format_raw_data(self, input_folder, save_folder):
+        PREVIOUS_WEEK_NUM = 4  # the number of week from which the feature is extracted
+
         dividend_folder = os.path.join(input_folder, 'dividend')
         file_name_list = os.listdir(input_folder)
         file_name_list.remove('dividend')
@@ -59,7 +61,7 @@ class DowJonesIndexExtended:
             with open(file_path, 'r', encoding = 'utf-8') as f:
                 f_readlines1 = f.readlines()
                 for i, line in enumerate(f_readlines1):
-                    if i <= 1 or i == len(f_readlines1) - 1:
+                    if i <= PREVIOUS_WEEK_NUM or i == len(f_readlines1) - 1:
                         continue
                     #print ("line: ", line)
                     line_split = line.split(',')
@@ -119,7 +121,7 @@ class DowJonesIndexExtended:
                     volume = line_split[6]
                     #
 
-                    # previous week data
+                    # previous 1 week data
                     previous_line_split = f_readlines1[i-1].split(',')
                     previous_open1 = previous_line_split[1]
                     previous_high = previous_line_split[2]
@@ -127,6 +129,32 @@ class DowJonesIndexExtended:
                     previous_close = previous_line_split[4]
                     previous_volume = previous_line_split[6]
                     #
+
+                    # previous 2 week data
+                    previous_line_split = f_readlines1[i-2].split(',')
+                    previous_2_close = previous_line_split[4]
+                    previous_2_volume = previous_line_split[6]
+                    previous_2_close_change = (float(close)-float(previous_2_close)) / float(previous_2_close)
+                    previous_2_volume_change = (float(volume)-float(previous_2_volume)) / float(previous_2_volume)
+                    #
+
+                    # previous 3 week data
+                    previous_line_split = f_readlines1[i-3].split(',')
+                    previous_3_close = previous_line_split[4]
+                    previous_3_volume = previous_line_split[6]
+                    previous_3_close_change = (float(close) - float(previous_3_close)) / float(previous_3_close)
+                    previous_3_volume_change = (float(volume) - float(previous_3_volume)) / float(previous_3_volume)
+                    #
+
+                    # previous 4 week data
+                    previous_line_split = f_readlines1[i-4].split(',')
+                    previous_4_close = previous_line_split[4]
+                    previous_4_volume = previous_line_split[6]
+                    previous_4_close_change = (float(close) - float(previous_4_close)) / float(previous_4_close)
+                    previous_4_volume_change = (float(volume) - float(previous_4_volume)) / float(previous_4_volume)
+                    #
+
+
 
                     # next week data
                     next_line_split = f_readlines1[i+1].split(',')
@@ -148,13 +176,21 @@ class DowJonesIndexExtended:
                                 'percent_change_price,{},percent_change_volume_over_last_wk,{},' \
                                 'previous_weeks_volume,{},next_weeks_open,{},next_weeks_close,{},' \
                                 'percent_change_next_weeks_price,{},days_to_next_dividend,{},' \
-                                'percent_return_next_dividend,{}'.format(open1, high, low, close, volume,
+                                'percent_return_next_dividend,{},previous_2_close_change,{},' \
+                                'previous_3_close_change,{},previous_4_close_change,{},previous_2_volume_change,{},' \
+                                'previous_3_volume_change,{},previous_4_volume_change,{}'.format(open1, high, low, close, volume,
                                                                             percent_change_price,
                                                                             percent_change_volume_over_last_wk,
                                                                             previous_volume,next_open1,next_close,
                                                                             percent_change_next_weeks_price,
                                                                             days_to_next_dividend,
-                                                                            percent_return_next_dividend)
+                                                                            percent_return_next_dividend,
+                                                                                   previous_2_close_change,
+                                                                                   previous_3_close_change,
+                                                                                   previous_4_close_change,
+                                                                                   previous_2_volume_change,
+                                                                                   previous_3_volume_change,
+                                                                                   previous_4_volume_change)
                     with open (save_file_path, 'w', encoding='utf-8') as f:
                         f.write(write_str)
 
@@ -357,16 +393,26 @@ class DowJonesIndexExtended:
             with open (previous_week_stock_path, 'r', encoding='utf-8') as f:
                 f_readlines = f.readlines()
                 pre_feature_name_list = f_readlines[0].strip().split(',')[::2]
-                delete_feature1 = 'days_to_next_dividend'
-                delete_feature2 = 'percent_return_next_dividend'
-                delete_index1 = pre_feature_name_list.index(delete_feature1)
-                delete_index2 = pre_feature_name_list.index(delete_feature2)
-                pre_feature_name_list.remove(delete_feature1)
-                pre_feature_name_list.remove(delete_feature2)
-
                 pre_feature_value_list = f_readlines[0].strip().split(',')[1::2]
-                pre_feature_value_list.remove(pre_feature_value_list[delete_index1])
-                pre_feature_value_list.remove(pre_feature_value_list[delete_index2])
+
+                delete_feature_list = ['days_to_next_dividend',
+                                       'percent_return_next_dividend',
+                                       'previous_2_close_change',
+                                       'previous_3_close_change',
+                                       'previous_4_close_change',
+                                       'previous_2_volume_change',
+                                       'previous_3_volume_change',
+                                       'previous_4_volume_change',
+                                       'percent_change_next_weeks_price',
+                                       ]
+
+                #print ("pre_feature_name_list: ", pre_feature_name_list)
+                for delete_feature in delete_feature_list:
+                    delete_index = pre_feature_name_list.index(delete_feature)
+                    #print ("delete_index: ", delete_index)
+                    pre_feature_name_list.remove(pre_feature_name_list[delete_index])
+                    pre_feature_value_list.remove(pre_feature_value_list[delete_index])
+
 
                 pre_feature_name_list = ['previous_week_' + feature_n for feature_n in pre_feature_name_list]
             # this week data

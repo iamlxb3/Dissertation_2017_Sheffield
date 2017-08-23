@@ -40,14 +40,14 @@ from dow_jones_extended import DowJonesIndexExtended
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-# ==========================================================================================================
-# [1.] format raw data
-# ==========================================================================================================
-dow_jones_index1 = DowJonesIndexExtended()
-input_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_original')
-save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_raw')
-dow_jones_index1.format_raw_data(input_folder, save_folder)
-# ==========================================================================================================
+# # ==========================================================================================================
+# # [1.] format raw data
+# # ==========================================================================================================
+# dow_jones_index1 = DowJonesIndexExtended()
+# input_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_original')
+# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_raw')
+# dow_jones_index1.format_raw_data(input_folder, save_folder)
+# # ==========================================================================================================
 
 
 # # ==========================================================================================================
@@ -60,14 +60,14 @@ dow_jones_index1.format_raw_data(input_folder, save_folder)
 # # ==========================================================================================================
 
 
-# # ==========================================================================================================
-# # [3.] feature engineering
-# # ==========================================================================================================
-# dow_jones_index1 = DowJonesIndexExtended()
-# input_file = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_raw')
-# save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_f_engineered')
-# dow_jones_index1.feature_engineering(input_file, save_folder)
-# # ==========================================================================================================
+# ==========================================================================================================
+# [3.] feature engineering
+# ==========================================================================================================
+dow_jones_index1 = DowJonesIndexExtended()
+input_file = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_raw')
+save_folder = os.path.join(parent_folder, 'data', 'dow_jones_index_extended', 'dow_jones_index_extended_f_engineered')
+dow_jones_index1.feature_engineering(input_file, save_folder)
+# ==========================================================================================================
 
 
 
