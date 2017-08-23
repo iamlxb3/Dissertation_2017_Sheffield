@@ -12,7 +12,7 @@ import sys
 import random
 import os
 import itertools
-import math
+import re
 import numpy as np
 # ==========================================================================================================
 
@@ -40,8 +40,10 @@ from trade_general_funcs import read_pca_component
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 unique_id = 0
 unique_start = 0
-
-
+#
+input_folder = os.path.join('dow_jones_index_extended', 'dow_jones_index_extended_labeled')
+input_folder = os.path.join(parent_folder, 'data', input_folder)
+#
 EXPERIMENTS = 3
 is_standardisation_list = [True, False]
 is_PCA_list = [True, False]
@@ -53,14 +55,27 @@ data_set = 'dow_jones'
 random_state_total = 20
 tol = 1e-10
 classifier = 'classifier'
-training_window_max = 50 # weeks
-total_date_num = 300 # weeks
+training_window_min = 30 # weeks
+training_window_max = 102 # weeks, make sure shift_size*shift_num is fixed
+shifting_size_min = 5
+shifting_size_max = 30
+# read total_date_num for training and validation
+file_name_list = os.listdir(input_folder)
+file_path_list = [os.path.join(input_folder,x) for x in file_name_list]
+date_str_list = []
+for f_path in file_path_list:
+    f_name = os.path.basename(f_path)
+    date_str = re.findall(r'([0-9]+-[0-9]+-[0-9]+)_', f_name)[0]
+    date_str_list.append(date_str)
+date_str_set = set(date_str_list)
+total_date_num = len(date_str_set) # weeks
+#
+
+is_training_window_flexible = False
 
 
 
 
-input_folder = os.path.join('dow_jones_index_extended', 'dow_jones_index_extended_labeled')
-input_folder = os.path.join(parent_folder, 'data', input_folder)
 
 
 # ==========================================================================================================
@@ -117,9 +132,9 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             random_sample = random.sample(random_pool, 1)[0]
             yield random_sample
 
-    def build_generator_for_shift(shift_size_pool,training_window_size_pool, training_window, total_date_num,
-                                  trails, experiment_count):
-        validation_window_total = total_date_num-training_window
+    def build_generator_for_shift_flexible_t_window(shift_size_pool, training_window_size_pool, training_window_max, total_date_num,
+                                                    trails, experiment_count):
+        validation_window_total = total_date_num - training_window_max
         for i in range(trails):
             best_shift_found = False
             j = 0
@@ -129,13 +144,10 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                 shift_size = random.sample(shift_size_pool, 1)[0]
                 random.seed(j+i+experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET+RANDOM_SEED_OFFSET)
                 training_window_size = random.sample(training_window_size_pool, 1)[0]
+                print ("training_window_size---", training_window_size)
                 if not training_window_size >= 2.5*shift_size:
                     print ("training_window_size:{} too small!!".format(training_window_size))
                     continue
-
-                if training_window < 2.5*shift_size:
-                    print ("Training_size too small! training_window: {}, shift_size:{}, shift_number:{}"
-                           .format(training_window,shift_size,shift_number))
                 if validation_window_total%shift_size != 0:
                     print ("shift_number is float:{}"
                            .format(validation_window_total/shift_size))
@@ -186,11 +198,14 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
         validation_fraction_random_sample_generator = build_generator_from_range(validation_fraction_range, TRAILS,
                                                                                  experiment_count)
         # (6.) shift size
-        shifting_size_pool = [x for x in range(1, 20)]  # 5,50
-        training_window_pool = [x for x in range(9,training_window_max)]  # 1,20
-        shifting_random_sample_generator = build_generator_for_shift(shifting_size_pool, training_window_pool,
-                                                                     training_window_max, total_date_num,
-                                                                     TRAILS, experiment_count)
+        shifting_size_pool = [x for x in range(shifting_size_min, shifting_size_max+1)]  # 5,50
+        if is_training_window_flexible:
+            training_window_pool = [x for x in range(training_window_min,training_window_max+1)]  # 1,20
+        else:
+            training_window_pool = [x for x in range(training_window_max,training_window_max+1)]  # 1,20
+        shifting_random_sample_generator = build_generator_for_shift_flexible_t_window(shifting_size_pool, training_window_pool,
+                                                                                       training_window_max, total_date_num,
+                                                                                       TRAILS, experiment_count)
 
         # (7.) HIDDEN LAYERS
         hidden_layer_depth = (1,2)
