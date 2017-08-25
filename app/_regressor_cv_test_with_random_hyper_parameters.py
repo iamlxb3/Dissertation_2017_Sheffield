@@ -12,6 +12,7 @@ import sys
 import random
 import os
 import itertools
+import re
 import numpy as np
 from pjslib.logger import logger1
 # ==========================================================================================================
@@ -39,8 +40,12 @@ from trade_general_funcs import read_pca_component
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 unique_id = 0
-unique_start = 9
-
+unique_start = 165
+#
+data_set = 'dow_jones_index_extended'
+input_folder = os.path.join(data_set, 'dow_jones_index_extended_regression')
+input_folder = os.path.join(parent_folder, 'data', input_folder)
+#
 EXPERIMENTS = 3
 is_standardisation_list = [True, False]
 is_PCA_list = [True, False]
@@ -48,20 +53,46 @@ TRAILS= 128
 PCA_MIN_COMPONENT = 8
 RANDOM_SEED_OFFSET = 54385438
 EXPERIMENT_RANDOM_SEED_OFFSET = 38453845
-data_set = 'dow_jones'
-random_state_total = 50
-tol = 1e-10
+random_state_total = 20
+tol = 1e-8
 classifier = 'regressor'
-input_folder = os.path.join('dow_jones_index_extended', 'dow_jones_index_extended_regression')
-input_folder = os.path.join(parent_folder, 'data', input_folder)
+training_window_min = 30 # weeks
+training_window_max = 74 # weeks, make sure shift_size*shift_num is fixed
+is_training_window_flexible = False
+shifting_size_min = 5
+shifting_size_max = 30
+# ------------------------------------------------------------------------
+# read total_date_num for training and validation
+# ------------------------------------------------------------------------
+file_name_list = os.listdir(input_folder)
+file_path_list = [os.path.join(input_folder,x) for x in file_name_list]
+date_str_list = []
+for f_path in file_path_list:
+    f_name = os.path.basename(f_path)
+    date_str = re.findall(r'([0-9]+-[0-9]+-[0-9]+)_', f_name)[0]
+    date_str_list.append(date_str)
+date_str_set = set(date_str_list)
+total_date_num = len(date_str_set) # weeks
+# ------------------------------------------------------------------------
+include_top_list = [1]
+mode = 'reg'
+print ("total_date_num: ", total_date_num)
+#
+
+
+
+
+
+
 
 
 # ==========================================================================================================
 # Build MLP classifier for a-share data, save the mlp to local
 # ==========================================================================================================
+is_standardisation = True
+is_PCA = True
+
 for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list, is_PCA_list)):
-
-
 
     # (1.) build classifer
     mlp_regressor1 = MlpTradeRegressor()
@@ -70,7 +101,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
 
     # (2.) GET TRANINING SET
-    data_per = 1.0 # the percentage of data using for training and testing
+    data_per = 1.0 # the percentage of data using for training, validation and testing
     #dev_per = 0.0 # the percentage of data using for developing
 
 
@@ -78,10 +109,10 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
     feature_switch_tuple_all_1 = get_full_feature_switch_tuple(input_folder)
 
     # (3.)
-    samples_feature_list, samples_value_list, \
-    date_str_list, stock_id_list = mlp_regressor1._feed_data(input_folder, data_per=data_per,
-                                                   feature_switch_tuple=feature_switch_tuple_all_1,
-                                                   is_random=False)
+    samples_feature_list, samples_value_list, date_str_list, stock_id_list = mlp_regressor1._feed_data(input_folder,
+                                                                  data_per=data_per,
+                                                                  feature_switch_tuple=feature_switch_tuple_all_1,
+                                                                is_random=False, mode=mode)
 
 
     # (4.)
@@ -96,12 +127,9 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
     else:
         print ("Check data preprocessing switch")
         sys.exit()
-    shift_num = 5
-    shifting_size_percent = 0.1
+
     pca_n_component_max = read_pca_component(input_folder)
 
-
-    include_top_list = [1]
 
     # ----------------------------------------------------------------------------------------------------------------------
     # generator builder
@@ -111,6 +139,35 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             random.seed(i+experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET+RANDOM_SEED_OFFSET)
             random_sample = random.sample(random_pool, 1)[0]
             yield random_sample
+
+    def build_generator_for_shift_flexible_t_window(shift_size_pool, training_window_size_pool, training_window_max, total_date_num,
+                                                    trails, experiment_count):
+        validation_window_total = total_date_num - training_window_max
+        for i in range(trails):
+            best_shift_found = False
+            j = 0
+            while not best_shift_found:
+                j += 1
+                random.seed(j+i+experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET+RANDOM_SEED_OFFSET)
+                shift_size = random.sample(shift_size_pool, 1)[0]
+                random.seed(j+i+experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET+RANDOM_SEED_OFFSET)
+                training_window_size = random.sample(training_window_size_pool, 1)[0]
+                print ("training_window_size---", training_window_size)
+                if not training_window_size >= 2.5*shift_size:
+                    print ("training_window_size:{} too small!!".format(training_window_size))
+                    continue
+                if validation_window_total%shift_size != 0:
+                    print ("shift_number is float:{}"
+                           .format(validation_window_total/shift_size))
+                else:
+                    shift_number = int(validation_window_total/shift_size)
+                    best_shift_found = True
+                # random.seed(j+i+experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET+RANDOM_SEED_OFFSET)
+                # shift_number_pool = [x for x in range(shift_number_pool[0], max_shift_number)]
+                # shift_number = random.sample(shift_number_pool, 1)[0]
+                # training_date_num = max_num-shift_number*shift_size
+            yield shift_size, shift_number,training_window_size
+
 
     def build_generator_from_range(target_range, trails, experiment_count):
         for i in range(trails):
@@ -148,10 +205,20 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
         validation_fraction_range = (0.1, 0.3)
         validation_fraction_random_sample_generator = build_generator_from_range(validation_fraction_range, TRAILS,
                                                                                  experiment_count)
+        # (6.) shift size
+        shifting_size_pool = [x for x in range(shifting_size_min, shifting_size_max+1)]  # 5,50
+        if is_training_window_flexible:
+            training_window_pool = [x for x in range(training_window_min,training_window_max+1)]  # 1,20
+        else:
+            training_window_pool = [x for x in range(training_window_max,training_window_max+1)]  # 1,20
+        shifting_random_sample_generator = build_generator_for_shift_flexible_t_window(shifting_size_pool, training_window_pool,
+                                                                                       training_window_max, total_date_num,
+                                                                                       TRAILS, experiment_count)
 
         # (7.) HIDDEN LAYERS
-        hidden_layer_depth = (1,3)
+        hidden_layer_depth = (1,2)
         hidden_layer_node  = (20,400)
+
 
         def hidden_layer_generator(hidden_layer_depth, hidden_layer_node, experiment_count):
             for i in range(TRAILS):
@@ -173,7 +240,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
         hyper_parameter_trail_zip = zip(activation_random_sample_generator, alpha_random_sample_generator,
                                               learning_rate_random_sample_generator, learning_rate_init_random_sample_generator,
                                               early_stopping_random_sample_generator, validation_fraction_random_sample_generator,
-                                        hidden_layer_size)
+                                        hidden_layer_size,shifting_random_sample_generator)
 
         # hyper_parameter_size = len(hyper_parameter_trail_list)
         # print ("hyper_parameter_size: ", hyper_parameter_size)
@@ -185,6 +252,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             if unique_id < unique_start:
                 unique_id += 1
                 continue
+
             # (0.) PCA n component
             if data_preprocessing == 'pca' or data_preprocessing == 'pca_standardization':
                 random.seed(i + experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
@@ -192,23 +260,23 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             else:
                 pca_n_component = None
 
+            shifting_size, shift_num, training_window_size = hyper_paramter_tuple[7]
+
             mlp_regressor1.create_train_dev_vdict_window_shift(samples_feature_list, samples_value_list,
                                                                date_str_list, stock_id_list, is_cv=True,
-                                                               shifting_size_percent=shifting_size_percent,
+                                                               shifting_size=shifting_size,
                                                                shift_num=shift_num,
                                                                is_standardisation=is_standardisation, is_PCA=is_PCA,
-                                                               pca_n_component=pca_n_component)
-
-
-
+                                                               pca_n_component=pca_n_component,
+                                                               training_window_size =training_window_size)
 
             activation_function = hyper_paramter_tuple[0]
-            alpha = hyper_paramter_tuple[1]
+            alpha = float("{:7f}".format(hyper_paramter_tuple[1]))
             learning_rate = hyper_paramter_tuple[2]
-            learning_rate_init = hyper_paramter_tuple[3]
+            learning_rate_init = float("{:7f}".format(hyper_paramter_tuple[3]))
             early_stopping = hyper_paramter_tuple[4]
             if early_stopping:
-                validation_fraction = hyper_paramter_tuple[5]
+                validation_fraction = float("{:7f}".format(hyper_paramter_tuple[5]))
             else:
                 validation_fraction = 0.0
             hidden_layer_sizes = hyper_paramter_tuple[6]
@@ -223,6 +291,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             avg_f1_list = []
 
 
+
             for random_state in range(random_state_total):
                 random_seed = 'window_shift'
 
@@ -233,10 +302,11 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                 shift_accuracy_list = []
                 shift_avg_f1_list = []
 
+
                 mlp_regressor1.set_regressor(hidden_layer_sizes, tol=tol, learning_rate_init=learning_rate_init,
                                                   random_state=random_state,
-                verbose = False, learning_rate = learning_rate, early_stopping =early_stopping, alpha= alpha,
-                validation_fraction = validation_fraction, activation = activation_function)
+                                   verbose = False, learning_rate = learning_rate, early_stopping =early_stopping, alpha= alpha,
+                                                  validation_fraction = validation_fraction, activation = activation_function)
 
                 for shift in mlp_regressor1.validation_dict[random_seed].keys():
                     mlp_regressor1.trade_rs_cv_load_train_dev_data(random_seed, shift)
@@ -252,6 +322,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                     shift_avg_pc_list.append(avg_price_change_tuple[0])
                     shift_accuracy_list.append(accuracy)
                     shift_avg_f1_list.append(average_f1)
+
 
                 avg_n_iter = np.average(shift_n_iter_list)
                 avg_loss= np.average(shift_loss_list)
@@ -271,6 +342,9 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
                 print ("-----------------------------------------------------------------------------------")
                 print ("unique_id", unique_id)
+                print ("training_window_size: ", training_window_size)
+                print ("shifting_size: ", shifting_size)
+                print ("shift_num: ", shift_num)
                 print ("is_PCA", is_PCA)
                 print ("is_standardisation", is_standardisation)
                 print ("pca_n_component: ", pca_n_component)
@@ -299,11 +373,12 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
             hidden_layer_write_str = '_'.join([str(x) for x in hidden_layer_sizes])
 
-            write_tuple = (experiment, trail, random_state_total, pca_n_component, activation_function, alpha, learning_rate, learning_rate_init, early_stopping,
-                           validation_fraction, hidden_layer_write_str)
+            write_tuple = (experiment, trail, random_state_total, pca_n_component, activation_function, alpha,
+                           learning_rate, learning_rate_init, early_stopping,validation_fraction,
+                           shifting_size, shift_num, training_window_size, hidden_layer_write_str)
             save_folder = os.path.join(parent_folder, 'hyper_parameter_test', data_set, classifier, data_preprocessing)
-            csv_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.csv'.format(*write_tuple))
-            txt_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.txt'.format(*write_tuple))
+            csv_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.csv'.format(*write_tuple))
+            txt_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.txt'.format(*write_tuple))
 
 
 
@@ -339,4 +414,5 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             #         f.write("random_state: {}\n".format(random_state))
             # print ("Save txt to {}".format(txt_file_path))
             # ------------------------------------------------------------------------------------------------------------------
+
             unique_id += 1

@@ -39,9 +39,10 @@ from trade_general_funcs import read_pca_component
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 unique_id = 0
-unique_start = 0
+unique_start = 386
 #
-input_folder = os.path.join('dow_jones_index_extended', 'dow_jones_index_extended_labeled')
+data_set = 'dow_jones_index_extended'
+input_folder = os.path.join(data_set, 'dow_jones_index_extended_labeled')
 input_folder = os.path.join(parent_folder, 'data', input_folder)
 #
 EXPERIMENTS = 3
@@ -51,7 +52,6 @@ TRAILS= 128
 PCA_MIN_COMPONENT = 8
 RANDOM_SEED_OFFSET = 54385438
 EXPERIMENT_RANDOM_SEED_OFFSET = 38453845
-data_set = 'dow_jones'
 random_state_total = 20
 tol = 1e-10
 classifier = 'classifier'
