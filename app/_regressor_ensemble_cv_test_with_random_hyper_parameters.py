@@ -67,21 +67,23 @@ for is_standardisation, is_PCA, mode in list(itertools.product(is_standardisatio
     # SETTINGS
     # ==========================================================================================================
 
-    classifier = '{}_regressor'.format(mode)
-    ensemble_number = 3
+
     # ==========================================================================================================
 
 
 
 
     # (1.) build classifer
+    mode = 'adaboost'
+    classifier = '{}_regressor'.format(mode)
+    ensemble_number = 3
     mlp_regressor1 = MlpTradeEnsembleRegressor(ensemble_number, mode)
 
 
 
     clsfy_name = '{}_hyper_parameter_{}'.format(data_set, classifier)
     clf_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
-
+    clf_path += 'ensemble_data'
 
     # (2.) GET TRANINING SET
     data_per = 1.0 # the percentage of data using for training and testing

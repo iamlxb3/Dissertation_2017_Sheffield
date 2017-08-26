@@ -93,46 +93,46 @@ class MlpTradeEnsembleRegressor(MlpTradeRegressor):
     # [C.1]  Dev
     # ------------------------------------------------------------------------------------------------------------------
 
-    def regressor_dev(self, save_clsfy_path="mlp_trade_ensemble_regressor", is_cv=False, include_top_list = None):
-        if not include_top_list:
-            include_top_list = [1]
-        mlp_regressor = pickle.load(open(save_clsfy_path, "rb"))
-        pred_value_list = np.array(mlp_regressor.predict(self.dev_set))
-        actual_value_list = np.array(self.dev_value_set)
-        mrse = calculate_rmse(actual_value_list, pred_value_list)
-        date_list = self.dev_date_set
-        stock_id_list = self.dev_stock_id_set
-
-        avg_price_change_tuple, var_tuple, std_tuple = get_avg_price_change(pred_value_list, actual_value_list,
-                                                                                  date_list, stock_id_list,
-                                                                                  include_top_list=
-                                                                                  include_top_list)
-
-        # count how many predicted value has the same polarity as actual value
-        polar_list = [1 for x, y in zip(pred_value_list, actual_value_list) if x * y >= 0]
-        polar_count = len(polar_list)
-        polar_percent = polar_count / len(pred_value_list)
-        #
-
-        # self.mres_list.append(mrse)
-        # self.avg_price_change_list.append(avg_price_change_tuple)
-        # self.polar_accuracy_list.append(polar_percent)
-        # self.var_std_list.append((var_tuple, std_tuple))
-
-        # <uncomment for debugging>
-        if not is_cv:
-            print("----------------------------------------------------------------------------------------")
-            print("actual_value_list, ", actual_value_list)
-            print("pred_value_list, ", pred_value_list)
-            print("polarity: {}".format(polar_percent))
-            print("mrse: {}".format(mrse))
-            print("avg_price_change: {}".format(avg_price_change_tuple))
-            print("----------------------------------------------------------------------------------------")
-        else:
-            pass
-            # print("Testing complete! Testing Set size: {}".format(len(self.r_dev_value_set)))
-            # <uncomment for debugging>
-
-        return mrse, avg_price_change_tuple, polar_percent
-    # ------------------------------------------------------------------------------------------------------------------
+    # def regressor_dev(self, save_clsfy_path="mlp_trade_ensemble_regressor", is_cv=False, include_top_list = None):
+    #     if not include_top_list:
+    #         include_top_list = [1]
+    #     mlp_regressor = pickle.load(open(save_clsfy_path, "rb"))
+    #     pred_value_list = np.array(mlp_regressor.predict(self.dev_set))
+    #     actual_value_list = np.array(self.dev_value_set)
+    #     mrse = calculate_rmse(actual_value_list, pred_value_list)
+    #     date_list = self.dev_date_set
+    #     stock_id_list = self.dev_stock_id_set
+    #
+    #     avg_price_change_tuple, var_tuple, std_tuple = get_avg_price_change(pred_value_list, actual_value_list,
+    #                                                                               date_list, stock_id_list,
+    #                                                                               include_top_list=
+    #                                                                               include_top_list)
+    #
+    #     # count how many predicted value has the same polarity as actual value
+    #     polar_list = [1 for x, y in zip(pred_value_list, actual_value_list) if x * y >= 0]
+    #     polar_count = len(polar_list)
+    #     polar_percent = polar_count / len(pred_value_list)
+    #     #
+    #
+    #     # self.mres_list.append(mrse)
+    #     # self.avg_price_change_list.append(avg_price_change_tuple)
+    #     # self.polar_accuracy_list.append(polar_percent)
+    #     # self.var_std_list.append((var_tuple, std_tuple))
+    #
+    #     # <uncomment for debugging>
+    #     if not is_cv:
+    #         print("----------------------------------------------------------------------------------------")
+    #         print("actual_value_list, ", actual_value_list)
+    #         print("pred_value_list, ", pred_value_list)
+    #         print("polarity: {}".format(polar_percent))
+    #         print("mrse: {}".format(mrse))
+    #         print("avg_price_change: {}".format(avg_price_change_tuple))
+    #         print("----------------------------------------------------------------------------------------")
+    #     else:
+    #         pass
+    #         # print("Testing complete! Testing Set size: {}".format(len(self.r_dev_value_set)))
+    #         # <uncomment for debugging>
+    #
+    #     return mrse, avg_price_change_tuple, polar_percent
+    # # ------------------------------------------------------------------------------------------------------------------
 

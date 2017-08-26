@@ -1,0 +1,130 @@
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# Build the MLP regressor.
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# (c) 2017 PJS, University of Sheffield, iamlxb3@gmail.com
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+# ==========================================================================================================
+# general package import
+# ==========================================================================================================
+import sys
+import random
+import os
+import itertools
+import numpy as np
+import collections
+# ==========================================================================================================
+
+# ==========================================================================================================
+# ADD SYS PATH
+# ==========================================================================================================
+parent_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+path1 = os.path.join(parent_folder, 'general_functions')
+sys.path.append(path1)
+# ==========================================================================================================
+
+# ==========================================================================================================
+# local package import
+# ==========================================================================================================
+from stock_box_plot2 import data_preprocessing_result_box_plot
+# ==========================================================================================================
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# read data into dictionary
+# ----------------------------------------------------------------------------------------------------------------------
+data_set = 'dow_jones_index_extended'
+mode = 'clf'
+classifier_list = ['classifier','bagging_classifier']
+regressor_list = ['regressor','bagging_regressor','adaboost_regressor']
+data_preprocessing_list = ['pca','pca_standardization','standardization','origin']
+
+
+# input path
+
+if mode =='clf':
+    model_list = classifier_list
+elif mode == 'reg':
+    model_list = regressor_list
+
+result_dict = collections.defaultdict(lambda :collections.defaultdict(lambda:collections.defaultdict(lambda:[])))
+
+
+for model, data_preprocessing in list(itertools.product(model_list, data_preprocessing_list)):
+    hyper_parameter_folder = os.path.join(parent_folder, 'hyper_parameter_test', data_set,
+                                          model, data_preprocessing)
+    file_name_list = os.listdir(hyper_parameter_folder)
+    file_path_list = [os.path.join(hyper_parameter_folder, x) for x in file_name_list]
+
+    print ("classifier: {}, data_preprocessing: {}".format(model, data_preprocessing))
+    print ("file_path_list_length: ", len(file_path_list))
+
+# save path
+
+
+    # ----------------------------------------------------------------------------------------------------------------------
+    # (1.) push every model's result to dict
+    # ----------------------------------------------------------------------------------------------------------------------
+    for i, file_path in enumerate(file_path_list):
+        with open (file_path, 'r') as f:
+            file_name = file_name_list[i]
+            if file_name == '.gitignore':
+                continue
+            for j, line in enumerate(f):
+                unique_id = "{}_{}".format(i,j)
+                line_list = line.strip().split(',')
+                if mode == 'clf':
+                    loss = line_list[0]
+                    avg_iter_num = line_list[1]
+                    avg_f1 = line_list[2]
+                    accuracy = line_list[3]
+                    result_dict[model][data_preprocessing]['loss_list'].append(float(loss))
+                    result_dict[model][data_preprocessing]['avg_iter_num_list'].append(float(avg_iter_num))
+                    result_dict[model][data_preprocessing]['avg_f1_list'].append(float(avg_f1))
+                    result_dict[model][data_preprocessing]['accuracy_list'].append(float(accuracy))
+                elif mode == 'reg':
+                    loss = line_list[0]
+                    avg_iter_num = line_list[1]
+                    rmse = line_list[2]
+                    avg_pc = line_list[3]
+                    accuracy = line_list[4]
+                    avg_f1 = line_list[5]
+                    result_dict[model][data_preprocessing]['loss_list'].append(float(loss))
+                    result_dict[model][data_preprocessing]['avg_iter_num_list'].append(float(avg_iter_num))
+                    result_dict[model][data_preprocessing]['rmse_list'].append(float(rmse))
+                    result_dict[model][data_preprocessing]['avg_pc_list'].append(float(avg_pc))
+                    result_dict[model][data_preprocessing]['accuracy_list'].append(float(accuracy))
+                    result_dict[model][data_preprocessing]['avg_f1_list'].append(float(avg_f1))
+                else:
+                    print ("Error! Please print the right mode")
+                    sys.exit()
+    # ----------------------------------------------------------------------------------------------------------------------
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# (3.) box_plot
+# ----------------------------------------------------------------------------------------------------------------------
+#title = 'MLP {} performance under different number of trails'.format(classifier)
+data_preprocessing_list = ['pca','pca_standardization','standardization','origin']
+data_preprocessing = 'pca_standardization'
+data_preprocessing_name = 'PCA and standardisation'
+
+if mode == 'clf':
+    metrics_name_list = ['avg_f1_list','accuracy_list']
+    mode_name = 'Classification'
+elif mode == 'reg':
+    metrics_name_list = ['rmse_list','avg_pc_list','accuracy_list','avg_f1_list']
+    mode_name = 'Regression'
+
+
+title = "{} result with {}".format(mode_name, data_preprocessing_name)
+data_preprocessing_result_box_plot(result_dict, model_list, data_preprocessing, metrics_name_list, title =title, x_label = ''
+)
+
+
+# ----------------------------------------------------------------------------------------------------------------------

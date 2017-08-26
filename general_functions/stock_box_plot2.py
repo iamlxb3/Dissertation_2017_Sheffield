@@ -93,7 +93,8 @@ def stock_metrics_result_box_plot(metrics_result_dict, trail_number_list, metric
     show()
 
 
-def model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='', x_label = ''):
+def model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list,
+                          title ='', x_label = '', xlim_range = (0,15), ylim_range = (0.2, 0.6)):
     box_widths = 0.3
     box_gap = 0.5
     category_gap =1.5
@@ -122,8 +123,8 @@ def model_result_box_plot(result_dict, model_list, data_preprocessing_list, metr
 
 
     # set axes limits and labels
-    xlim(0,7)
-    ylim(0.28, 0.6)
+    xlim(*xlim_range)
+    ylim(*ylim_range)
     ax.set_xticklabels(model_list)
     ax.set_xticks(category_pos_list)
     ax.set_xlabel(x_label)
@@ -143,6 +144,65 @@ def model_result_box_plot(result_dict, model_list, data_preprocessing_list, metr
         h, = plot([1, 1], legend_list[i])
         h_list.append(h)
         #h.set_visible(False)
+
+    # hB, = plot([1, 1], 'b-')
+    # hR, = plot([1, 1], 'r-')
+    legend(h_list, metrics_name_list)
+    for h in h_list:
+        h.set_visible(False)
+    # hB.set_visible(False)
+    # hR.set_visible(False)
+    show()
+
+def data_preprocessing_result_box_plot(result_dict, model_list, data_preprocessing, metrics_name_list, title='',
+                          x_label=''):
+    box_widths = 0.3
+    box_gap = 0.5
+    category_gap = 1.5
+    position_now = 0
+    category_pos_list = []
+    fig = figure()
+    ax = axes()
+    hold(True)
+
+    # Some fake data to plot
+    for model in model_list:
+        X = []
+        model_result_dict = result_dict[model]
+        for metric in metrics_name_list:
+            metric_value_list = []
+            value_list = model_result_dict[data_preprocessing][metric]
+            metric_value_list.extend(value_list)
+            X.append(metric_value_list)
+        # first boxplot pair
+        position_now += category_gap
+        positions_list, position_now = get_positions(metrics_name_list, position_now, box_gap)
+        category_pos_list.append(np.average(positions_list))
+        bp = boxplot(X, positions=positions_list, widths=box_widths, sym='+')
+        setBoxColors(bp, metrics_name_list)
+
+    # set axes limits and labels
+    xlim(0, 7)
+    ylim(0.28, 0.6)
+    ax.set_xticklabels(model_list)
+    ax.set_xticks(category_pos_list)
+    ax.set_xlabel(x_label)
+    ax.set_title(title)
+
+    # draw temporary red and blue lines and use them to create a legend
+    h_list = []
+    shape = '-'
+    legend_list = ['b{}'.format(shape),
+                   'r{}'.format(shape),
+                   'g{}'.format(shape),
+                   'c{}'.format(shape),
+                   'y{}'.format(shape),
+                   'm{}'.format(shape)]
+
+    for i, _ in enumerate(metrics_name_list):
+        h, = plot([1, 1], legend_list[i])
+        h_list.append(h)
+        # h.set_visible(False)
 
     # hB, = plot([1, 1], 'b-')
     # hR, = plot([1, 1], 'r-')

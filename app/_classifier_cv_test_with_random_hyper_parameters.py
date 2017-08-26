@@ -39,7 +39,7 @@ from trade_general_funcs import read_pca_component
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 unique_id = 0
-unique_start = 386
+unique_start = 0
 #
 data_set = 'dow_jones_index_extended'
 input_folder = os.path.join(data_set, 'dow_jones_index_extended_labeled')
@@ -305,6 +305,8 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                     shift_loss_list.append(loss)
                     shift_f1_list.append(average_f1)
                     shift_accuracy_list.append(accuracy)
+
+
 
 
                 avg_n_iter = np.average(shift_n_iter_list)

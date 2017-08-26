@@ -87,63 +87,62 @@ class MlpTradeDataEnsembleClassifier(MlpTradeClassifier):
 
         #self.iteration_loss_list.append((np.average(n_iter_list), np.average(loss_list)))
 
-        save_clsfy_path = save_clsfy_path + '_data_ensemble'
         pickle.dump(self.clf, open(save_clsfy_path, "wb"))
         return np.average(n_iter_list), np.average(loss_list)
 
-    def clf_dev(self, save_clsfy_path="mlp_trade_classifier", is_cv=False, is_return = False):
+    # def clf_dev(self, save_clsfy_path="mlp_trade_classifier", is_cv=False, is_return=False):
+    #
+    #     save_clsfy_path = save_clsfy_path + '_data_ensemble'
+    #
+    #     # (1.) read classifier
+    #     clf = pickle.load(open(save_clsfy_path, "rb"))
+    #     #
+    #     pred_label_list = clf.predict(self.dev_set)
+    #
+    #     # (3.) compute the average f-measure
+    #     pred_label_dict = collections.defaultdict(lambda: 0)
+    #     for pred_label in pred_label_list:
+    #         pred_label_dict[pred_label] += 1
+    #     label_tp_fp_tn_dict = compute_average_f1(pred_label_list, self.dev_value_set)
+    #     label_f1_list = sorted([(key, x[3]) for key, x in label_tp_fp_tn_dict.items()])
+    #     f1_list = [x[1] for x in label_f1_list]
+    #     average_f1 = np.average(f1_list)
+    #     #
+    #
+    #     # (4.) compute accuracy
+    #     correct = 0
+    #     for i, pred_label in enumerate(pred_label_list):
+    #         if pred_label == self.dev_value_set[i]:
+    #             correct += 1
+    #     accuracy = correct / len(self.dev_value_set)
+    #     #
+    #
+    #     # (5.) count the occurrence for each label
+    #     dev_label_dict = collections.defaultdict(lambda: 0)
+    #     for dev_label in self.dev_value_set:
+    #         dev_label_dict[dev_label] += 1
+    #     #
+    #
+    #     # (6.) save result for 1-fold
+    #     self.average_f1_list.append(average_f1)
+    #     self.accuracy_list.append(accuracy)
+    #     #
+    #
+    #     # print
+    #     if not is_cv:
+    #         print("\n=================================================================")
+    #         print("Dev set result!")
+    #         print("=================================================================")
+    #         print("dev_label_dict: {}".format(list(dev_label_dict.items())))
+    #         print("pred_label_dict: {}".format(list(pred_label_dict.items())))
+    #         print("label_f1_list: {}".format(label_f1_list))
+    #         print("average_f1: ", average_f1)
+    #         print("accuracy: ", accuracy)
+    #         print("=================================================================")
+    #     #
+    #
+    #     if is_return:
+    #         return average_f1, accuracy
+    #
 
-
-        save_clsfy_path = save_clsfy_path + '_data_ensemble'
-
-        # (1.) read classifier
-        clf = pickle.load(open(save_clsfy_path, "rb"))
-        #
-        pred_label_list = clf.predict(self.dev_set)
-
-
-        # (3.) compute the average f-measure
-        pred_label_dict = collections.defaultdict(lambda: 0)
-        for pred_label in pred_label_list:
-            pred_label_dict[pred_label] += 1
-        label_tp_fp_tn_dict = compute_average_f1(pred_label_list, self.dev_value_set)
-        label_f1_list = sorted([(key, x[3]) for key, x in label_tp_fp_tn_dict.items()])
-        f1_list = [x[1] for x in label_f1_list]
-        average_f1 = np.average(f1_list)
-        #
-
-        # (4.) compute accuracy
-        correct = 0
-        for i, pred_label in enumerate(pred_label_list):
-            if pred_label == self.dev_value_set[i]:
-                correct += 1
-        accuracy = correct / len(self.dev_value_set)
-        #
-
-        # (5.) count the occurrence for each label
-        dev_label_dict = collections.defaultdict(lambda: 0)
-        for dev_label in self.dev_value_set:
-            dev_label_dict[dev_label] += 1
-        #
-
-        # (6.) save result for 1-fold
-        self.average_f1_list.append(average_f1)
-        self.accuracy_list.append(accuracy)
-        #
-
-        # print
-        if not is_cv:
-            print("\n=================================================================")
-            print("Dev set result!")
-            print("=================================================================")
-            print("dev_label_dict: {}".format(list(dev_label_dict.items())))
-            print("pred_label_dict: {}".format(list(pred_label_dict.items())))
-            print("label_f1_list: {}".format(label_f1_list))
-            print("average_f1: ", average_f1)
-            print("accuracy: ", accuracy)
-            print("=================================================================")
-        #
-
-        if is_return:
-            return average_f1, accuracy
 

@@ -58,13 +58,16 @@ feature_switch_tuple_all_1 = get_full_feature_switch_tuple(data_folder)
 
 # (3.) feed data
 data_per = 1.0  # the percentage of data using for training and testing
-shifting_size_percent = 0.1
+shifting_size = 26
 shift_num = 5
+training_window_size = 74
+
+
 pca_n_component = read_pca_component(data_folder)
 mode = 'clf'
-mlp_classifier1.trade_feed_and_separate_data_window_shift(data_folder, data_per=data_per,
+mlp_classifier1.trade_feed_and_separate_data_window_shift(data_folder, data_per=data_per, shifting_size=shifting_size,
                                                           feature_switch_tuple=feature_switch_tuple_all_1,mode = mode,
-                                                  shifting_size_percent =shifting_size_percent, shift_num = shift_num,
+                                                          training_window_size =training_window_size, shift_num = shift_num,
                                      is_standardisation = True, is_PCA = True, pca_n_component = pca_n_component)
 
 # (4.) train window shift
