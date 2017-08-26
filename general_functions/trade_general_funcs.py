@@ -127,7 +127,7 @@ def feature_degradation(features_list, feature_switch_tuple):
 
 def compute_average_f1(pred_label_list, gold_label_list):
     # TODO, need unitest, maybe some problem exist if there is only 1 label in gold_label_list
-    label_tp_fp_tn_dict = collections.defaultdict(lambda: [0, 0, 0, 0])  # tp,fp,fn,f1
+    label_tp_fp_tn_dict = collections.defaultdict(lambda: [0, 0, 0, 0])  # tp,fp,fn,f1,precision,recall
     label_set = set(gold_label_list)
 
     for i, pred_label in enumerate(pred_label_list):
@@ -141,6 +141,9 @@ def compute_average_f1(pred_label_list, gold_label_list):
                 label_tp_fp_tn_dict[label][2] += 1  # false nagative
 
     # compute f1
+    precision_list = []
+    recall_list = []
+
     for label, f1_list in label_tp_fp_tn_dict.items():
         tp, fp, fn = f1_list[0:3]
         if tp + fp == 0:
@@ -154,40 +157,21 @@ def compute_average_f1(pred_label_list, gold_label_list):
         else:
             f1 = (2 * precision * recall) / (precision + recall)  # equal weight to precision and recall
         f1_list[3] = f1
+        precision_list.append(precision)
+        recall_list.append(recall)
         # reference:
         # https://www.quora.com/What-is-meant-by-F-measure-Weighted-F-Measure-and-Average-F-Measure-in-NLP-Evaluation
 
-    return label_tp_fp_tn_dict
+    # compute the per class average of precision,recall and F1
+    avg_precision = np.average(precision_list)
+    avg_recall = np.average(recall_list)
 
-def compute_average_precision(pred_label_list, gold_label_list):
-    label_tp_fp_tn_dict = collections.defaultdict(lambda: [0, 0, 0, 0])  # tp,fp,fn,f1
-    label_set = set(gold_label_list)
+    if avg_precision + avg_recall == 0.0:
+        avg_F1 = 0.0
+    else:
+        avg_F1 = (2 * avg_precision * avg_recall) / (avg_precision + avg_recall)  # equal weight to precision and recall
 
-    for i, pred_label in enumerate(pred_label_list):
-        gold_label = gold_label_list[i]
-        for label in label_set:
-            if pred_label == label and gold_label == label:
-                label_tp_fp_tn_dict[label][0] += 1  # true positve
-            elif pred_label == label and gold_label != label:
-                label_tp_fp_tn_dict[label][1] += 1  # false positve
-            elif pred_label != label and gold_label == label:
-                label_tp_fp_tn_dict[label][2] += 1  # false nagative
-
-    # compute f1
-    for label, f1_list in label_tp_fp_tn_dict.items():
-        tp, fp, fn = f1_list[0:3]
-        if tp + fp == 0:
-            precision = 0.0
-        else:
-            precision = tp / (tp + fp)
-
-        f1_list[3] = precision
-        # reference:
-        # https://www.quora.com/What-is-meant-by-F-measure-Weighted-F-Measure-and-Average-F-Measure-in-NLP-Evaluation
-
-    return label_tp_fp_tn_dict
-
-
+    return label_tp_fp_tn_dict,avg_F1
 
 
 def generate_feature_switch_list(folder):
@@ -265,10 +249,7 @@ def read_pca_component(folder_path):
 
 def compute_f1_accuracy(predict_list, actual_list):
     # (3.) compute the average f-measure
-    label_tp_fp_tn_dict = compute_average_f1(predict_list, actual_list)
-    label_f1_list = sorted([(key, x[3]) for key, x in label_tp_fp_tn_dict.items()])
-    f1_list = [x[1] for x in label_f1_list]
-    average_f1 = np.average(f1_list)
+    _,average_f1 = compute_average_f1(predict_list, actual_list)
     # average_f1 = f1_list[0] # using F-measure
     #
 
@@ -294,34 +275,3 @@ def compute_f1_accuracy(predict_list, actual_list):
 
     return average_f1, accuracy, pred_label_dict, dev_label_dict
 
-
-def compute_precision_accuracy(predict_list, actual_list):
-    # (3.) compute the average f-measure
-    label_tp_fp_tn_dict = compute_average_precision(predict_list, actual_list)
-    label_precision_list = sorted([(key, x[3]) for key, x in label_tp_fp_tn_dict.items()])
-    precision_list = [x[1] for x in label_precision_list]
-    average_precision = np.average(precision_list)
-    # average_f1 = f1_list[0] # using F-measure
-    #
-
-    # (4.) compute accuracy
-    correct = 0
-    for i, pred_label in enumerate(predict_list):
-        if pred_label == actual_list[i]:
-            correct += 1
-    accuracy = correct / len(actual_list)
-    #
-
-    # (5.) count the occurrence for each label
-    pred_label_dict = collections.defaultdict(lambda: 0)
-    for pred_label in predict_list:
-        pred_label_dict[pred_label] += 1
-
-
-    dev_label_dict = collections.defaultdict(lambda: 0)
-    for dev_label in actual_list:
-        dev_label_dict[dev_label] += 1
-    #
-
-
-    return average_precision, accuracy, pred_label_dict, dev_label_dict

@@ -146,11 +146,7 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
 
             # (3.) compute the average f-measure
 
-            label_tp_fp_tn_dict = compute_average_f1(pred_label_list, golden_label_list)
-            label_f1_list = sorted([(key, x[3]) for key, x in label_tp_fp_tn_dict.items()])
-            label_f1_list_all.extend(label_f1_list)
-            f1_list = [x[1] for x in label_f1_list]
-            average_f1 = np.average(f1_list)
+            _,average_f1  = compute_average_f1(pred_label_list, golden_label_list)
             week_average_f1_list.append(average_f1)
             #average_f1 = f1_list[0] # using F-measure
             #
