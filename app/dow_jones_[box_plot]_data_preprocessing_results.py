@@ -38,7 +38,7 @@ from stock_box_plot2 import data_preprocessing_result_box_plot
 # ----------------------------------------------------------------------------------------------------------------------
 # read data into dictionary
 # ----------------------------------------------------------------------------------------------------------------------
-data_set = 'dow_jones_index_extended'
+data_set = 'dow_jones_index'
 mode = 'clf'
 classifier_list = ['classifier','bagging_classifier']
 regressor_list = ['regressor','bagging_regressor','adaboost_regressor']
@@ -111,8 +111,9 @@ for model, data_preprocessing in list(itertools.product(model_list, data_preproc
 # ----------------------------------------------------------------------------------------------------------------------
 #title = 'MLP {} performance under different number of trails'.format(classifier)
 data_preprocessing_list = ['pca','pca_standardization','standardization','origin']
-data_preprocessing = 'pca_standardization'
-data_preprocessing_name = 'PCA and standardisation'
+
+#data_preprocessing = 'pca_standardization'
+#data_preprocessing_name = 'PCA and standardisation'
 
 if mode == 'clf':
     metrics_name_list = ['avg_f1_list','accuracy_list']
@@ -121,9 +122,13 @@ elif mode == 'reg':
     metrics_name_list = ['rmse_list','avg_pc_list','accuracy_list','avg_f1_list']
     mode_name = 'Regression'
 
+model_name = 'MLP_classifier'
 
-title = "{} result with {}".format(mode_name, data_preprocessing_name)
-data_preprocessing_result_box_plot(result_dict, model_list, data_preprocessing, metrics_name_list, title =title, x_label = ''
+title = "{} result with {}".format(mode_name, model)
+ylim_range = (0.0, 0.8)
+xlim_range = (0, 12)
+data_preprocessing_result_box_plot(result_dict, model, data_preprocessing_list, metrics_name_list,
+                                   title =title, x_label = '', ylim_range = ylim_range, xlim_range=xlim_range
 )
 
 

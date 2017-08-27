@@ -144,6 +144,12 @@ def compute_average_f1(pred_label_list, gold_label_list):
     precision_list = []
     recall_list = []
 
+    count = 0
+    for i, label in enumerate(pred_label_list):
+        if label == gold_label_list[i]:
+            count += 1
+    accuracy = count / len(pred_label_list)
+
     for label, f1_list in label_tp_fp_tn_dict.items():
         tp, fp, fn = f1_list[0:3]
         if tp + fp == 0:
@@ -166,10 +172,14 @@ def compute_average_f1(pred_label_list, gold_label_list):
     avg_precision = np.average(precision_list)
     avg_recall = np.average(recall_list)
 
+
+
     if avg_precision + avg_recall == 0.0:
         avg_F1 = 0.0
     else:
         avg_F1 = (2 * avg_precision * avg_recall) / (avg_precision + avg_recall)  # equal weight to precision and recall
+
+
 
     return label_tp_fp_tn_dict,avg_F1
 

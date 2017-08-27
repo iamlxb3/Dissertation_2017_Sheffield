@@ -38,8 +38,8 @@ from stock_box_plot2 import model_result_box_plot
 # ----------------------------------------------------------------------------------------------------------------------
 # read data into dictionary
 # ----------------------------------------------------------------------------------------------------------------------
-data_set = 'dow_jones_index_extended'
-mode = 'reg'
+data_set = 'dow_jones_index'
+mode = 'clf'
 classification_list = ['classifier','bagging_classifier','regressor','bagging_regressor','adaboost_regressor']
 regression_list = ['regressor','bagging_regressor','adaboost_regressor']
 
@@ -115,7 +115,9 @@ for model, data_preprocessing in list(itertools.product(model_list, data_preproc
 #title = 'MLP {} performance under different number of trails'.format(classifier)
 if mode =='clf':
     metrics_name_list = ['avg_f1_list', 'accuracy_list']
-    model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='', x_label = ''
+    ylim_range = (0,0.8)
+    model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='',
+                          x_label = '', ylim_range = ylim_range
     )
 elif mode =='reg':
     metrics_name_list = ['rmse_list']

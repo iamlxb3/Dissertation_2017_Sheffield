@@ -13,6 +13,7 @@ import random
 import os
 import itertools
 import re
+import math
 import numpy as np
 from pjslib.logger import logger1
 # ==========================================================================================================
@@ -113,18 +114,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
     data_per = 1.0 # the percentage of data using for training, validation and testing
     #dev_per = 0.0 # the percentage of data using for developing
 
-
-
-    feature_switch_tuple_all_1 = get_full_feature_switch_tuple(input_folder)
-
     # (3.)
-    samples_feature_list, samples_value_list, date_str_list, stock_id_list = mlp_regressor1._feed_data(input_folder,
-                                                                                                       data_per=data_per,
-                                                                                                       feature_switch_tuple=feature_switch_tuple_all_1,
-                                                                                                       is_random=False, mode=mode)
-
-
-    # (4.)
     if is_standardisation and is_PCA:
         data_preprocessing = 'pca_standardization'
     elif is_standardisation and not is_PCA:
@@ -136,8 +126,15 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
     else:
         print ("Check data preprocessing switch")
         sys.exit()
-
     pca_n_component_max = read_pca_component(input_folder)
+
+    # (4.)
+    feature_switch_tuple_all_1 = get_full_feature_switch_tuple(input_folder)
+    feature_switch_tuple = feature_switch_tuple_all_1
+    samples_feature_list, samples_value_list, date_str_list, stock_id_list = mlp_regressor1._feed_data(input_folder,
+                                                                      data_per=data_per,
+                                                                      feature_switch_tuple=feature_switch_tuple,
+                                                                    is_random=False, mode='clf')
 
 
     # ----------------------------------------------------------------------------------------------------------------------
@@ -183,6 +180,21 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             random.seed(i+experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET+RANDOM_SEED_OFFSET)
             random_value = random.uniform(*target_range)
             yield random_value
+
+    def build_generator_for_feature_selection(trails, experiment_count):
+        feature_num_max = len(feature_switch_tuple_all_1)
+        feature_num_min = math.floor((1 / 2) * len(feature_switch_tuple_all_1))
+        for i in range(trails):
+            random.seed(i + experiment_count * EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
+            feature_num = random.randint(feature_num_min, feature_num_max)
+            random.seed(i + experiment_count * EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
+            feature_index = random.sample([x for x in range(0, feature_num_max)], feature_num)
+            feature_random_switch_tuple = [0 for x in feature_switch_tuple_all_1]
+            for index in feature_index:
+                feature_random_switch_tuple[index] = 1
+            yield feature_random_switch_tuple
+
+
     # ----------------------------------------------------------------------------------------------------------------------
 
 
@@ -228,6 +240,9 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
         hidden_layer_depth = (1,2)
         hidden_layer_node  = (20,400)
 
+        # (8.) Feature selection
+        feature_random_switch_tuple = build_generator_for_feature_selection(TRAILS, experiment_count)
+
 
         def hidden_layer_generator(hidden_layer_depth, hidden_layer_node, experiment_count):
             for i in range(TRAILS):
@@ -249,7 +264,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
         hyper_parameter_trail_zip = zip(activation_random_sample_generator, alpha_random_sample_generator,
                                               learning_rate_random_sample_generator, learning_rate_init_random_sample_generator,
                                               early_stopping_random_sample_generator, validation_fraction_random_sample_generator,
-                                        hidden_layer_size,shifting_random_sample_generator)
+                                        hidden_layer_size,shifting_random_sample_generator,feature_random_switch_tuple)
 
         # hyper_parameter_size = len(hyper_parameter_trail_list)
         # print ("hyper_parameter_size: ", hyper_parameter_size)
@@ -261,6 +276,16 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             if unique_id < unique_start:
                 unique_id += 1
                 continue
+
+            # feature selection if not PCA
+            if data_preprocessing == 'origin' or data_preprocessing == 'standardization':
+                feature_switch_tuple = hyper_paramter_tuple[8]
+                samples_feature_list, samples_value_list, date_str_list, stock_id_list = mlp_regressor1._feed_data(
+                    input_folder,
+                    data_per=data_per,
+                    feature_switch_tuple=feature_switch_tuple,
+                    is_random=False,
+                    mode='clf')
 
             # (0.) PCA n component
             if data_preprocessing == 'pca' or data_preprocessing == 'pca_standardization':
@@ -350,7 +375,8 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                 avg_f1_list.append(avg_avg_f1)
 
                 print ("-----------------------------------------------------------------------------------")
-                print ("unique_id", unique_id)
+                print("unique_id: ", unique_id)
+                print("feature_switch_tuple: ", feature_switch_tuple)
                 print ("ensemble_mode: ", ensemble_mode)
                 print ("ensemble_number: ", ensemble_number)
                 print ("training_window_size: ", training_window_size)
@@ -384,12 +410,12 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
             hidden_layer_write_str = '_'.join([str(x) for x in hidden_layer_sizes])
 
-            write_tuple = (experiment, trail, random_state_total, pca_n_component, activation_function, alpha,
+            write_tuple = (unique_id, experiment, trail, random_state_total, pca_n_component, activation_function, alpha,
                            learning_rate, learning_rate_init, early_stopping,validation_fraction,
                            shifting_size, shift_num, training_window_size, hidden_layer_write_str)
             save_folder = os.path.join(parent_folder, 'hyper_parameter_test', data_set, classifier, data_preprocessing)
-            csv_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.csv'.format(*write_tuple))
-            txt_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.txt'.format(*write_tuple))
+            csv_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.csv'.format(*write_tuple))
+            txt_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.txt'.format(*write_tuple))
 
 
 
@@ -401,6 +427,10 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                     f.write(tuple_str + '\n')
             print ("Save csv to {}".format(csv_file_path))
 
+            if data_preprocessing == 'origin' or data_preprocessing == 'standardization':
+                feature_selection_save_path = os.path.join(save_folder, 'feature_selection.txt')
+                with open (feature_selection_save_path, 'a') as f:
+                    f.write('{},{}\n'.format(unique_id,feature_switch_tuple))
 
             # ------------------------------------------------------------------------------------------------------------------
             # Write txt file

@@ -154,8 +154,8 @@ def model_result_box_plot(result_dict, model_list, data_preprocessing_list, metr
     # hR.set_visible(False)
     show()
 
-def data_preprocessing_result_box_plot(result_dict, model_list, data_preprocessing, metrics_name_list, title='',
-                          x_label=''):
+def data_preprocessing_result_box_plot(result_dict, model, data_preprocessing_list, metrics_name_list, title='',
+                          x_label='', xlim_range = (0,15), ylim_range = (0.2, 0.6)):
     box_widths = 0.3
     box_gap = 0.5
     category_gap = 1.5
@@ -166,14 +166,12 @@ def data_preprocessing_result_box_plot(result_dict, model_list, data_preprocessi
     hold(True)
 
     # Some fake data to plot
-    for model in model_list:
+    model_result_dict = result_dict[model]
+    for data_preprocessing in data_preprocessing_list:
         X = []
-        model_result_dict = result_dict[model]
         for metric in metrics_name_list:
-            metric_value_list = []
             value_list = model_result_dict[data_preprocessing][metric]
-            metric_value_list.extend(value_list)
-            X.append(metric_value_list)
+            X.append(value_list)
         # first boxplot pair
         position_now += category_gap
         positions_list, position_now = get_positions(metrics_name_list, position_now, box_gap)
@@ -182,9 +180,9 @@ def data_preprocessing_result_box_plot(result_dict, model_list, data_preprocessi
         setBoxColors(bp, metrics_name_list)
 
     # set axes limits and labels
-    xlim(0, 7)
-    ylim(0.28, 0.6)
-    ax.set_xticklabels(model_list)
+    xlim(*xlim_range)
+    ylim(*ylim_range)
+    ax.set_xticklabels(data_preprocessing_list)
     ax.set_xticks(category_pos_list)
     ax.set_xlabel(x_label)
     ax.set_title(title)
