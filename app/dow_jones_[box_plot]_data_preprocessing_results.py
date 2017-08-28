@@ -38,7 +38,7 @@ from stock_box_plot2 import data_preprocessing_result_box_plot
 # ----------------------------------------------------------------------------------------------------------------------
 # read data into dictionary
 # ----------------------------------------------------------------------------------------------------------------------
-data_set = 'dow_jones_index'
+data_set = 'dow_jones_index_extended'
 mode = 'clf'
 classifier_list = ['classifier','bagging_classifier']
 regressor_list = ['regressor','bagging_regressor','adaboost_regressor']
@@ -73,7 +73,7 @@ for model, data_preprocessing in list(itertools.product(model_list, data_preproc
     for i, file_path in enumerate(file_path_list):
         with open (file_path, 'r') as f:
             file_name = file_name_list[i]
-            if file_name == '.gitignore':
+            if file_name == '.gitignore' or  file_name == 'feature_selection.txt':
                 continue
             for j, line in enumerate(f):
                 unique_id = "{}_{}".format(i,j)
@@ -111,23 +111,31 @@ for model, data_preprocessing in list(itertools.product(model_list, data_preproc
 # ----------------------------------------------------------------------------------------------------------------------
 #title = 'MLP {} performance under different number of trails'.format(classifier)
 data_preprocessing_list = ['pca','pca_standardization','standardization','origin']
-
+data_preprocessing_show_list =  ['pca','pca&z-score','z-score','none']
 #data_preprocessing = 'pca_standardization'
 #data_preprocessing_name = 'PCA and standardisation'
 
 if mode == 'clf':
     metrics_name_list = ['avg_f1_list','accuracy_list']
+    metrics_show_list = ['AverageFmeasure', 'Accuracy']
     mode_name = 'Classification'
 elif mode == 'reg':
     metrics_name_list = ['rmse_list','avg_pc_list','accuracy_list','avg_f1_list']
+    metrics_show_list = ['Rmse', 'AverageReturn', 'Accuracy', 'AverageFmeasure']
     mode_name = 'Regression'
 
 model_name = 'MLP_classifier'
+model = 'classifier'
 
-title = "{} result with {}".format(mode_name, model)
-ylim_range = (0.0, 0.8)
-xlim_range = (0, 12)
+#title = "{} result with {}".format(mode_name, model)
+title = "{} result on the UCI repository".format(mode_name)
+
+ylim_range = (0.0, 0.6)
+xlim_range = (0, 11)
+
+
 data_preprocessing_result_box_plot(result_dict, model, data_preprocessing_list, metrics_name_list,
+                                   data_preprocessing_show_list,metrics_show_list,
                                    title =title, x_label = '', ylim_range = ylim_range, xlim_range=xlim_range
 )
 

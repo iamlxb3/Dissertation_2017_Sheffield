@@ -668,3 +668,115 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
         self.avg_price_change_list.append(avg_price_change_temp)
         self.polar_accuracy_list.append(np.average(self.rsavg_polar_accuracy_list))
         self.iteration_loss_list.append((np.average(self.rsavg_iteration_list), np.average(self.rsavg_loss_list)))
+
+
+    def baseline_reg_dev(self, target_folder):
+        file1 = os.listdir(target_folder)[0]
+        file1_path = os.path.join(target_folder, file1)
+        with open(file1_path, 'r') as f:
+            feature_list = f.readlines()[0].strip().split(',')[::2]
+
+        key_index = feature_list.index('percent_change_price')
+        print ("key_index: ", key_index)
+
+        pred_value_list = []
+        for dev_sample in self.dev_set:
+            percent_change_price = float(dev_sample[key_index])*0.01
+            pred_value_list.append(percent_change_price)
+
+        actual_value_list = np.array(self.dev_value_set)
+
+        date_list = self.dev_date_set
+        stock_id_list = self.dev_stock_id_set
+        include_top_list = [1]
+
+        avg_price_change_tuple, var_tuple, std_tuple = get_avg_price_change(pred_value_list, actual_value_list,
+                                                                                  date_list, stock_id_list,
+                                                                                  include_top_list=
+                                                                                  include_top_list)
+
+        # compute accuracy in terms of positive and negative
+
+        # (3.) get the pred label for each week
+        pred_label_dict_by_week = collections.defaultdict(lambda :[])
+        golden_label_dict_by_week = collections.defaultdict(lambda :[])
+        pred_value_dict_by_week = collections.defaultdict(lambda :[])
+        golden_value_dict_by_week = collections.defaultdict(lambda :[])
+
+
+        pred_label_list = ['pos' if x >= 0 else 'neg' for x in pred_value_list ]
+        actual_label_list = ['pos' if x >= 0 else 'neg' for x in actual_value_list ]
+
+        for i, pred_label in enumerate(pred_label_list):
+            date = self.dev_date_set[i]
+            # classification
+            pred_label_dict_by_week[date].append(pred_label)
+            golden_label = actual_label_list[i]
+            golden_label_dict_by_week[date].append(golden_label)
+            #
+            # regression
+            predict_value = pred_value_list[i]
+            golden_value = actual_value_list[i]
+            pred_value_dict_by_week[date].append(predict_value)
+            golden_value_dict_by_week[date].append(golden_value)
+
+        week_average_f1_list = []
+        week_average_accuracy_list = []
+        week_average_rmse = []
+        dev_label_dict = collections.defaultdict(lambda: 0)
+        pred_label_dict = collections.defaultdict(lambda: 0)
+        label_f1_list_all = []
+
+        # (4.) compute the f1, accuracy for each week in 1 validation set
+        for date, pred_label_list_for_1_week in pred_label_dict_by_week.items():
+            pred_label_list = pred_label_list_for_1_week
+            golden_label_list = golden_label_dict_by_week[date]
+
+            # (3.) compute the average f-measure
+
+            _,average_f1  = compute_average_f1(pred_label_list, golden_label_list)
+            week_average_f1_list.append(average_f1)
+            #average_f1 = f1_list[0] # using F-measure
+            #
+
+            # (4.) compute accuracy
+            correct = 0
+            for i, pred_label in enumerate(pred_label_list):
+                if pred_label == golden_label_list[i]:
+                    correct += 1
+            accuracy = correct / len(golden_label_list)
+            week_average_accuracy_list.append(accuracy)
+            #
+
+            # (5.) count the occurrence for each label
+            for dev_label in golden_label_list:
+                dev_label_dict[dev_label] += 1
+            for pred_label in pred_label_list:
+                pred_label_dict[pred_label] += 1
+            #
+
+            # # (6.) save rmse
+
+            pred_value_list1 = pred_value_dict_by_week[date]
+            actual_value_list1 = golden_value_dict_by_week[date]
+            rmse = calculate_rmse(actual_value_list1, pred_value_list1)
+            week_average_rmse.append(rmse)
+
+
+        week_average_f1 = np.average(week_average_f1_list)
+        week_average_accuracy = np.average(week_average_accuracy_list)
+        week_average_rmse = np.average(week_average_rmse)
+
+
+        # # <uncomment for debugging>
+        # print("----------------------------------------------------------------------------------------")
+        # print("actual_value_list, ", actual_value_list)
+        # print("pred_value_list, ", pred_value_list)
+        # print("week_average_accuracy: {}".format(week_average_accuracy))
+        # print("week_average_f1: {}".format(week_average_f1))
+        # print("week_average_rmse: {}".format(week_average_rmse))
+        # print("week_average_price_change: {}".format(avg_price_change_tuple))
+        # print("----------------------------------------------------------------------------------------")
+
+    # ------------------------------------------------------------------------------------------------------------------
+        return week_average_rmse, avg_price_change_tuple, week_average_accuracy, week_average_f1

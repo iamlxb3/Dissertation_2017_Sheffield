@@ -76,7 +76,7 @@ for model, data_preprocessing in list(itertools.product(model_list, data_preproc
     for i, file_path in enumerate(file_path_list):
         with open (file_path, 'r') as f:
             file_name = file_name_list[i]
-            if file_name == '.gitignore':
+            if file_name == '.gitignore' or  file_name == 'feature_selection.txt':
                 continue
             for j, line in enumerate(f):
                 unique_id = "{}_{}".format(i,j)

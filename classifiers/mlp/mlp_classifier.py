@@ -35,6 +35,7 @@ sys.path.append(path2)
 from mlp_general import MultilayerPerceptron
 from trade_general_funcs import build_hidden_layer_sizes_list
 from trade_general_funcs import compute_average_f1
+from trade_general_funcs import compute_trade_weekly_clf_result
 # ==========================================================================================================
 
 
@@ -95,7 +96,7 @@ class MlpClassifier_P(MultilayerPerceptron):
 
 
 
-    def clf_dev(self, save_clsfy_path="mlp_trade_classifier", is_cv=False, is_return = False):
+    def clf_dev(self, save_clsfy_path = "mlp_trade_classifier", is_cv = False, is_return = False):
 
         # (1.) read classifier
         mlp = pickle.load(open(save_clsfy_path, "rb"))
@@ -103,62 +104,13 @@ class MlpClassifier_P(MultilayerPerceptron):
 
         # (2.) get pred label list
         pred_label_list = mlp.predict(self.dev_set)
+        actual_label_list = self.dev_value_set
+        data_list = self.dev_date_set
         #
 
-        # (3.) get the pred label for each week
-        pred_label_dict_by_week = collections.defaultdict(lambda :[])
-        golden_label_dict_by_week = collections.defaultdict(lambda :[])
+        week_average_f1, week_average_accuracy, dev_label_dict, pred_label_dict = \
+            compute_trade_weekly_clf_result(pred_label_list,actual_label_list,data_list)
 
-
-        for i, pred_label in enumerate(pred_label_list):
-            date = self.dev_date_set[i]
-            pred_label_dict_by_week[date].append(pred_label)
-            golden_label = self.dev_value_set[i]
-            golden_label_dict_by_week[date].append(golden_label)
-
-        week_average_f1_list = []
-        week_average_accuracy_list = []
-        dev_label_dict = collections.defaultdict(lambda: 0)
-        pred_label_dict = collections.defaultdict(lambda: 0)
-        label_f1_list_all = []
-
-        # (4.) compute the f1, accuracy for each week in 1 validation set
-        for date, pred_label_list_for_1_week in pred_label_dict_by_week.items():
-            pred_label_list = pred_label_list_for_1_week
-            golden_label_list = golden_label_dict_by_week[date]
-
-            # (3.) compute the average f-measure
-
-            _, average_f1= compute_average_f1(pred_label_list, golden_label_list)
-            week_average_f1_list.append(average_f1)
-            #average_f1 = f1_list[0] # using F-measure
-            #
-
-            # (4.) compute accuracy
-            correct = 0
-            for i, pred_label in enumerate(pred_label_list):
-                if pred_label == golden_label_list[i]:
-                    correct += 1
-            accuracy = correct / len(golden_label_list)
-            week_average_accuracy_list.append(accuracy)
-            #
-
-            # (5.) count the occurrence for each label
-            for dev_label in golden_label_list:
-                dev_label_dict[dev_label] += 1
-            for pred_label in pred_label_list:
-                pred_label_dict[pred_label] += 1
-            #
-
-
-            # # (6.) save result for 1-fold
-            # self.average_f1_list.append(average_f1)
-            # self.accuracy_list.append(accuracy)
-            # #
-
-
-        week_average_f1 = np.average(week_average_f1_list)
-        week_average_accuracy = np.average(week_average_accuracy_list)
 
         # print
         if not is_cv:
@@ -167,7 +119,6 @@ class MlpClassifier_P(MultilayerPerceptron):
             print("=================================================================")
             print("dev_label_dict: {}".format(list(dev_label_dict.items())))
             print("pred_label_dict: {}".format(list(pred_label_dict.items())))
-            print("label_f1_list: {}".format(label_f1_list_all))
             print("week_average_f1: ", week_average_f1)
             print("week_average_accuracy: ", week_average_accuracy)
             print("=================================================================")
@@ -252,10 +203,7 @@ class MlpClassifier_P(MultilayerPerceptron):
         pred_label_dict = collections.defaultdict(lambda: 0)
         for pred_label in pred_label_list:
             pred_label_dict[pred_label] += 1
-        label_tp_fp_tn_dict = compute_average_f1(pred_label_list, self.dev_value_set)
-        label_f1_list = sorted([(key, x[3]) for key, x in label_tp_fp_tn_dict.items()])
-        f1_list = [x[1] for x in label_f1_list]
-        average_f1 = np.average(f1_list)
+        _, average_f1= compute_average_f1(pred_label_list, self.dev_value_set)
         #
 
         # (4.) compute accuracy
@@ -278,7 +226,7 @@ class MlpClassifier_P(MultilayerPerceptron):
         print("=================================================================")
         print("dev_label_dict: {}".format(list(dev_label_dict.items())))
         print("pred_label_dict: {}".format(list(pred_label_dict.items())))
-        print("label_f1_list: {}".format(label_f1_list))
+        #print("label_f1_list: {}".format(label_f1_list))
         print("average_f1: ", average_f1)
         print("accuracy: ", accuracy)
         print("=================================================================")

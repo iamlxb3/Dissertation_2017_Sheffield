@@ -154,7 +154,8 @@ def model_result_box_plot(result_dict, model_list, data_preprocessing_list, metr
     # hR.set_visible(False)
     show()
 
-def data_preprocessing_result_box_plot(result_dict, model, data_preprocessing_list, metrics_name_list, title='',
+def data_preprocessing_result_box_plot(result_dict, model, data_preprocessing_list, metrics_name_list,
+                                       data_preprocessing_show_list,metrics_show_list,title='',
                           x_label='', xlim_range = (0,15), ylim_range = (0.2, 0.6)):
     box_widths = 0.3
     box_gap = 0.5
@@ -182,7 +183,7 @@ def data_preprocessing_result_box_plot(result_dict, model, data_preprocessing_li
     # set axes limits and labels
     xlim(*xlim_range)
     ylim(*ylim_range)
-    ax.set_xticklabels(data_preprocessing_list)
+    ax.set_xticklabels(data_preprocessing_show_list)
     ax.set_xticks(category_pos_list)
     ax.set_xlabel(x_label)
     ax.set_title(title)
@@ -197,14 +198,14 @@ def data_preprocessing_result_box_plot(result_dict, model, data_preprocessing_li
                    'y{}'.format(shape),
                    'm{}'.format(shape)]
 
-    for i, _ in enumerate(metrics_name_list):
+    for i, _ in enumerate(metrics_show_list):
         h, = plot([1, 1], legend_list[i])
         h_list.append(h)
         # h.set_visible(False)
 
     # hB, = plot([1, 1], 'b-')
     # hR, = plot([1, 1], 'r-')
-    legend(h_list, metrics_name_list)
+    legend(h_list, metrics_show_list)
     for h in h_list:
         h.set_visible(False)
     # hB.set_visible(False)
