@@ -41,7 +41,7 @@ from trade_general_funcs import read_pca_component
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 unique_id = 0
-unique_start = 114
+unique_start = 0
 #
 data_set = 'dow_jones_index_extended'
 input_folder = os.path.join(data_set, 'dow_jones_index_extended_labeled')
@@ -55,6 +55,7 @@ PCA_MIN_COMPONENT = 8
 RANDOM_SEED_OFFSET = 54385438
 EXPERIMENT_RANDOM_SEED_OFFSET = 38453845
 random_state_total = 20
+
 tol = 1e-10
 classifier = 'random_forest_classifier'
 training_window_min = 30 # weeks
@@ -190,32 +191,26 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
     for experiment_count, experiment in enumerate(range(EXPERIMENTS)):
 
 
-        # (1.) activation function
-        activation_list = ['identity', 'logistic', 'tanh', 'relu']
-        activation_random_sample_generator = build_generator_from_pool(activation_list, TRAILS, experiment_count)
+        # (1.) The number of trees in the forest.
+        MAX_TREE = 200
+        MIN_TREE = int(math.floor((1/8)*MAX_TREE))
+        n_estimators_pool = [x for x in range(MIN_TREE, MAX_TREE+1)]
+        n_estimators_random_sample_generator = build_generator_from_pool(n_estimators_pool, TRAILS, experiment_count)
 
-        # (2.) L2 penalty (regularization term) parameter.
-        alpha_range = (0.00001, 0.001)
-        alpha_random_sample_generator = build_generator_from_range(alpha_range, TRAILS, experiment_count)
+        # (2.) The number of features to consider when looking for the best split
+        max_features_pool = ['auto','sqrt','log2',None]
+        max_features_sample_generator = build_generator_from_pool(max_features_pool, TRAILS, experiment_count)
 
-        # (3.) learning_rate
-        learning_rate_list = ['constant', 'invscaling']
-        learning_rate_random_sample_generator = build_generator_from_pool(learning_rate_list, TRAILS, experiment_count)
+        # (3.) The minimum number of samples required to split an internal node
+        min_samples_split_pool = [x for x in range(2, 5+1)]
+        min_samples_random_sample_generator = build_generator_from_pool(min_samples_split_pool, TRAILS, experiment_count)
 
-        # (4.) learning_rate_init
-        learning_rate_init_range = (0.00001, 0.1)
-        learning_rate_init_random_sample_generator = build_generator_from_range(learning_rate_init_range, TRAILS,
+        # (4.) The minimum number of samples required to be at a leaf node
+        min_samples_leaf_pool = [x for x in range(1, 5+1)]
+        min_samples_leaf_random_sample_generator = build_generator_from_pool(min_samples_leaf_pool, TRAILS,
                                                                                 experiment_count)
 
-        # (5.) early-stopping
-        early_stopping_list = [True, False]
-        early_stopping_random_sample_generator = build_generator_from_pool(early_stopping_list, TRAILS, experiment_count)
-
-        # (6.) early-stopping validation_fraction
-        validation_fraction_range = (0.1, 0.3)
-        validation_fraction_random_sample_generator = build_generator_from_range(validation_fraction_range, TRAILS,
-                                                                                 experiment_count)
-        # (6.) shift size
+        # (5.) shift size
         shifting_size_pool = [x for x in range(shifting_size_min, shifting_size_max+1)]  # 5,50
         if is_training_window_flexible:
             training_window_pool = [x for x in range(training_window_min,training_window_max+1)]  # 1,20
@@ -225,34 +220,17 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                                                                                        training_window_max, total_date_num,
                                                                                        TRAILS, experiment_count)
 
-        # (7.) HIDDEN LAYERS
-        hidden_layer_depth = (1,2)
-        hidden_layer_node  = (20,400)
-
-        # (8.) Feature selection
+        # (6.) Feature selection
         feature_random_switch_tuple = build_generator_for_feature_selection(TRAILS, experiment_count)
 
-        def hidden_layer_generator(hidden_layer_depth, hidden_layer_node, experiment_count):
-            for i in range(TRAILS):
-                hidden_layer_sizes = []
-                random.seed(i + experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
-                layer_depth = random.randint(*hidden_layer_depth)
-                for j in range(layer_depth):
-                    random.seed(j + i + experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
-                    layer_node = random.randint(*hidden_layer_node)
-                    hidden_layer_sizes.append(layer_node)
-                hidden_layer_sizes_tuple = tuple(hidden_layer_sizes)
-                yield hidden_layer_sizes_tuple
 
-
-        hidden_layer_size= hidden_layer_generator(hidden_layer_depth, hidden_layer_node, experiment_count)
-
-
-
-        hyper_parameter_trail_zip = zip(activation_random_sample_generator, alpha_random_sample_generator,
-                                              learning_rate_random_sample_generator, learning_rate_init_random_sample_generator,
-                                              early_stopping_random_sample_generator, validation_fraction_random_sample_generator,
-                                        hidden_layer_size,shifting_random_sample_generator,feature_random_switch_tuple)
+        hyper_parameter_trail_zip = zip(n_estimators_random_sample_generator,
+                                        max_features_sample_generator,
+                                        min_samples_random_sample_generator,
+                                        min_samples_leaf_random_sample_generator,
+                                        shifting_random_sample_generator,
+                                        feature_random_switch_tuple
+                                        )
 
         # hyper_parameter_size = len(hyper_parameter_trail_list)
         # print ("hyper_parameter_size: ", hyper_parameter_size)
@@ -268,7 +246,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
             # feature selection if not PCA
             if data_preprocessing == 'origin' or data_preprocessing == 'standardization':
-                feature_switch_tuple = hyper_paramter_tuple[8]
+                feature_switch_tuple = hyper_paramter_tuple[5]
                 samples_feature_list, samples_value_list, date_str_list, stock_id_list = mlp_regressor1._feed_data(
                     input_folder,
                     data_per=data_per,
@@ -284,7 +262,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                 pca_n_component = None
 
 
-            shifting_size, shift_num, training_window_size = hyper_paramter_tuple[7]
+            shifting_size, shift_num, training_window_size = hyper_paramter_tuple[4]
 
             mlp_regressor1.create_train_dev_vdict_window_shift(samples_feature_list, samples_value_list,
                                                                date_str_list, stock_id_list, is_cv=True,
@@ -294,20 +272,16 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                                                                pca_n_component=pca_n_component,
                                                                training_window_size =training_window_size)
 
-            activation_function = hyper_paramter_tuple[0]
-            alpha = float("{:7f}".format(hyper_paramter_tuple[1]))
-            learning_rate = hyper_paramter_tuple[2]
-            learning_rate_init = float("{:7f}".format(hyper_paramter_tuple[3]))
-            early_stopping = hyper_paramter_tuple[4]
-            if early_stopping:
-                validation_fraction = float("{:7f}".format(hyper_paramter_tuple[5]))
-            else:
-                validation_fraction = 0.0
-            hidden_layer_sizes = hyper_paramter_tuple[6]
+            # ----------------------------------------------------------------------------------------------------------
+            # read hyper-parameters for random forest
+            # ----------------------------------------------------------------------------------------------------------
+            n_estimators = hyper_paramter_tuple[0]
+            max_features = hyper_paramter_tuple[1]
+            min_samples_split = hyper_paramter_tuple[2]
+            min_samples_leaf = hyper_paramter_tuple[3]
+            # ----------------------------------------------------------------------------------------------------------
 
             trail = i
-            n_iter_list = []
-            loss_list = []
             f1_list = []
             accuracy_list = []
             random_state_list = []
@@ -321,7 +295,11 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                 shift_accuracy_list = []
 
 
-                mlp_regressor1.set_mlp_clf()
+                mlp_regressor1.set_mlp_clf(n_estimators = n_estimators,
+                                           max_features = max_features,
+                                           min_samples_split = min_samples_split,
+                                           min_samples_leaf = min_samples_leaf,
+                                           random_state = random_state)
 
                 for shift in mlp_regressor1.validation_dict[random_seed].keys():
                     mlp_regressor1.trade_rs_cv_load_train_dev_data(random_seed, shift)
@@ -350,28 +328,24 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                 print ("is_standardisation", is_standardisation)
                 print ("pca_n_component: ", pca_n_component)
                 print ("random_state: {}|{}".format(random_state, random_state_total))
-                print ("activation_function: ", activation_function)
-                print ("alpha: ", alpha)
-                print ("learning_rate: ", learning_rate)
-                print ("learning_rate_init: ", learning_rate_init)
-                print ("early_stopping: ", early_stopping)
-                print ("validation_fraction: ", validation_fraction)
-                print ("hidden_layer_sizes: ", hidden_layer_sizes)
+                print ("n_estimators: ", n_estimators)
+                print ("max_features: ", max_features)
+                print ("min_samples_split: ", min_samples_split)
+                print ("min_samples_leaf: ", min_samples_leaf)
                 print ("avg_f1: ", avg_f1)
                 print ("avg_accuracy: ", avg_accuracy)
                 print ("Testing percent: {:.7f}%".format(100*i/TRAILS))
                 print ("experiment: {}/{}".format(experiment, EXPERIMENTS))
 
             # ==========================================================================================================
+            loss_list = [0.0 for x in f1_list]
+            n_iter_list = [0.0 for x in f1_list]
+
             write_list = list(zip(loss_list, n_iter_list, f1_list, accuracy_list, random_state_list))
             write_list = sorted(write_list, key = lambda x:x[0])
 
-
-            hidden_layer_write_str = '_'.join([str(x) for x in hidden_layer_sizes])
-
-            write_tuple = (unique_id, experiment, trail, random_state_total, pca_n_component, activation_function, alpha,
-                           learning_rate, learning_rate_init, early_stopping,validation_fraction,
-                           shifting_size, shift_num, training_window_size, hidden_layer_write_str)
+            write_tuple = (unique_id, experiment, trail, random_state_total, pca_n_component, n_estimators, max_features,
+                           min_samples_split, min_samples_leaf,shifting_size, shift_num, training_window_size)
             save_folder = os.path.join(parent_folder, 'hyper_parameter_test', data_set, classifier, data_preprocessing)
             csv_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.csv'.format(*write_tuple))
             txt_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.txt'.format(*write_tuple))

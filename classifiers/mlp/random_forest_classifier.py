@@ -41,8 +41,16 @@ class RandomForestClassifier_P(MlpTrade):
         super().__init__()
         pass
 
-    def set_mlp_clf(self):
-        self.mlp_clf = RandomForestClassifier(random_state=0)
+    def set_mlp_clf(self, n_estimators = 10,
+                          max_features = 'auto',
+                          min_samples_split = 2,
+                          min_samples_leaf =2,
+                          random_state = 0):
+        self.mlp_clf = RandomForestClassifier(n_estimators = n_estimators,
+                                              max_features = max_features,
+                                              min_samples_split = min_samples_split,
+                                              min_samples_leaf = min_samples_leaf,
+                                              random_state=random_state)
 
     def clf_train(self, save_clsfy_path="rf_trade_classifier"):
         self.mlp_clf.fit(self.training_set, self.training_value_set)

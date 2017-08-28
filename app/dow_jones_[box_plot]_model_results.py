@@ -38,12 +38,13 @@ from stock_box_plot2 import model_result_box_plot
 # ----------------------------------------------------------------------------------------------------------------------
 # read data into dictionary
 # ----------------------------------------------------------------------------------------------------------------------
-data_set = 'dow_jones_index'
+data_set = 'dow_jones_index_extended'
 mode = 'clf'
-classification_list = ['classifier','bagging_classifier','regressor','bagging_regressor','adaboost_regressor']
+classification_list = ['classifier','bagging_classifier','regressor','bagging_regressor','adaboost_regressor',
+                       'random_forest_classifier']
 regression_list = ['regressor','bagging_regressor','adaboost_regressor']
 
-classifier_list = ['classifier','bagging_classifier']
+classifier_list = ['classifier','bagging_classifier','random_forest_classifier']
 regressor_list = ['regressor','bagging_regressor','adaboost_regressor']
 data_preprocessing_list = ['pca','pca_standardization','standardization','origin']
 
