@@ -31,7 +31,7 @@ sys.path.append(path2)
 # ==========================================================================================================
 # local package import
 # ==========================================================================================================
-from random_forest_classifier import RandomForestClassifier
+from random_forest_classifier import RandomForestClassifier_P
 from trade_general_funcs import get_full_feature_switch_tuple
 from trade_general_funcs import read_pca_component
 
@@ -56,7 +56,7 @@ RANDOM_SEED_OFFSET = 54385438
 EXPERIMENT_RANDOM_SEED_OFFSET = 38453845
 random_state_total = 20
 tol = 1e-10
-classifier = 'random_forest'
+classifier = 'random_forest_classifier'
 training_window_min = 30 # weeks
 training_window_max = 74 # weeks, make sure shift_size*shift_num is fixed
 is_training_window_flexible = False
@@ -91,7 +91,7 @@ is_PCA = True
 for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list, is_PCA_list)):
 
     # (1.) build classifer
-    mlp_regressor1 = RandomForestClassifier()
+    mlp_regressor1 = RandomForestClassifier_P()
     clsfy_name = '{}_hyper_parameter_{}'.format(data_set, classifier)
     clf_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
 
@@ -316,8 +316,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             for random_state in range(random_state_total):
                 random_seed = 'window_shift'
 
-                shift_n_iter_list = []
-                shift_loss_list = []
+
                 shift_f1_list = []
                 shift_accuracy_list = []
 
@@ -326,25 +325,18 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
                 for shift in mlp_regressor1.validation_dict[random_seed].keys():
                     mlp_regressor1.trade_rs_cv_load_train_dev_data(random_seed, shift)
-                    n_iter, loss = mlp_regressor1.clf_train(save_clsfy_path=clf_path)
+                    mlp_regressor1.clf_train(save_clsfy_path=clf_path)
                     average_f1, accuracy = mlp_regressor1.clf_dev(save_clsfy_path=clf_path)
-                    shift_n_iter_list.append(n_iter)
-                    shift_loss_list.append(loss)
+
                     shift_f1_list.append(average_f1)
                     shift_accuracy_list.append(accuracy)
 
 
-
-
-                avg_n_iter = np.average(shift_n_iter_list)
-                avg_loss= np.average(shift_loss_list)
                 avg_f1 = np.average(shift_f1_list)
                 avg_accuracy = np.average(shift_accuracy_list)
 
 
                 random_state_list.append(random_state)
-                n_iter_list.append(avg_n_iter)
-                loss_list.append(avg_loss)
                 f1_list.append(avg_f1)
                 accuracy_list.append(avg_accuracy)
 
@@ -365,8 +357,6 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                 print ("early_stopping: ", early_stopping)
                 print ("validation_fraction: ", validation_fraction)
                 print ("hidden_layer_sizes: ", hidden_layer_sizes)
-                print ("avg_n_iter: ", avg_n_iter)
-                print ("avg_loss: ", avg_loss)
                 print ("avg_f1: ", avg_f1)
                 print ("avg_accuracy: ", avg_accuracy)
                 print ("Testing percent: {:.7f}%".format(100*i/TRAILS))

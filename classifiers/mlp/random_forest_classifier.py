@@ -35,14 +35,14 @@ from trade_general_funcs import compute_trade_weekly_clf_result
 from mlp_trade_classifier import MlpTrade
 
 
-class RandomForestClassifier(MlpTrade):
+class RandomForestClassifier_P(MlpTrade):
 
     def __init__(self):
         super().__init__()
         pass
 
     def set_mlp_clf(self):
-        self.mlp_clf = RandomForestClassifier()
+        self.mlp_clf = RandomForestClassifier(random_state=0)
 
     def clf_train(self, save_clsfy_path="rf_trade_classifier"):
         self.mlp_clf.fit(self.training_set, self.training_value_set)
