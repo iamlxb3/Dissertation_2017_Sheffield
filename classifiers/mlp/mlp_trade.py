@@ -371,13 +371,13 @@ class MlpTrade(MultilayerPerceptron):
         #
 
 
-
-        print("date_num: ", date_num)
-        print("shift_num: ", shift_num)
-        print("window_size_max: ", window_size_max)
-        print("training_window_size: ", training_window_size)
-        print("shifting_size: ", shifting_size)
-        print("Validation size: ", shifting_size*shift_num)
+        # # TODO important print
+        # print("date_num: ", date_num)
+        # print("shift_num: ", shift_num)
+        # print("window_size_max: ", window_size_max)
+        # print("training_window_size: ", training_window_size)
+        # print("shifting_size: ", shifting_size)
+        # print("Validation size: ", shifting_size*shift_num)
 
         for shift in range(shift_num):
 
@@ -410,10 +410,12 @@ class MlpTrade(MultilayerPerceptron):
             training_date_list = training_date_list[training_date_list_index_start:]
             #
 
-            print ("---------------------------------------------------------------------")
-            print ("shift_index: {}".format(shift))
-            print ("training_date_list: ", training_date_list)
-            print ("dev_date_list: ", dev_date_list)
+            # # TODO important print
+            # print ("---------------------------------------------------------------------")
+            # print ("shift_index: {}".format(shift))
+            # print ("training_date_list: ", training_date_list)
+            # print ("dev_date_list: ", dev_date_list)
+            # #
 
             # (2.) get the dev index
             dev_index_list = []

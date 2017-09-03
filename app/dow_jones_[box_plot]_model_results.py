@@ -116,21 +116,29 @@ for model, data_preprocessing in list(itertools.product(model_list, data_preproc
 #title = 'MLP {} performance under different number of trails'.format(classifier)
 if mode =='clf':
     metrics_name_list = ['avg_f1_list', 'accuracy_list']
+    metrics_print_list  = ['Average F1', 'Accuracy']
     ylim_range = (0,0.8)
-    model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='',
-                          x_label = '', ylim_range = ylim_range
+    #['classifier', 'bagging_classifier', 'regressor', 'bagging_regressor', 'adaboost_regressor',
+    #  'random_forest_classifier']
+    x_label = ["[{}]".format(x) for x in range(1, len(model_list)+1)]
+    xlim_range = (0,16)
+    title = 'Classification result of different classifiers'
+    model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title =title,
+                          x_label = x_label, ylim_range = ylim_range, xlim_range = xlim_range,
+                          metrics_print_list=metrics_print_list
     )
 elif mode =='reg':
     metrics_name_list = ['rmse_list']
     ylim_range = (0.0, 1.3)
     xlim_range = (0,7)
+    x_label = ["[{}]".format(x) for x in range(1, len(model_list)+1)]
     model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='',
-                          x_label = '',ylim_range = ylim_range,xlim_range=xlim_range
+                          x_label = x_label,ylim_range = ylim_range,xlim_range=xlim_range
     )
     metrics_name_list = ['avg_pc_list']
     ylim_range = (-0.01, 0.02)
     xlim_range = (0,7)
     model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='',
-                          x_label = '',ylim_range = ylim_range,xlim_range=xlim_range
+                          x_label = x_label,ylim_range = ylim_range,xlim_range=xlim_range
     )
 # ----------------------------------------------------------------------------------------------------------------------

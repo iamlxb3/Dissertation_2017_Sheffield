@@ -40,7 +40,7 @@ from stock_box_plot2 import data_preprocessing_result_box_plot
 # ----------------------------------------------------------------------------------------------------------------------
 data_set = 'dow_jones_index_extended'
 mode = 'clf'
-classifier_list = ['classifier','bagging_classifier']
+classifier_list = ['classifier','bagging_classifier','random_forest_classifier']
 regressor_list = ['regressor','bagging_regressor','adaboost_regressor']
 data_preprocessing_list = ['pca','pca_standardization','standardization','origin']
 
@@ -124,11 +124,11 @@ elif mode == 'reg':
     metrics_show_list = ['Rmse', 'AverageReturn', 'Accuracy', 'AverageFmeasure']
     mode_name = 'Regression'
 
-model_name = 'MLP_classifier'
+model_name = 'MLP classifier'
 model = 'classifier'
 
-#title = "{} result with {}".format(mode_name, model)
-title = "{} result on the UCI repository".format(mode_name)
+title = "{} result with {}".format(mode_name, model_name)
+#title = "{} result on the UCI repository".format(mode_name)
 
 ylim_range = (0.0, 0.6)
 xlim_range = (0, 11)

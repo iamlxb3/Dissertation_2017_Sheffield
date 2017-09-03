@@ -41,7 +41,7 @@ from trade_general_funcs import read_pca_component
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 unique_id = 0
-unique_start = 0
+unique_start = 6
 #
 data_set = 'dow_jones_index_extended'
 input_folder = os.path.join(data_set, 'dow_jones_index_extended_labeled')
@@ -74,6 +74,7 @@ for f_path in file_path_list:
 date_str_set = set(date_str_list)
 total_date_num = len(date_str_set) # weeks
 print ("total_date_num: ", total_date_num)
+n_jobs = -1
 #
 
 
@@ -192,7 +193,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
 
         # (1.) The number of trees in the forest.
-        MAX_TREE = 200
+        MAX_TREE = 500
         MIN_TREE = int(math.floor((1/8)*MAX_TREE))
         n_estimators_pool = [x for x in range(MIN_TREE, MAX_TREE+1)]
         n_estimators_random_sample_generator = build_generator_from_pool(n_estimators_pool, TRAILS, experiment_count)
@@ -202,13 +203,14 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
         max_features_sample_generator = build_generator_from_pool(max_features_pool, TRAILS, experiment_count)
 
         # (3.) The minimum number of samples required to split an internal node
-        min_samples_split_pool = [x for x in range(2, 5+1)]
+        min_samples_split_pool = [x for x in range(2, 15+1)]
         min_samples_random_sample_generator = build_generator_from_pool(min_samples_split_pool, TRAILS, experiment_count)
 
         # (4.) The minimum number of samples required to be at a leaf node
-        min_samples_leaf_pool = [x for x in range(1, 5+1)]
+        min_samples_leaf_pool = [x for x in range(1, 50+1)]
         min_samples_leaf_random_sample_generator = build_generator_from_pool(min_samples_leaf_pool, TRAILS,
                                                                                 experiment_count)
+
 
         # (5.) shift size
         shifting_size_pool = [x for x in range(shifting_size_min, shifting_size_max+1)]  # 5,50
@@ -223,13 +225,18 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
         # (6.) Feature selection
         feature_random_switch_tuple = build_generator_for_feature_selection(TRAILS, experiment_count)
 
+        # (7.) The minimum number of samples required to be at a leaf node
+        oob_score_pool = [True, False]
+        oob_score_random_sample_generator = build_generator_from_pool(oob_score_pool, TRAILS,
+                                                                                experiment_count)
 
         hyper_parameter_trail_zip = zip(n_estimators_random_sample_generator,
                                         max_features_sample_generator,
                                         min_samples_random_sample_generator,
                                         min_samples_leaf_random_sample_generator,
                                         shifting_random_sample_generator,
-                                        feature_random_switch_tuple
+                                        feature_random_switch_tuple,
+                                        oob_score_random_sample_generator
                                         )
 
         # hyper_parameter_size = len(hyper_parameter_trail_list)
@@ -279,6 +286,8 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             max_features = hyper_paramter_tuple[1]
             min_samples_split = hyper_paramter_tuple[2]
             min_samples_leaf = hyper_paramter_tuple[3]
+            oob_score = hyper_paramter_tuple[6]
+
             # ----------------------------------------------------------------------------------------------------------
 
             trail = i
@@ -299,7 +308,9 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                                            max_features = max_features,
                                            min_samples_split = min_samples_split,
                                            min_samples_leaf = min_samples_leaf,
-                                           random_state = random_state)
+                                           random_state = random_state,
+                                           n_jobs = n_jobs,
+                                           oob_score = oob_score)
 
                 for shift in mlp_regressor1.validation_dict[random_seed].keys():
                     mlp_regressor1.trade_rs_cv_load_train_dev_data(random_seed, shift)
@@ -332,6 +343,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                 print ("max_features: ", max_features)
                 print ("min_samples_split: ", min_samples_split)
                 print ("min_samples_leaf: ", min_samples_leaf)
+                print ("oob_score: ", oob_score)
                 print ("avg_f1: ", avg_f1)
                 print ("avg_accuracy: ", avg_accuracy)
                 print ("Testing percent: {:.7f}%".format(100*i/TRAILS))
@@ -346,9 +358,10 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
             write_tuple = (unique_id, experiment, trail, random_state_total, pca_n_component, n_estimators, max_features,
                            min_samples_split, min_samples_leaf,shifting_size, shift_num, training_window_size)
+            write_str_list = [str(x) for x in list(write_tuple)]
+            save_str = '_'.join(write_str_list) + '.csv'
             save_folder = os.path.join(parent_folder, 'hyper_parameter_test', data_set, classifier, data_preprocessing)
-            csv_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.csv'.format(*write_tuple))
-            txt_file_path = os.path.join(save_folder, '{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.txt'.format(*write_tuple))
+            csv_file_path = os.path.join(save_folder, save_str)
 
 
 

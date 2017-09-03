@@ -94,7 +94,8 @@ def stock_metrics_result_box_plot(metrics_result_dict, trail_number_list, metric
 
 
 def model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list,
-                          title ='', x_label = '', xlim_range = (0,15), ylim_range = (0.2, 0.6)):
+                          title ='', x_label = '', xlim_range = (0,15), ylim_range = (0.2, 0.6)
+                          ,metrics_print_list = ''):
     box_widths = 0.3
     box_gap = 0.5
     category_gap =1.5
@@ -114,6 +115,15 @@ def model_result_box_plot(result_dict, model_list, data_preprocessing_list, metr
                 value_list = model_result_dict[data_preprocessing][metric]
                 metric_value_list.extend(value_list)
             X.append(metric_value_list)
+
+        # print the highest result
+        for i, metrics_list in enumerate(X):
+            if metrics_list:
+                metric = metrics_name_list[i]
+                max_value = sorted(metrics_list, reverse=True)[0]
+                print ("{}-best {}: {}".format(model, metric, max_value))
+        #
+
         # first boxplot pair
         position_now += category_gap
         positions_list,position_now = get_positions(metrics_name_list, position_now, box_gap)
@@ -125,9 +135,9 @@ def model_result_box_plot(result_dict, model_list, data_preprocessing_list, metr
     # set axes limits and labels
     xlim(*xlim_range)
     ylim(*ylim_range)
-    ax.set_xticklabels(model_list)
+    ax.set_xticklabels(x_label)
     ax.set_xticks(category_pos_list)
-    ax.set_xlabel(x_label)
+    #ax.set_xlabel(x_label)
     ax.set_title(title)
 
     # draw temporary red and blue lines and use them to create a legend
@@ -139,15 +149,18 @@ def model_result_box_plot(result_dict, model_list, data_preprocessing_list, metr
                    'c{}'.format(shape),
                    'y{}'.format(shape),
                    'm{}'.format(shape)]
+    
+    if not metrics_print_list:
+        metrics_print_list = metrics_name_list
 
-    for i,_ in enumerate(metrics_name_list):
+    for i,_ in enumerate(metrics_print_list):
         h, = plot([1, 1], legend_list[i])
         h_list.append(h)
         #h.set_visible(False)
 
     # hB, = plot([1, 1], 'b-')
     # hR, = plot([1, 1], 'r-')
-    legend(h_list, metrics_name_list)
+    legend(h_list, metrics_print_list)
     for h in h_list:
         h.set_visible(False)
     # hB.set_visible(False)

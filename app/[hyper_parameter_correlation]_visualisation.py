@@ -91,7 +91,9 @@ learning_rate_dict = {'invscaling': 0, 'constant': 1}
 # ==========================================================================================================
 # (1.) [learning rate, pca_n_component, alpha] correlation
 # ==========================================================================================================
-hyper_parameter_list = ['learning_rate']
+hyper_parameter_list = ['learning_rate_init_constant']
+hyper_parameter_name = 'cosntant_learning_rate'
+title = 'Classification Result'
 mode = 'avg' #best，avg
 
 for hyper_parameter in hyper_parameter_list:
@@ -188,16 +190,19 @@ for hyper_parameter in hyper_parameter_list:
     if hyper_parameter == 'early_stopping' or hyper_parameter == 'activation_function' \
             or hyper_parameter == 'learning_rate':
         plt.xticks(hyper_parameter_value_list, hyper_parameter_xticks)
+    if not hyper_parameter_value_list:
+        print ("no file found for {}! hyper_parameter_value_list: {}".format(hyper_parameter,hyper_parameter_value_list))
+        continue
     ax1.errorbar(hyper_parameter_value_list, f1_mean_list, f1_std_list, fmt='-o', capsize=5, label = 'average_f1')
-    ax1.set_title('{} correlation with {}'.format(hyper_parameter, data_preprocessing))
-    ax1.set_xlabel('{}'.format(hyper_parameter))
+    ax1.set_title('{}'.format(title))
     ax1.legend()
     #
 
     # ax2
     #ax2.plot(hyper_parameter_value_list, accuracy_mean_list, 'x', label = 'accuracy_mean')
     ax2.errorbar(hyper_parameter_value_list, accuracy_mean_list, accuracy_std_list, fmt='-o', capsize=5, label = 'accuracy')
-    ax2.set_xlabel('{}'.format(hyper_parameter))
+    #ax2.set_xlabel('{}'.format(title))
+    ax2.set_xlabel('{}'.format(hyper_parameter_name))
     ax2.legend()
     #
 

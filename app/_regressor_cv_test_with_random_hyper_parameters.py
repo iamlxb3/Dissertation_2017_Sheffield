@@ -42,6 +42,8 @@ from trade_general_funcs import read_pca_component
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 unique_id = 0
 unique_start = 0
+unique_end = 768
+
 #
 data_set = 'dow_jones_index_extended'
 input_folder = os.path.join(data_set, 'dow_jones_index_extended_regression')
@@ -50,11 +52,11 @@ input_folder = os.path.join(parent_folder, 'data', input_folder)
 EXPERIMENTS = 3
 is_standardisation_list = [True, False]
 is_PCA_list = [True, False]
-TRAILS= 128
+TRAILS = 64
 PCA_MIN_COMPONENT = 8
 RANDOM_SEED_OFFSET = 54385438
 EXPERIMENT_RANDOM_SEED_OFFSET = 38453845
-random_state_total = 20
+random_state_total = 5
 tol = 1e-8
 classifier = 'regressor'
 training_window_min = 30 # weeks
@@ -126,7 +128,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
     samples_feature_list, samples_value_list, date_str_list, stock_id_list = mlp_regressor1._feed_data(input_folder,
                                                                       data_per=data_per,
                                                                       feature_switch_tuple=feature_switch_tuple,
-                                                                    is_random=False, mode='clf')
+                                                                    is_random=False, mode=mode)
 
 
     # ----------------------------------------------------------------------------------------------------------------------
@@ -204,7 +206,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
         learning_rate_random_sample_generator = build_generator_from_pool(learning_rate_list, TRAILS, experiment_count)
 
         # (4.) learning_rate_init
-        learning_rate_init_range = (0.00001, 0.1)
+        learning_rate_init_range = (0.0001, 0.1)
         learning_rate_init_random_sample_generator = build_generator_from_range(learning_rate_init_range, TRAILS,
                                                                                 experiment_count)
 
@@ -262,7 +264,11 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
 
         for i, hyper_paramter_tuple in enumerate(hyper_parameter_trail_zip):
-            if unique_id < unique_start:
+            if unique_id > unique_end:
+                break
+
+
+            if unique_id < unique_start or unique_id > unique_end:
                 unique_id += 1
                 continue
 
@@ -274,7 +280,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                     data_per=data_per,
                     feature_switch_tuple=feature_switch_tuple,
                     is_random=False,
-                    mode='clf')
+                    mode=mode)
 
             # (0.) PCA n component
             if data_preprocessing == 'pca' or data_preprocessing == 'pca_standardization':

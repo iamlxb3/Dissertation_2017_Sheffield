@@ -67,7 +67,7 @@ class MlpTradeEnsembleRegressor(MlpTradeRegressor):
                                           alpha = alpha)
         if self.mode == 'bagging':
             print ("Set bagging EnsembleRegressor!")
-            self.mlp_regressor = BaggingRegressor(base_estimator=temp_regressor, n_estimators=self.ensemble_number, verbose=1)
+            self.mlp_regressor = BaggingRegressor(base_estimator=temp_regressor, n_estimators=self.ensemble_number, n_jobs=-1)
         elif self.mode == 'adaboost':
             print("Set adaboost EnsembleRegressor!")
             self.mlp_regressor = AdaBoostRegressor(base_estimator=temp_regressor, n_estimators=self.ensemble_number)

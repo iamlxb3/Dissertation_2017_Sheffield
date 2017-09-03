@@ -40,8 +40,8 @@ from trade_general_funcs import read_pca_component
 # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 unique_id = 0
-unique_start = 74
-
+unique_start = 0
+unique_end = 768
 #
 mode = 'bagging'
 classifier = '{}_classifier'.format(mode)
@@ -54,11 +54,11 @@ input_folder = os.path.join(parent_folder, 'data', input_folder)
 EXPERIMENTS = 3
 is_standardisation_list = [True, False]
 is_PCA_list = [True, False]
-TRAILS= 128
+TRAILS= 64
 PCA_MIN_COMPONENT = 8
 RANDOM_SEED_OFFSET = 54385438
 EXPERIMENT_RANDOM_SEED_OFFSET = 38453845
-random_state_total = 20
+random_state_total = 5
 tol = 1e-10
 training_window_min = 30 # weeks
 training_window_max = 74 # weeks, make sure shift_size*shift_num is fixed
@@ -206,7 +206,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
         learning_rate_random_sample_generator = build_generator_from_pool(learning_rate_list, TRAILS, experiment_count)
 
         # (4.) learning_rate_init
-        learning_rate_init_range = (0.00001, 0.1)
+        learning_rate_init_range = (0.0001, 0.1)
         learning_rate_init_random_sample_generator = build_generator_from_range(learning_rate_init_range, TRAILS,
                                                                                 experiment_count)
 
@@ -265,6 +265,10 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
 
         for i, hyper_paramter_tuple in enumerate(hyper_parameter_trail_zip):
+            if unique_id > unique_end:
+                break
+
+
             if unique_id < unique_start:
                 unique_id += 1
                 continue
