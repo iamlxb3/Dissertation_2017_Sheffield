@@ -780,3 +780,13 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
 
     # ------------------------------------------------------------------------------------------------------------------
         return week_average_rmse, avg_price_change_tuple, week_average_accuracy, week_average_f1
+
+    def reg_dev_for_moving_window_test(self, save_clsfy_path="mlp_trade_classifier"):
+
+        # (1.) read classifier
+        mlp = pickle.load(open(save_clsfy_path, "rb"))
+        #
+        # (2.) get pred label list
+        pred_value_list = mlp.predict(self.dev_set)
+        #
+        return list(pred_value_list), list(self.dev_value_set), self.dev_date_set, self.dev_stock_id_set

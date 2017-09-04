@@ -4,6 +4,7 @@ import numpy as np
 import random
 import os
 import collections
+import matplotlib.pyplot as plt
 import re
 import itertools
 from sklearn.metrics import mean_squared_error
@@ -16,14 +17,18 @@ import sys
 # ==========================================================================================================
 parent_folder = (os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 path1 = os.path.join(parent_folder, 'strategy')
+#path2 = os.path.join(parent_folder, 'general_functions')
 sys.path.append(path1)
+#sys.path.append(path2)
+
 # ==========================================================================================================
 
 
 # ==========================================================================================================
 # local package import
 # ==========================================================================================================
-from a_share_strategy import top_n_avg_strategy
+from a_share_strategy import top_n_avg_strategy, top_1_stock_return
+#from trade_general_funcs import top_1_stock_return
 # ==========================================================================================================
 
 
@@ -198,7 +203,9 @@ def generate_feature_switch_list(folder):
 
 
 def get_avg_price_change(pred_value_list, actual_value_list, date_list,
-                          stock_id_list, include_top_list=[1]):
+                          stock_id_list, include_top_list=None):
+    if not include_top_list:
+        include_top_list = [1]
     avg_price_change_list = []
     var_list = []
     std_list = []
@@ -281,8 +288,6 @@ def compute_f1_accuracy(predict_list, actual_list):
     for dev_label in actual_list:
         dev_label_dict[dev_label] += 1
     #
-
-
     return average_f1, accuracy, pred_label_dict, dev_label_dict
 
 
@@ -339,3 +344,51 @@ def compute_trade_weekly_clf_result(pred_label_list, actual_label_list, data_lis
     week_average_f1 = np.average(week_average_f1_list)
     week_average_accuracy = np.average(week_average_accuracy_list)
     return week_average_f1, week_average_accuracy, dev_label_dict, pred_label_dict
+
+
+def get_chosen_stock_return(pred_value_list, actual_value_list, date_list,
+                          stock_id_list, include_top_list=None):
+
+    # construct stock_pred_v_dict
+    stock_pred_v_dict = collections.defaultdict(lambda: [])
+    for i, date in enumerate(date_list):
+        stock_pred_v_pair = (stock_id_list[i], pred_value_list[i])
+        stock_pred_v_dict[date].append(stock_pred_v_pair)
+    #
+    stock_actual_v_dict = collections.defaultdict(lambda: 0)
+    for i, date in enumerate(date_list):
+        date_stock_id_pair = (date, stock_id_list[i])
+        stock_actual_v_dict[date_stock_id_pair] = actual_value_list[i]
+
+    include_top = 1
+    date_actual_avg_priceChange_list = top_1_stock_return(stock_actual_v_dict, stock_pred_v_dict,
+                                                        include_top=include_top)
+
+    return date_actual_avg_priceChange_list
+
+def plot_stock_return(each_week_return_list, date_list, capital = 1, title = '', xlabel = '', save_path = ''):
+    return_list = []
+    for each_week_return in each_week_return_list:
+        capital += capital*each_week_return
+        return_list.append(capital)
+    f1, (ax1) = plt.subplots(1, sharex=True, sharey=True)
+    # ax1
+    gap_length = 5
+    my_xticks = date_list
+    for i, x_ticks in enumerate(my_xticks):
+        if i % gap_length != 0:
+            my_xticks[i] = ''
+
+    x = np.array([x for x in range(0, len(date_list))])
+
+    plt.xticks(x, my_xticks)
+    ax1.plot(x, return_list, 'v', label='label ')
+    #plt.locator_params(axis='x', nbins=4)
+    f1.autofmt_xdate()
+    ax1.set_title(title)
+    ax1.set_xlabel(xlabel)
+    ax1.legend(loc=2)
+    #
+    plt.show()
+    if save_path:
+        plt.savefig('{}'.format(save_path))

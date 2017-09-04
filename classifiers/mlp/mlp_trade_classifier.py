@@ -13,6 +13,7 @@ import collections
 import numpy as np
 import sys
 import os
+import pickle
 import random
 # ==========================================================================================================
 
@@ -324,3 +325,13 @@ class MlpTradeClassifier(MlpTrade, MlpClassifier_P):
         self.iteration_loss_list.append((np.average(self.rsavg_iteration_list), np.average(self.rsavg_loss_list)))
         self.average_f1_list.append(np.average(self.rsavg_average_f1_list))
         self.accuracy_list.append(np.average(self.rsavg_accuracy_list))
+
+    def clf_dev_for_moving_window_test(self, save_clsfy_path="mlp_trade_classifier"):
+
+        # (1.) read classifier
+        mlp = pickle.load(open(save_clsfy_path, "rb"))
+        #
+        # (2.) get pred label list
+        pred_label_list = mlp.predict(self.dev_set)
+        #
+        return list(pred_label_list), list(self.dev_value_set), self.dev_date_set, self.dev_stock_id_set
