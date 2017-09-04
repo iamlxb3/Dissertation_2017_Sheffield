@@ -118,35 +118,37 @@ for model, data_preprocessing in list(itertools.product(model_list, data_preproc
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-# (3.) box_plot
+# (4.) save the results for each classifier
 # ----------------------------------------------------------------------------------------------------------------------
-#title = 'MLP {} performance under different number of trails'.format(classifier)
-if mode =='clf':
-    metrics_name_list = ['avg_f1_list', 'accuracy_list']
-    metrics_print_list  = ['Average F1', 'Accuracy']
-    ylim_range = (0,0.8)
-    #['classifier', 'bagging_classifier', 'regressor', 'bagging_regressor', 'adaboost_regressor',
-    #  'random_forest_classifier']
-    x_label = ["[{}]".format(x) for x in range(1, len(model_list)+1)]
-    xlim_range = (0,16)
-    title = 'Classification result of different classifiers'
-    model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title =title,
-                          x_label = x_label, ylim_range = ylim_range, xlim_range = xlim_range,
-                          metrics_print_list=metrics_print_list
-    )
-elif mode =='reg':
-    metrics_name_list = ['rmse_list']
-    ylim_range = (0.0, 1.3)
-    xlim_range = (0,7)
-    x_label = ["[{}]".format(x) for x in range(1, len(model_list)+1)]
-    model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='',
-                          x_label = x_label,ylim_range = ylim_range,xlim_range=xlim_range
-    )
-    metrics_name_list = ['avg_pc_list']
-    ylim_range = (-0.01, 0.02)
-    xlim_range = (0,7)
-    model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='',
-                          x_label = x_label,ylim_range = ylim_range,xlim_range=xlim_range
-    )
-# ----------------------------------------------------------------------------------------------------------------------
+if mode == 'clf':
+    sort_by = ['avg_f1_list', 'accuracy_list']
+elif mode == 'reg':
+    sort_by = ['rmse_list', 'avg_pc_list']
+else:
+    print ("Please enter the right mode!!")
+    sys.exit()
 
+for model, data_preprocessing_dict in result_dict.items():
+    for metric in sort_by:
+        save_name = '{}_validation_result_[{}].csv'.format(model, metric)
+        save_path = os.path.join(parent_folder, 'results', 'model_results', save_name)
+        metric_value_list = []
+        feature_value_list = []
+        for data_preprocessing in data_preprocessing_list:
+            metric_value_list.extend(data_preprocessing_dict[data_preprocessing][metric])
+            feature_value_list.extend(data_preprocessing_dict[data_preprocessing]['feature_list'])
+        zip_list = list(zip(metric_value_list, feature_value_list))
+        if metric == 'rmse_list':
+            sorted_zip_list = sorted(zip_list, key = lambda x:x[0])
+        else:
+            sorted_zip_list = sorted(zip_list, key = lambda x:x[0], reverse=True)
+
+        # save file
+        with open (save_path, 'w') as f:
+            for metric, feature_list in sorted_zip_list:
+                f.write(','.join(feature_list))
+                f.write('\n')
+                f.write(str(metric))
+                f.write('\n')
+        print ("Save results of {} successfully!".format(save_name))
+# ----------------------------------------------------------------------------------------------------------------------

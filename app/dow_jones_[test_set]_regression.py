@@ -81,7 +81,7 @@ validation_fraction  = 0.1 # The proportion of training data to set aside as val
                            # Must be between 0 and 1. Only used if early_stopping is True.
 alpha  = 0.0001
 # ------------------------------------------------------------------------------------------------------------
-RANDOM_STATE_TEST_NUM = 10
+RANDOM_STATE_TEST_NUM = 25
 random_state_pool = [random.randint(0,99999) for x in range(0,RANDOM_STATE_TEST_NUM)]
 best_f1_list = [0,0,0] # f1, accuracy, random_state
 best_accuracy_list = [0,0,0] # accuracy, f1, random_state

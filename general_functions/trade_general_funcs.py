@@ -391,4 +391,5 @@ def plot_stock_return(each_week_return_list, date_list, capital = 1, title = '',
     #
     plt.show()
     if save_path:
-        plt.savefig('{}'.format(save_path))
+        f1.savefig('{}'.format(save_path))
+        #plt.savefig('{}'.format(save_path))

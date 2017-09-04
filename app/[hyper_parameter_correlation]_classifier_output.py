@@ -50,8 +50,9 @@ unique_start = 0
 #CHOSEN_HYPER_PARAMETER = 'alpha'
 #CHOSEN_HYPER_PARAMETER = 'early_stopping'
 #CHOSEN_HYPER_PARAMETER = 'validation_fraction'
-CHOSEN_HYPER_PARAMETER = 'pca_n_component'
-#CHOSEN_HYPER_PARAMETER = 'hidden_layer_depth'
+#CHOSEN_HYPER_PARAMETER = 'pca_n_component'
+
+CHOSEN_HYPER_PARAMETER = 'hidden_layer_depth'
 
 
 
