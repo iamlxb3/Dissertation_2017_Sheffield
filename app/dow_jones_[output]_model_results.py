@@ -39,7 +39,7 @@ from stock_box_plot2 import model_result_box_plot
 # read data into dictionary
 # ----------------------------------------------------------------------------------------------------------------------
 data_set = 'dow_jones_index_extended'
-mode = 'clf'
+mode = 'reg'
 classification_list = ['classifier','bagging_classifier','regressor','bagging_regressor','adaboost_regressor',
                        'random_forest_classifier']
 regression_list = ['regressor','bagging_regressor','adaboost_regressor']
@@ -80,10 +80,28 @@ for model, data_preprocessing in list(itertools.product(model_list, data_preproc
             if file_name == '.gitignore' or  file_name == 'feature_selection.txt':
                 continue
             for j, line in enumerate(f):
-                unique_id = "{}_{}".format(i,j)
                 line_list = line.strip().split(',')
                 feature_str = file_name[0:-4].strip()
-                feature_list = feature_str.split('_')
+                hyper_parameter_list = feature_str.split('_')
+                unique_id = hyper_parameter_list[0]
+
+                if data_preprocessing == 'pca':
+                    is_PCA = True
+                    is_STD = False
+                elif data_preprocessing == 'pca_standardization':
+                    is_PCA = True
+                    is_STD = True
+                elif data_preprocessing == 'standardization':
+                    is_PCA = False
+                    is_STD = True
+                elif data_preprocessing == 'origin':
+                    is_PCA = False
+                    is_STD = False
+                else:
+                    print("check data preprocessing list")
+                    sys.exit()
+                hyper_parameter_list = [str(is_PCA), str(is_STD)] + hyper_parameter_list
+
                 if model in classifier_list:
                     loss = line_list[0]
                     avg_iter_num = line_list[1]
@@ -93,7 +111,7 @@ for model, data_preprocessing in list(itertools.product(model_list, data_preproc
                     result_dict[model][data_preprocessing]['avg_iter_num_list'].append(float(avg_iter_num))
                     result_dict[model][data_preprocessing]['avg_f1_list'].append(float(avg_f1))
                     result_dict[model][data_preprocessing]['accuracy_list'].append(float(accuracy))
-                    result_dict[model][data_preprocessing]['feature_list'].append(feature_list)
+                    result_dict[model][data_preprocessing]['feature_list'].append(hyper_parameter_list)
 
                 elif model in regressor_list:
                     loss = line_list[0]
@@ -109,7 +127,7 @@ for model, data_preprocessing in list(itertools.product(model_list, data_preproc
                     result_dict[model][data_preprocessing]['accuracy_list'].append(float(accuracy))
                     result_dict[model][data_preprocessing]['avg_f1_list'].append(float(avg_f1))
                     result_dict[model][data_preprocessing]['accuracy_list'].append(float(accuracy))
-                    result_dict[model][data_preprocessing]['feature_list'].append(feature_list)
+                    result_dict[model][data_preprocessing]['feature_list'].append(hyper_parameter_list)
 
                 else:
                     print ("Error! Please print the right mode")
@@ -130,7 +148,16 @@ else:
 
 for model, data_preprocessing_dict in result_dict.items():
     for metric in sort_by:
-        save_name = '{}_validation_result_[{}].csv'.format(model, metric)
+        if metric == 'avg_f1_list':
+            metric_name = 'avg_f1'
+        elif metric == 'accuracy_list':
+            metric_name = 'accuracy'
+        elif metric == 'rmse_list':
+            metric_name = 'rmse'
+        elif metric == 'avg_pc_list':
+            metric_name = 'avg_pc'
+
+        save_name = '{}_validation_result_[{}].csv'.format(model, metric_name)
         save_path = os.path.join(parent_folder, 'results', 'model_results', save_name)
         metric_value_list = []
         feature_value_list = []
@@ -145,8 +172,8 @@ for model, data_preprocessing_dict in result_dict.items():
 
         # save file
         with open (save_path, 'w') as f:
-            for metric, feature_list in sorted_zip_list:
-                f.write(','.join(feature_list))
+            for metric, hyper_parameter_list in sorted_zip_list:
+                f.write(','.join(hyper_parameter_list))
                 f.write('\n')
                 f.write(str(metric))
                 f.write('\n')

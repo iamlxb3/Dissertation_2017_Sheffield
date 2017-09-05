@@ -366,7 +366,8 @@ def get_chosen_stock_return(pred_value_list, actual_value_list, date_list,
 
     return date_actual_avg_priceChange_list
 
-def plot_stock_return(each_week_return_list, date_list, capital = 1, title = '', xlabel = '', save_path = ''):
+def plot_stock_return(each_week_return_list, date_list, capital = 1, title = '', xlabel = '', save_path = '',
+                      is_plot = False):
     return_list = []
     for each_week_return in each_week_return_list:
         capital += capital*each_week_return
@@ -389,7 +390,8 @@ def plot_stock_return(each_week_return_list, date_list, capital = 1, title = '',
     ax1.set_xlabel(xlabel)
     ax1.legend(loc=2)
     #
-    plt.show()
+    if is_plot:
+        plt.show()
     if save_path:
         f1.savefig('{}'.format(save_path))
         #plt.savefig('{}'.format(save_path))
