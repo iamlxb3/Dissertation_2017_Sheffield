@@ -95,7 +95,8 @@ def stock_metrics_result_box_plot(metrics_result_dict, trail_number_list, metric
 
 def model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list,
                           title ='', x_label = '', xlim_range = (0,15), ylim_range = (0.2, 0.6)
-                          ,metrics_print_list = ''):
+                          ,metrics_print_list = '', plot_baseline = False, baseline_value_tuple = None,
+                          baseline_legend_tuple = None, baseline_colour_tuple = None):
     box_widths = 0.3
     box_gap = 0.5
     category_gap =1.5
@@ -154,17 +155,34 @@ def model_result_box_plot(result_dict, model_list, data_preprocessing_list, metr
         metrics_print_list = metrics_name_list
 
     for i,_ in enumerate(metrics_print_list):
-        h, = plot([1, 1], legend_list[i])
+        h = plot([1, 1], legend_list[i])[0]
         h_list.append(h)
         #h.set_visible(False)
-
     # hB, = plot([1, 1], 'b-')
     # hR, = plot([1, 1], 'r-')
+    if plot_baseline and baseline_value_tuple:
+        for i, baseline_value in enumerate(baseline_value_tuple):
+            baseline_plot = plt.plot((0, 99), (baseline_value, baseline_value),
+                                     '{}-'.format(baseline_colour_tuple[i]), dashes=[2, 5])[0]
+            h_list.append(baseline_plot)
+            metrics_print_list.append('{}'.format(baseline_legend_tuple[i]))
+
+        #legend(baseline_plot, 'baseline'
+
     legend(h_list, metrics_print_list)
-    for h in h_list:
-        h.set_visible(False)
+    for i, h in enumerate(h_list):
+        if i >= len(baseline_legend_tuple):
+            pass
+        else:
+            h.set_visible(False)
     # hB.set_visible(False)
     # hR.set_visible(False)
+
+    else:
+        print ("Check plot baseline and baseline_value_tuple")
+
+
+
     show()
 
 def data_preprocessing_result_box_plot(result_dict, model, data_preprocessing_list, metrics_name_list,

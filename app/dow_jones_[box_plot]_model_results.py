@@ -132,7 +132,11 @@ if mode =='clf':
     title = 'Classification result of different classifiers'
     model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title =title,
                           x_label = x_label, ylim_range = ylim_range, xlim_range = xlim_range,
-                          metrics_print_list=metrics_print_list
+                          metrics_print_list=metrics_print_list,
+                          plot_baseline=True,
+                          baseline_value_tuple = (0.479, 0.506),
+                          baseline_colour_tuple=('r', 'b'),
+                          baseline_legend_tuple = ('Accuracy Baseline', 'Average F-measure Baseline')
     )
 elif mode =='reg':
     metrics_name_list = ['rmse_list']
@@ -140,13 +144,21 @@ elif mode =='reg':
     xlim_range = (0,7)
     x_label = ["[{}]".format(x) for x in range(1, len(model_list)+1)]
     model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='',
-                          x_label = x_label,ylim_range = ylim_range,xlim_range=xlim_range
+                          x_label = x_label,ylim_range = ylim_range,xlim_range=xlim_range,
+                          plot_baseline=True,
+                          baseline_value_tuple = (0.028,),
+                          baseline_colour_tuple = ('b',),
+                          baseline_legend_tuple = ('Rmse Baseline',)
     )
     metrics_name_list = ['avg_pc_list']
     ylim_range = (-0.01, 0.02)
     xlim_range = (0,7)
     model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='',
-                          x_label = x_label,ylim_range = ylim_range,xlim_range=xlim_range
+                          x_label = x_label,ylim_range = ylim_range,xlim_range=xlim_range,
+                          plot_baseline=True,
+                          baseline_value_tuple = (0.0017, ),
+                          baseline_colour_tuple=('b',),
+                          baseline_legend_tuple = ('Average price change Baseline',)
     )
 # ----------------------------------------------------------------------------------------------------------------------
 

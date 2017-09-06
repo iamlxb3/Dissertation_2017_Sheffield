@@ -53,7 +53,7 @@ unique_start = 0
 #CHOSEN_HYPER_PARAMETER = 'pca_n_component'
 
 #CHOSEN_HYPER_PARAMETER = 'hidden_layer_depth'
-CHOSEN_HYPER_PARAMETER = 'hidden_layer_node'
+CHOSEN_HYPER_PARAMETER = 'hidden_layer_nodes'
 
 
 
