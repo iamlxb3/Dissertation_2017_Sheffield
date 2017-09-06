@@ -41,8 +41,8 @@ data_set = 'dow_jones_extended'
 #classifier = 'adaboost_regressor'
 model = 'classifier'  #regressor, bagging_regressor, bagging_classifier, adaboost_regressor
 data_preprocessing = 'pca_standardization'
-# data_preprocessing = 'origin'
-# data_preprocessing = 'pca'
+#data_preprocessing = 'origin'
+#data_preprocessing = 'pca'
 # data_preprocessing = 'standardization'
 
 result_folder_temp = os.path.join(parent_folder, 'hyper_parameter_correlation_test', data_set, model, data_preprocessing)
@@ -82,17 +82,18 @@ hyper_parameter_dict = {'pca_n_component':3,
                         'validation_fraction':9,
                         'hidden_layer_write_str':10,
                         'random_state': -1,
+                        'hidden_layer_nodes': -2,
                         'hidden_layer_depth': -3,
                         }
 
 early_stopping_dict = {'True': 1, 'False': 0}
-activation_function_dict = {'identity': 0, 'logistic': 1, 'tanh': 3, 'relu': 4}
+activation_function_dict = {'identity': 0, 'logistic': 1, 'tanh': 4, 'relu': 3}
 learning_rate_dict = {'invscaling': 0, 'constant': 1}
 # ==========================================================================================================
 # (1.) [learning rate, pca_n_component, alpha] correlation
 # ==========================================================================================================
-hyper_parameter_list = ['learning_rate_init_constant']
-hyper_parameter_name = 'cosntant_learning_rate'
+hyper_parameter_list = ['hidden_layer_nodes']
+hyper_parameter_name = 'hidden_layer_nodes'
 title = 'Classification Result'
 mode = 'avg' #best，avg
 
@@ -153,6 +154,7 @@ for hyper_parameter in hyper_parameter_list:
 
 
     for hyper_parameter_value in sorted(list(hyper_parameter_dict.keys())):
+
         if hyper_parameter == 'early_stopping':
             hyper_parameter_value_temp_id = early_stopping_dict[hyper_parameter_value]
             hyper_parameter_value_list.append(hyper_parameter_value_temp_id)
@@ -193,6 +195,7 @@ for hyper_parameter in hyper_parameter_list:
     if not hyper_parameter_value_list:
         print ("no file found for {}! hyper_parameter_value_list: {}".format(hyper_parameter,hyper_parameter_value_list))
         continue
+    print ("hyper_parameter_value_list: ", hyper_parameter_value_list)
     ax1.errorbar(hyper_parameter_value_list, f1_mean_list, f1_std_list, fmt='-o', capsize=5, label = 'average_f1')
     ax1.set_title('{}'.format(title))
     ax1.legend()

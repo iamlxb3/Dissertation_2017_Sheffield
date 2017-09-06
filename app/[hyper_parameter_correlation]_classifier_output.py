@@ -1,5 +1,5 @@
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# Build the MLP regressor.
+# hyper parameter correlation only test with PCA, Z-score
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # (c) 2017 PJS, University of Sheffield, iamlxb3@gmail.com
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -52,7 +52,8 @@ unique_start = 0
 #CHOSEN_HYPER_PARAMETER = 'validation_fraction'
 #CHOSEN_HYPER_PARAMETER = 'pca_n_component'
 
-CHOSEN_HYPER_PARAMETER = 'hidden_layer_depth'
+#CHOSEN_HYPER_PARAMETER = 'hidden_layer_depth'
+CHOSEN_HYPER_PARAMETER = 'hidden_layer_node'
 
 
 
@@ -232,33 +233,57 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                                                                                  experiment_count)
 
         # (7.) HIDDEN LAYERS
-        hidden_layer_depth = (1,3)
+        hidden_layer_depth = (1,2)
         hidden_layer_node  = (20,400)
+        hidden_layer_node_max_range = (40,800)
 
-        def hidden_layer_generator(hidden_layer_depth, hidden_layer_node, experiment_count):
-            hidden_layer_depth_pool = [x for x in range(*hidden_layer_depth)]
+        def hidden_layer_generator(hidden_layer_depth, hidden_layer_node, experiment_count, hidden_layer_node_max_range):
+            hidden_layer_depth_pool = [x for x in range(hidden_layer_depth[0],hidden_layer_depth[1]+1)]
             even_split_hidden_layer_depth_list = [k * int(TRAILS / len(hidden_layer_depth_pool))
                                                   for k, x in enumerate(hidden_layer_depth_pool)]
             #hidden_layer_node_pool = [x for x in range(*hidden_layer_node)]
             # even_split_hidden_layer_node_list = [k * int(TRAILS / len(hidden_layer_node_pool))
             #                                      for k, x in enumerate(hidden_layer_node_pool)]
+            if CHOSEN_HYPER_PARAMETER == 'hidden_layer_node':
+                MIN_NODE_IN_1_LAYER = 1
+                hidden_layer_node_max_list = list(build_generator_from_range(hidden_layer_node_max_range, TRAILS,
+                                           experiment_count, linspace=True))
+                for i in range(TRAILS):
+                    hidden_layer_node_max = math.floor(hidden_layer_node_max_list[i])
+                    random.seed(i + experiment_count * EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
+                    layer_depth = random.randint(hidden_layer_depth[0], hidden_layer_depth[1])
+                    hidden_layer_sizes = [0 for x in range(0,layer_depth)]
+                    node_left = hidden_layer_node_max
+                    layer_left = layer_depth
+                    for j, layer in enumerate(hidden_layer_sizes):
+                        random.seed(i + j + experiment_count * EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
+                        layer_node = random.randint(MIN_NODE_IN_1_LAYER,
+                                                    node_left-layer_left*MIN_NODE_IN_1_LAYER)
+                        hidden_layer_sizes[j] = layer_node
+                        node_left -= layer_node
+                        layer_left -= 1
+                    hidden_layer_sizes_tuple = tuple(hidden_layer_sizes)
+                    yield hidden_layer_sizes_tuple
 
-            for i in range(TRAILS):
-                hidden_layer_sizes = []
-                if CHOSEN_HYPER_PARAMETER == 'hidden_layer_depth':
-                    index = bisect.bisect(even_split_hidden_layer_depth_list, i) - 1
-                    layer_depth = hidden_layer_depth_pool[index]
-                else:
-                    random.seed(i + experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
-                    layer_depth = random.randint(*hidden_layer_depth)
-                for j in range(layer_depth):
-                    random.seed(j + i + experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
-                    layer_node = random.randint(*hidden_layer_node)
-                    hidden_layer_sizes.append(layer_node)
-                hidden_layer_sizes_tuple = tuple(hidden_layer_sizes)
-                yield hidden_layer_sizes_tuple
+            else:
 
-        hidden_layer_size= hidden_layer_generator(hidden_layer_depth, hidden_layer_node, experiment_count)
+                for i in range(TRAILS):
+                    hidden_layer_sizes = []
+                    if CHOSEN_HYPER_PARAMETER == 'hidden_layer_depth':
+                        index = bisect.bisect(even_split_hidden_layer_depth_list, i) - 1
+                        layer_depth = hidden_layer_depth_pool[index]
+                    else:
+                        random.seed(i + experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
+                        layer_depth = random.randint(hidden_layer_depth[0],hidden_layer_depth[1])
+                    for j in range(layer_depth):
+                        random.seed(j + i + experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
+                        layer_node = random.randint(*hidden_layer_node)
+                        hidden_layer_sizes.append(layer_node)
+                    hidden_layer_sizes_tuple = tuple(hidden_layer_sizes)
+                    yield hidden_layer_sizes_tuple
+
+        hidden_layer_size= hidden_layer_generator(hidden_layer_depth, hidden_layer_node, experiment_count,
+                                                  hidden_layer_node_max_range)
 
 
         # (8.) random seed for weight initialisation
@@ -363,8 +388,13 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             avg_accuracy = np.average(shift_accuracy_list)
 
 
+            hidden_layer_write_str = '_'.join([str(x) for x in hidden_layer_sizes])
+            hidden_layer_depth = len(hidden_layer_sizes)
+            hidden_layer_nodes = sum(hidden_layer_sizes)
+
             print ("-----------------------------------------------------------------------------------")
             print ("unique_id ", unique_id)
+            print ("hidden_layer_sizes: ", hidden_layer_sizes)
             print ("is_PCA", is_PCA)
             print ("is_standardisation", is_standardisation)
             print ("pca_n_component: ", pca_n_component)
@@ -375,7 +405,6 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             print ("learning_rate_init: ", learning_rate_init)
             print ("early_stopping: ", early_stopping)
             print ("validation_fraction: ", validation_fraction)
-            print ("hidden_layer_sizes: ", hidden_layer_sizes)
             print ("avg_n_iter: ", avg_n_iter)
             print ("avg_loss: ", avg_loss)
             print ("avg_f1: ", avg_f1)
@@ -385,9 +414,6 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
             # ==========================================================================================================
 
-            hidden_layer_write_str = '_'.join([str(x) for x in hidden_layer_sizes])
-            hidden_layer_depth = len(hidden_layer_sizes)
-            hidden_layer_nodes = sum(hidden_layer_sizes)
 
             write_tuple = (experiment, trail, random_state_total, pca_n_component, activation_function, alpha,
                            learning_rate, learning_rate_init, early_stopping,validation_fraction, hidden_layer_write_str

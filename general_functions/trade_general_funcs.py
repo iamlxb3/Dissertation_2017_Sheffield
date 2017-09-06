@@ -383,7 +383,7 @@ def plot_stock_return(each_week_return_list, date_list, capital = 1, title = '',
     x = np.array([x for x in range(0, len(date_list))])
 
     plt.xticks(x, my_xticks)
-    ax1.plot(x, return_list, 'v', label='label ')
+    ax1.plot(x, return_list, 'v', label='profit')
     #plt.locator_params(axis='x', nbins=4)
     f1.autofmt_xdate()
     ax1.set_title(title)

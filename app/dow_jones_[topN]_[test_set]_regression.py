@@ -47,7 +47,7 @@ from trade_general_funcs import get_avg_price_change
 train_data_folder = os.path.join('dow_jones_index_extended','dow_jones_index_extended_regression')
 train_data_folder = os.path.join(parent_folder, 'data', train_data_folder)
 # test
-test_data_folder = os.path.join('dow_jones_index_extended','dow_jones_index_extended_regression_test2')
+test_data_folder = os.path.join('dow_jones_index_extended','dow_jones_index_extended_regression_test')
 test_data_folder = os.path.join(parent_folder, 'data', test_data_folder)
 # ------------------------------------------------------------------------------------------------------------
 
@@ -62,9 +62,10 @@ model = 'regressor'
 chosen_metric = 'rmse' #avg_pc, avg_f1, accuracy, rmse
 model_validation_result_name = '{}_validation_result_[{}].csv'.format(model, chosen_metric)
 model_validation_result_path = os.path.join(parent_folder, 'results', 'model_results', model_validation_result_name)
-model_test_range = (0,10)
-RANDOM_STATE_TEST_NUM = 1
+model_test_range = (0,20)
+RANDOM_STATE_TEST_NUM = 20
 is_plot = False
+RANDOM_SEED = 1
 print ("Build MLP {} for {} test data!".format(model, data_set))
 # ------------------------------------------------------------------------------------------------------------
 # (1.) read the position of hyper-parameters
@@ -87,7 +88,7 @@ with open (model_validation_result_path, 'r') as f:
             continue
         if i % 2 == 0:
             hyper_parameter_list = line.strip().split(',')
-            print ("hyper_parameter_list: ", hyper_parameter_list)
+            #print ("hyper_parameter_list: ", hyper_parameter_list)
         else:
             model_count += 1
             hyper_parameter_dict_temp = {}
@@ -95,7 +96,7 @@ with open (model_validation_result_path, 'r') as f:
                 hyper_parameter_name = hyper_parameter_index_dict[index]
                 hyper_parameter_dict_temp[hyper_parameter_name] = value
             hyper_parameter_test_list.append((hyper_parameter_dict_temp, model_count))
-print ("hyper_parameter_test_list: ", hyper_parameter_test_list)
+#print ("hyper_parameter_test_list: ", hyper_parameter_test_list)
 
 # str to bool
 def str2bool(v):
@@ -110,7 +111,7 @@ def str2bool(v):
 #
 
 
-for hyper_parameter_dict, id in hyper_parameter_test_list:
+for hyper_parameter_dict, rank in hyper_parameter_test_list:
     # ------------------------------------------------------------------------------------------------------------
     tol = 1e-8
     verbose = False
@@ -172,6 +173,7 @@ for hyper_parameter_dict, id in hyper_parameter_test_list:
         feature_switch_tuple = None
 
     # ------------------------------------------------------------------------------------------------------------
+    random.seed(RANDOM_SEED)
     random_state_pool = [random.randint(0,99999) for x in range(0,RANDOM_STATE_TEST_NUM)]
     best_f1_list = [0,0,0] # f1, accuracy, random_state
     best_accuracy_list = [0,0,0] # accuracy, f1, random_state
@@ -194,7 +196,7 @@ for hyper_parameter_dict, id in hyper_parameter_test_list:
 
         # (2.) read window_size and other config
         is_moving_window = True
-        week_for_predict = 50  # None
+        week_for_predict = 74  # None
         # window size
         _1, _2, date_str_list, _3 = mlp1._feed_data(test_data_folder, data_per,
                                                     feature_switch_tuple=feature_switch_tuple,
@@ -322,13 +324,14 @@ for hyper_parameter_dict, id in hyper_parameter_test_list:
     title = 'Stock return for MLP regressor'
     xlabel ='Date'
     # save hyper parameters
-    hyper_parameter_file_name = '{}.csv'.format(unique_id)
+    hyper_parameter_file_name = '{}_{}_rank_[{}].csv'.format(unique_id, chosen_metric, rank)
     hyper_parameter_file_path = os.path.join(parent_folder, 'results', 'test_results_with_plot', "{}".format(model),
                                              hyper_parameter_file_name)
     with open (hyper_parameter_file_path, 'w') as f:
         for key, value in hyper_parameter_dict.items():
             f.write('{},{}\n'.format(key, value))
-        f.write('{}'.format(feature_switch_tuple))
+        f.write('feature_switch_tuple:{}\n'.format(feature_switch_tuple))
+        f.write("best_avg_pc: {}, rmse: {}, random_state: {}".format(*best_avg_pc_list))
 
     #
 
