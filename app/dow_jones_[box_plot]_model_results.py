@@ -146,7 +146,7 @@ elif mode =='reg':
     model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='',
                           x_label = x_label,ylim_range = ylim_range,xlim_range=xlim_range,
                           plot_baseline=True,
-                          baseline_value_tuple = (0.028,),
+                          baseline_value_tuple = (0.03898,),
                           baseline_colour_tuple = ('b',),
                           baseline_legend_tuple = ('Rmse Baseline',)
     )
@@ -156,7 +156,7 @@ elif mode =='reg':
     model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='',
                           x_label = x_label,ylim_range = ylim_range,xlim_range=xlim_range,
                           plot_baseline=True,
-                          baseline_value_tuple = (0.0017, ),
+                          baseline_value_tuple = (-0.001, ),
                           baseline_colour_tuple=('b',),
                           baseline_legend_tuple = ('Average price change Baseline',)
     )

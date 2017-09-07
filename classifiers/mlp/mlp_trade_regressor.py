@@ -41,6 +41,7 @@ from trade_general_funcs import get_avg_price_change
 from trade_general_funcs import create_random_sub_set_list
 from trade_general_funcs import build_hidden_layer_sizes_list
 from trade_general_funcs import compute_average_f1
+from trade_general_funcs import get_chosen_stock_return
 # ==========================================================================================================
 
 
@@ -695,6 +696,9 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
                                                                                   include_top_list=
                                                                                   include_top_list)
 
+        date_actual_avg_priceChange_list = get_chosen_stock_return(pred_value_list, actual_value_list, date_list,
+                          stock_id_list, include_top_list=None)
+
         # compute accuracy in terms of positive and negative
 
         # (3.) get the pred label for each week
@@ -779,7 +783,8 @@ class MlpTradeRegressor(MlpTrade, MlpRegressor_P):
         # print("----------------------------------------------------------------------------------------")
 
     # ------------------------------------------------------------------------------------------------------------------
-        return week_average_rmse, avg_price_change_tuple, week_average_accuracy, week_average_f1
+        return week_average_rmse, avg_price_change_tuple, week_average_accuracy, week_average_f1, \
+               date_actual_avg_priceChange_list
 
     def reg_dev_for_moving_window_test(self, save_clsfy_path="mlp_trade_classifier"):
 

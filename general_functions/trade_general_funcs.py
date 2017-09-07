@@ -367,11 +367,21 @@ def get_chosen_stock_return(pred_value_list, actual_value_list, date_list,
     return date_actual_avg_priceChange_list
 
 def plot_stock_return(each_week_return_list, date_list, capital = 1, title = '', xlabel = '', save_path = '',
-                      is_plot = False):
+                      is_plot = False, baseline_each_week_return_list = None):
+    capital = 1
     return_list = []
+    baseline_return_list = []
     for each_week_return in each_week_return_list:
         capital += capital*each_week_return
         return_list.append(capital)
+
+    if baseline_each_week_return_list:
+        capital = 1
+        for each_week_return in baseline_each_week_return_list:
+            capital += capital*each_week_return
+            baseline_return_list.append(capital)
+
+
     f1, (ax1) = plt.subplots(1, sharex=True, sharey=True)
     # ax1
     gap_length = 5
@@ -383,7 +393,10 @@ def plot_stock_return(each_week_return_list, date_list, capital = 1, title = '',
     x = np.array([x for x in range(0, len(date_list))])
 
     plt.xticks(x, my_xticks)
-    ax1.plot(x, return_list, 'v', label='profit')
+    ax1.plot(x, return_list, '-', label='profit')
+    if baseline_each_week_return_list:
+        ax1.plot(x, baseline_return_list, '-', label='Baseline profit')
+
     #plt.locator_params(axis='x', nbins=4)
     f1.autofmt_xdate()
     ax1.set_title(title)

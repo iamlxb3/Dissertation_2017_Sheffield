@@ -19,12 +19,15 @@ import numpy as np
 # ==========================================================================================================
 # ADD SYS PATH
 # ==========================================================================================================
+current_folder = os.path.dirname(os.path.abspath(__file__))
 parent_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 clf_path = os.path.join(parent_folder, 'classifiers', 'mlp')
 path2 = os.path.join(parent_folder, 'general_functions')
 
 sys.path.append(clf_path)
 sys.path.append(path2)
+sys.path.append(current_folder)
+
 # ==========================================================================================================
 
 # ==========================================================================================================
@@ -34,6 +37,8 @@ from mlp_trade_regressor import MlpTradeRegressor
 from trade_general_funcs import compute_f1_accuracy, compute_trade_weekly_clf_result, get_chosen_stock_return, \
     plot_stock_return, calculate_rmse
 from trade_general_funcs import get_avg_price_change
+from dow_jones_window_shift_regression_baseline_2 import stock_prediction_baseline_reg
+
 # ==========================================================================================================
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -44,10 +49,14 @@ from trade_general_funcs import get_avg_price_change
 # read the dataset
 # ------------------------------------------------------------------------------------------------------------
 # train
-train_data_folder = os.path.join('dow_jones_index_extended','dow_jones_index_extended_regression')
+train_folder_name = 'dow_jones_index_extended_regression'
+test_folder_name = 'dow_jones_index_extended_regression_test'
+
+
+train_data_folder = os.path.join('dow_jones_index_extended',train_folder_name)
 train_data_folder = os.path.join(parent_folder, 'data', train_data_folder)
 # test
-test_data_folder = os.path.join('dow_jones_index_extended','dow_jones_index_extended_regression_test')
+test_data_folder = os.path.join('dow_jones_index_extended',test_folder_name)
 test_data_folder = os.path.join(parent_folder, 'data', test_data_folder)
 # ------------------------------------------------------------------------------------------------------------
 
@@ -59,13 +68,17 @@ test_data_folder = os.path.join(parent_folder, 'data', test_data_folder)
 data_set = 'dow_jones_index_extended'
 mode = 'reg' #'reg'
 model = 'regressor'
-chosen_metric = 'rmse' #avg_pc, avg_f1, accuracy, rmse
-model_validation_result_name = '{}_validation_result_[{}].csv'.format(model, chosen_metric)
+chosen_metric = 'return' #avg_pc, avg_f1, accuracy, rmse, return
+if chosen_metric == 'return':
+    chosen_metric1 = 'avg_pc'
+else:
+    chosen_metric1 = chosen_metric
+model_validation_result_name = '{}_validation_result_[{}].csv'.format(model, chosen_metric1)
 model_validation_result_path = os.path.join(parent_folder, 'results', 'model_results', model_validation_result_name)
-model_test_range = (0,20)
-RANDOM_STATE_TEST_NUM = 20
+model_test_range = (0,3)
+RANDOM_STATE_TEST_NUM = 1
 is_plot = False
-RANDOM_SEED = 1
+RANDOM_SEED = 3
 print ("Build MLP {} for {} test data!".format(model, data_set))
 # ------------------------------------------------------------------------------------------------------------
 # (1.) read the position of hyper-parameters
@@ -79,24 +92,35 @@ with open (hpp_file_path, 'r') as f:
         hyper_parameter_index_dict[int(line_list[1])] = line_list[0]
 # ------------------------------------------------------------------------------------------------------------
 hyper_parameter_test_list = []
+is_hyper_parameter = False
+
 with open (model_validation_result_path, 'r') as f:
     model_count = 0
     for i, line in enumerate(f):
         if model_count > model_test_range[1]:
+            print ("a")
             break
         if model_count < model_test_range[0]:
+            model_count = model_test_range[0]
             continue
         if i % 2 == 0:
+            print ("1")
             hyper_parameter_list = line.strip().split(',')
+            is_hyper_parameter = True
             #print ("hyper_parameter_list: ", hyper_parameter_list)
         else:
-            model_count += 1
-            hyper_parameter_dict_temp = {}
-            for index, value in enumerate(hyper_parameter_list):
-                hyper_parameter_name = hyper_parameter_index_dict[index]
-                hyper_parameter_dict_temp[hyper_parameter_name] = value
-            hyper_parameter_test_list.append((hyper_parameter_dict_temp, model_count))
-#print ("hyper_parameter_test_list: ", hyper_parameter_test_list)
+            if is_hyper_parameter:
+                hyper_parameter_dict_temp = {}
+                for index, value in enumerate(hyper_parameter_list):
+                    hyper_parameter_name = hyper_parameter_index_dict[index]
+                    hyper_parameter_dict_temp[hyper_parameter_name] = value
+                hyper_parameter_test_list.append((hyper_parameter_dict_temp, model_count))
+                is_hyper_parameter = False
+                model_count += 1
+            else:
+                pass
+
+print ("hyper_parameter_test_list: ", hyper_parameter_test_list)
 
 # str to bool
 def str2bool(v):
@@ -174,12 +198,14 @@ for hyper_parameter_dict, rank in hyper_parameter_test_list:
 
     # ------------------------------------------------------------------------------------------------------------
     random.seed(RANDOM_SEED)
-    random_state_pool = [random.randint(0,99999) for x in range(0,RANDOM_STATE_TEST_NUM)]
+    random_state_pool = [random.randint(0,99999) for x in range(0,RANDOM_STATE_TEST_NUM+1)]
+    print ("random_state_pool: ", random_state_pool)
     best_f1_list = [0,0,0] # f1, accuracy, random_state
     best_accuracy_list = [0,0,0] # accuracy, f1, random_state
     best_random_state = -1
-    best_rmse_list = [float('inf'),0,0]
-    best_avg_pc_list = [float('-inf'),0,0]
+    best_rmse_list = [float('inf'),0,0,0]
+    best_avg_pc_list = [float('-inf'),0,0,0]
+    best_capital_list = [float('-inf'),0,0,0]
     best_return_list = []
     best_date_list = []
     # ------------------------------------------------------------------------------------------------------------
@@ -280,6 +306,13 @@ for hyper_parameter_dict, rank in hyper_parameter_test_list:
         week_average_f1, week_average_accuracy, dev_label_dict, pred_label_dict = \
             compute_trade_weekly_clf_result(pred_label_list, actual_label_list, data_list_for_classification)
 
+        # compute capital
+        capital = 1
+        for stock_return in chosen_stock_return_list:
+            capital += capital*float(stock_return)
+        #
+
+
         avg_price_change = np.average(avg_price_change_list)
         avg_std = np.average(std_list)
         avg_rmse = np.average(rmse_list)
@@ -291,6 +324,7 @@ for hyper_parameter_dict, rank in hyper_parameter_test_list:
         print ("accuracy: ", week_average_accuracy)
         print ("avg_price_change: ", avg_price_change)
         print ("avg_std: ", avg_std)
+        print ("final_capital : ", capital)
         print ("window_index_start: {}, max_window_index: {}, window_size: {}".format(window_index_start,max_window_index,
                                                                                       window_size))
         print ("pred_label_dict: {}".format(pred_label_dict.items()))
@@ -300,21 +334,39 @@ for hyper_parameter_dict, rank in hyper_parameter_test_list:
         if avg_rmse < best_rmse_list[0]:
             best_rmse_list[0] = avg_rmse
             best_rmse_list[1] = avg_price_change
-            best_rmse_list[2] = random_state
+            best_avg_pc_list[2] = capital
+            best_avg_pc_list[3] = random_state
+            if chosen_metric == 'rmse':
+                best_return_list = chosen_stock_return_list
 
         if avg_price_change > best_avg_pc_list[0]:
             best_avg_pc_list[0] = avg_price_change
             best_avg_pc_list[1] = avg_rmse
-            best_avg_pc_list[2] = random_state
-            best_return_list = chosen_stock_return_list # to plot stock returns with best avg_price
+            best_avg_pc_list[2] = capital
+            best_avg_pc_list[3] = random_state
+            if chosen_metric == 'avg_pc':
+                best_return_list = chosen_stock_return_list # to plot stock returns with best avg_price
+
+        if capital > best_capital_list[0]:
+            best_capital_list[0] = capital
+            best_capital_list[1] = avg_rmse
+            best_capital_list[2] = avg_price_change
+            best_capital_list[3] = random_state
+            if chosen_metric == 'return':
+                best_return_list = chosen_stock_return_list # to plot stock returns with best avg_price
         #
+
+        if not best_return_list:
+            print ("please check chosen_metric!")
+            sys.exit()
 
         best_date_list = plot_date_list
 
 
     print ("+++++++++++++++++++++++++++++++++++++++++++")
-    print ("best_rmse: {}, avg_pc: {}, random_state: {}".format(*best_rmse_list))
-    print ("best_avg_pc: {}, rmse: {}, random_state: {}".format(*best_avg_pc_list))
+    print ("best_rmse: {}, avg_pc: {}, capital: {}, random_state: {}".format(*best_rmse_list))
+    print ("best_avg_pc: {}, rmse: {}, capital: {}, random_state: {}".format(*best_avg_pc_list))
+    print ("capital: {}, rmse: {}, avg_pc: {}, random_state: {}".format(*best_capital_list))
     print ("+++++++++++++++++++++++++++++++++++++++++++")
 
 
@@ -331,13 +383,23 @@ for hyper_parameter_dict, rank in hyper_parameter_test_list:
         for key, value in hyper_parameter_dict.items():
             f.write('{},{}\n'.format(key, value))
         f.write('feature_switch_tuple:{}\n'.format(feature_switch_tuple))
-        f.write("best_avg_pc: {}, rmse: {}, random_state: {}".format(*best_avg_pc_list))
+        if chosen_metric == 'rmse':
+            f.write("best_rmse: {}, avg_pc: {}, capital: {}, random_state: {}".format(*best_rmse_list))
+        elif chosen_metric == 'avg_pc':
+            f.write("best_avg_pc: {}, rmse: {}, capital: {}, random_state: {}".format(*best_avg_pc_list))
+        elif chosen_metric == 'return':
+            f.write("capital: {}, rmse: {}, avg_pc: {}, random_state: {}".format(*best_capital_list))
 
     #
 
     file_name = "{}.png".format(unique_id)
     save_path = os.path.join(parent_folder, 'results', 'test_results_with_plot', "{}".format(model), file_name)
+
+    baseline_each_week_return_list = stock_prediction_baseline_reg(train_folder_name,
+                                                              test_folder_name)
+
     plot_stock_return(best_return_list, best_date_list, capital = capital,
-                      title = title, xlabel = xlabel, save_path = save_path, is_plot = is_plot)
+                      title = title, xlabel = xlabel, save_path = save_path, is_plot = is_plot
+                      ,baseline_each_week_return_list = baseline_each_week_return_list)
 
     # ----------------------------------------------------------------------------------------------------------------------

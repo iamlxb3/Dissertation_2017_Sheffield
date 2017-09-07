@@ -485,12 +485,13 @@ class MlpTrade(MultilayerPerceptron):
         self.dev_stock_id_set = self.validation_dict[random_seed][cv_index]['dev_stock_id_set']
     # ------------------------------------------------------------------------------------------------------------------
 
-    def trade_feed_and_separate_data_for_test(self, training_folder, testing_folder, data_per=1.0, feature_switch_tuple=None,
-                                     mode='reg', is_production=False,
-                                     is_standardisation=True, is_PCA=True, is_test_folder=False,
-                                     standardisation_file_path='', pca_file_path='', pca_n_component=None
-                                              ,days_to_predict = None, is_moving_window = False,
-                                              window_size = 1, window_index =0, week_for_predict = None):
+    def trade_feed_and_separate_data_for_test(self, training_folder, test_folder, data_per=1.0, feature_switch_tuple=None,
+                                              mode='reg', is_production=False,
+                                              is_standardisation=True, is_PCA=True, is_test_folder=False,
+                                              standardisation_file_path='', pca_file_path='', pca_n_component=None
+                                              , days_to_predict = None, is_moving_window = False,
+                                              window_size = 1, window_index =0, week_for_predict = None,
+                                              test1_data_folder = None):
         '''feed and seperate data in the normal order
         '''
 
@@ -500,9 +501,22 @@ class MlpTrade(MultilayerPerceptron):
         t_date_str_list, t_stock_id_list = self._feed_data(training_folder, data_per=data_per,
                                                        feature_switch_tuple=feature_switch_tuple,
                                                        is_random=False, mode=mode)
-        # (1.b) read test data
+        # (1.b) read test1 data
+        if test1_data_folder:
+            test1_samples_feature_list, test1_samples_value_list, \
+            test1_date_str_list, test1_stock_id_list = self._feed_data(test1_data_folder, data_per=data_per,
+                                                                     feature_switch_tuple=feature_switch_tuple,
+                                                                     is_random=False, mode=mode)
+            # merge train and test1
+            t_samples_feature_list.extend(test1_samples_feature_list)
+            t_samples_value_list.extend(test1_samples_value_list)
+            t_date_str_list.extend(test1_date_str_list)
+            t_stock_id_list.extend(test1_stock_id_list)
+            #
+
+        # (1.c) read test data
         test_samples_feature_list, test_samples_value_list, \
-        test_date_str_list, test_stock_id_list = self._feed_data(testing_folder, data_per=data_per,
+        test_date_str_list, test_stock_id_list = self._feed_data(test_folder, data_per=data_per,
                                                                  feature_switch_tuple=feature_switch_tuple,
                                                                  is_random=False, mode=mode)
 
