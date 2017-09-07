@@ -75,10 +75,11 @@ else:
     chosen_metric1 = chosen_metric
 model_validation_result_name = '{}_validation_result_[{}].csv'.format(model, chosen_metric1)
 model_validation_result_path = os.path.join(parent_folder, 'results', 'model_results', model_validation_result_name)
-model_test_range = (0,3)
-RANDOM_STATE_TEST_NUM = 1
+model_test_range = (0,10)
+RANDOM_STATE_TEST_NUM = 20
 is_plot = False
 RANDOM_SEED = 3
+week_for_predict = 74  # None
 print ("Build MLP {} for {} test data!".format(model, data_set))
 # ------------------------------------------------------------------------------------------------------------
 # (1.) read the position of hyper-parameters
@@ -222,7 +223,6 @@ for hyper_parameter_dict, rank in hyper_parameter_test_list:
 
         # (2.) read window_size and other config
         is_moving_window = True
-        week_for_predict = 74  # None
         # window size
         _1, _2, date_str_list, _3 = mlp1._feed_data(test_data_folder, data_per,
                                                     feature_switch_tuple=feature_switch_tuple,

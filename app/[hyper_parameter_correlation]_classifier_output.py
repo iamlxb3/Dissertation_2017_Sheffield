@@ -254,17 +254,19 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
                     layer_depth = random.randint(hidden_layer_depth[0], hidden_layer_depth[1])
                     hidden_layer_sizes = [0 for x in range(0,layer_depth)]
                     node_left = hidden_layer_node_max
-                    layer_left = layer_depth
+                    layer_left = layer_depth - 1
                     for j, layer in enumerate(hidden_layer_sizes):
-                        random.seed(i + j + experiment_count * EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
-                        layer_node = random.randint(MIN_NODE_IN_1_LAYER,
-                                                    node_left-layer_left*MIN_NODE_IN_1_LAYER)
-                        hidden_layer_sizes[j] = layer_node
-                        node_left -= layer_node
-                        layer_left -= 1
+                        if j == len(hidden_layer_sizes) - 1:
+                            hidden_layer_sizes[j] = node_left
+                        else:
+                            random.seed(i + j + experiment_count * EXPERIMENT_RANDOM_SEED_OFFSET + RANDOM_SEED_OFFSET)
+                            layer_node = random.randint(MIN_NODE_IN_1_LAYER,
+                                                        node_left-layer_left*MIN_NODE_IN_1_LAYER)
+                            hidden_layer_sizes[j] = layer_node
+                            node_left -= layer_node
+                            layer_left -= 1
                     hidden_layer_sizes_tuple = tuple(hidden_layer_sizes)
                     yield hidden_layer_sizes_tuple
-
             else:
 
                 for i in range(TRAILS):
