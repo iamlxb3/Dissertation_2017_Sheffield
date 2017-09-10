@@ -46,17 +46,14 @@ from dow_jones_window_shift_regression_baseline_2 import stock_prediction_baseli
 # ------------------------------------------------------------------------------------------------------------
 # train
 train_folder_name = 'dow_jones_index_extended_regression'
-test1_folder_name = 'dow_jones_index_extended_regression_test'
-test2_folder_name = 'dow_jones_index_extended_regression_test2'
+test1_folder_name = 'dow_jones_index_extended_regression_test_rnn'
 
 train_data_folder = os.path.join('dow_jones_index_extended', train_folder_name)
 train_data_folder = os.path.join(parent_folder, 'data', train_data_folder)
 # test1
-test1_data_folder = os.path.join('dow_jones_index_extended', test1_folder_name)
-test1_data_folder = os.path.join(parent_folder, 'data', test1_data_folder)
-# test2
-test_data_folder = os.path.join('dow_jones_index_extended', test2_folder_name)
+test_data_folder = os.path.join('dow_jones_index_extended', test1_folder_name)
 test_data_folder = os.path.join(parent_folder, 'data', test_data_folder)
+
 # ------------------------------------------------------------------------------------------------------------
 
 
@@ -64,7 +61,7 @@ test_data_folder = os.path.join(parent_folder, 'data', test_data_folder)
 # ==========================================================================================================
 # Build MLP classifier for a-share data, save the mlp to local
 # ==========================================================================================================
-print ("Build MLP regressor for dow_jones extended test data!")
+print ("Build RNN regressor for dow_jones extended test data!")
 mode = 'reg' #'reg'
 
 
@@ -106,7 +103,7 @@ best_date_list = []
 
 # (1.) build classifer
 rnn1 = RnnTradeRegressor()
-clsfy_name = 'dow_jones_extened_test_mlp_regressor'
+clsfy_name = 'dow_jones_extened_test_rnn_regressor'
 clf_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
 data_per = 1.0 # the percentage of data using for training and testing
 #
@@ -155,7 +152,7 @@ for window_index in range(window_index_start, max_window_index):
                                                , is_standardisation = is_standardisation, is_PCA = is_PCA,
                                                is_moving_window = is_moving_window, window_size = window_size,
                                                window_index = window_index, week_for_predict = week_for_predict,
-                                               test1_data_folder = test1_data_folder, is_time_series = True)
+                                               is_time_series = True)
 
     # (3.) load hyper parameters and training
     if not pca_n_component:
@@ -166,11 +163,11 @@ for window_index in range(window_index_start, max_window_index):
     # print ("rnn1.training_set[0]: ", len(rnn1.training_set[0]))
     # sys.exit()
     rnn1.set_rnn_regressor(input_size, tol=tol, hidden_size = 20,
-                       verbose = verbose, learning_rate = learning_rate_init)
+                       verbose = verbose, learning_rate = learning_rate_init, random_state = random_state)
     rnn1.train_rnn()
     pred_value_list, actual_value_list, date_list, stock_id_list = rnn1.reg_dev_for_moving_window_test()
     #
-    print ("date_list: ", date_list)
+    #print ("date_list: ", date_list)
     pred_label_list_temp = ['pos' if x >= 0 else 'neg' for x in pred_value_list]
     actual_label_list_temp = ['pos' if x >= 0 else 'neg' for x in actual_value_list]
     pred_label_list.extend(pred_label_list_temp)
@@ -196,7 +193,7 @@ for window_index in range(window_index_start, max_window_index):
     date_set = set(date_list)
     sorted_date_list = sorted(list(date_set))
     plot_date_list.extend(sorted_date_list)
-    print("plot_date_list: ", plot_date_list)
+    #print("plot_date_list: ", plot_date_list)
 
     #
 
@@ -248,14 +245,14 @@ print ("+++++++++++++++++++++++++++++++++++++++++++")
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-baseline_best_return_list = stock_prediction_baseline_reg(test1_folder_name, test2_folder_name)
+baseline_best_return_list = stock_prediction_baseline_reg(test1_folder_name, test1_folder_name)
 
 
 # plot for the stock return
 capital = 1
-title = 'Stock return for MLP regressor on the 2nd test set'
+title = 'Stock return for Rnn regressor on the 1st test set'
 xlabel ='Date'
-file_name = "{}.png".format('Regressor_stock_return')
+file_name = "{}.png".format('RNN_Regressor_stock_return')
 save_path = os.path.join(parent_folder, 'results', file_name)
 plot_stock_return(best_return_list, best_date_list, capital = capital,
                   title = title, xlabel = xlabel, save_path = save_path, is_plot = True,
