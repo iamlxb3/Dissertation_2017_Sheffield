@@ -60,6 +60,8 @@ class MlpTrade(MultilayerPerceptron):
         # --------------------------------------------------------------------------------------------------------------
         self.training_set = []
         self.training_value_set = []
+        self.training_date_set = []
+        self.training_stock_id_set = []
         self.dev_set = []
         self.dev_value_set = []
         self.dev_date_set = []
@@ -189,7 +191,8 @@ class MlpTrade(MultilayerPerceptron):
         return samples_feature_list, samples_value_list, date_str_list, stock_id_list
 
     def load_train_dev_trade_data_for_1_validation(self, samples_feature_list, samples_value_list,
-                                                   date_str_list, stock_id_list, dev_date_set, is_production = False):
+                                                   date_str_list, stock_id_list, dev_date_set, is_production = False
+                                                   , is_time_series = False):
         all_date_set = set(date_str_list)
         if is_production:
             training_date_set = all_date_set
@@ -213,6 +216,9 @@ class MlpTrade(MultilayerPerceptron):
 
         self.training_set = list_by_index(samples_feature_list, training_index_list)
         self.training_value_set = list_by_index(samples_value_list, training_index_list)
+        if is_time_series:
+            self.training_date_set = list_by_index(date_str_list, training_index_list)
+            self.training_stock_id_set = list_by_index(stock_id_list, training_index_list)
         self.dev_set = list_by_index(samples_feature_list, dev_index_list)
         self.dev_value_set = list_by_index(samples_value_list, dev_index_list)
         self.dev_date_set = list_by_index(date_str_list, dev_index_list)
@@ -331,7 +337,7 @@ class MlpTrade(MultilayerPerceptron):
                                             date_str_list, stock_id_list, shifting_size = 1,training_window_size = 22,
                                             is_cv=True, shifting_size_percent = 0.1,
                                             shift_num = 5, is_standardisation = True, is_PCA = True,
-                                            pca_n_component = None, training_set_percent = 1.0):
+                                            pca_n_component = None, training_set_percent = 1.0, is_time_series = False):
 
         # (0.) reset validation_dict
         self.validation_dict = collections.defaultdict(lambda: collections.defaultdict(lambda: {}))
@@ -409,6 +415,8 @@ class MlpTrade(MultilayerPerceptron):
             training_date_list_index_start = math.floor((1 - training_set_percent / 1.0) * len(training_date_list))
             training_date_list = training_date_list[training_date_list_index_start:]
             #
+            print ("training_date_list: ", training_date_list)
+            print ("training_date_list: ", training_date_list)
 
             # # TODO important print
             # print ("---------------------------------------------------------------------")
@@ -434,6 +442,11 @@ class MlpTrade(MultilayerPerceptron):
             # (4.) load the training and dev data
             training_set = list_by_index(samples_feature_list, training_index_list)
             training_value_set = list_by_index(samples_value_list, training_index_list)
+            if is_time_series:
+                training_date_set = list_by_index(date_str_list, training_index_list)
+                training_stock_id_set = list_by_index(stock_id_list, training_index_list)
+
+
             dev_set = list_by_index(samples_feature_list, dev_index_list)
             dev_value_set = list_by_index(samples_value_list, dev_index_list)
             dev_date_set = list_by_index(date_str_list, dev_index_list)
@@ -451,6 +464,9 @@ class MlpTrade(MultilayerPerceptron):
 
             self.validation_dict[random_seed][shift]['training_set'] = training_set
             self.validation_dict[random_seed][shift]['training_value_set'] = training_value_set
+            if is_time_series:
+                self.validation_dict[random_seed][shift]['training_date_set'] = training_date_set
+                self.validation_dict[random_seed][shift]['training_stock_id_set'] = training_stock_id_set
             self.validation_dict[random_seed][shift]['dev_set'] = dev_set
             self.validation_dict[random_seed][shift]['dev_value_set'] = dev_value_set
             self.validation_dict[random_seed][shift]['dev_date_set'] = dev_date_set
@@ -491,16 +507,18 @@ class MlpTrade(MultilayerPerceptron):
                                               standardisation_file_path='', pca_file_path='', pca_n_component=None
                                               , days_to_predict = None, is_moving_window = False,
                                               window_size = 1, window_index =0, week_for_predict = None,
-                                              test1_data_folder = None):
+                                              test1_data_folder = None, is_time_series = False):
         '''feed and seperate data in the normal order
         '''
 
 
         # (1.a) read training data
+
         t_samples_feature_list, t_samples_value_list, \
         t_date_str_list, t_stock_id_list = self._feed_data(training_folder, data_per=data_per,
                                                        feature_switch_tuple=feature_switch_tuple,
                                                        is_random=False, mode=mode)
+
         # (1.b) read test1 data
         if test1_data_folder:
             test1_samples_feature_list, test1_samples_value_list, \
@@ -640,7 +658,7 @@ class MlpTrade(MultilayerPerceptron):
         # (3.) load_train_dev_data_for_1_validation
         self.load_train_dev_trade_data_for_1_validation(samples_feature_list, samples_value_list,
                                                         date_str_list, stock_id_list, dev_date_set,
-                                                        is_production=is_production)
+                                                        is_production=is_production, is_time_series = is_time_series)
 
 
         print ("Training and test date set {}".format(sorted(list(set(date_str_list)))))

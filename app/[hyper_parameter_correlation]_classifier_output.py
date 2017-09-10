@@ -43,7 +43,7 @@ unique_id = 0
 unique_start = 0
 
 # CHOSEN_HYPER_PARAMETER
-#CHOSEN_HYPER_PARAMETER = 'learning_rate'
+CHOSEN_HYPER_PARAMETER = 'learning_rate'
 #CHOSEN_HYPER_PARAMETER = 'learning_rate_init_constant'
 #CHOSEN_HYPER_PARAMETER = 'learning_rate_init_invscaling'
 #CHOSEN_HYPER_PARAMETER = 'activation_function'
@@ -53,7 +53,7 @@ unique_start = 0
 #CHOSEN_HYPER_PARAMETER = 'pca_n_component'
 
 #CHOSEN_HYPER_PARAMETER = 'hidden_layer_depth'
-CHOSEN_HYPER_PARAMETER = 'hidden_layer_nodes'
+#CHOSEN_HYPER_PARAMETER = 'hidden_layer_nodes'
 
 
 
@@ -93,7 +93,7 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
     # (1.) build classifer
     mlp_regressor1 = MlpTradeClassifier()
-    clsfy_name = '{}_hyper_parameter_{}'.format(data_set, classifier)
+    clsfy_name = '{}_hyper_parameter_{}_{}'.format(data_set, classifier, CHOSEN_HYPER_PARAMETER)
     clf_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
 
 
@@ -154,13 +154,14 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
 
     def build_generator_from_range(target_range, trails, experiment_count, linspace = False):
         if linspace:
-            value_list = np.linspace(*target_range, trails)
+            value_list = np.linspace(*target_range, num = trails)
             for value in value_list:
                 yield value
-        for i in range(trails):
-            random.seed(i+experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET+RANDOM_SEED_OFFSET)
-            random_value = random.uniform(*target_range)
-            yield random_value
+        else:
+            for i in range(trails):
+                random.seed(i+experiment_count*EXPERIMENT_RANDOM_SEED_OFFSET+RANDOM_SEED_OFFSET)
+                random_value = random.uniform(*target_range)
+                yield random_value
     # ----------------------------------------------------------------------------------------------------------------------
 
 
@@ -244,8 +245,9 @@ for is_standardisation, is_PCA in list(itertools.product(is_standardisation_list
             #hidden_layer_node_pool = [x for x in range(*hidden_layer_node)]
             # even_split_hidden_layer_node_list = [k * int(TRAILS / len(hidden_layer_node_pool))
             #                                      for k, x in enumerate(hidden_layer_node_pool)]
-            if CHOSEN_HYPER_PARAMETER == 'hidden_layer_node':
+            if CHOSEN_HYPER_PARAMETER == 'hidden_layer_nodes':
                 MIN_NODE_IN_1_LAYER = 1
+                hidden_layer_node_max_range = (40,800)
                 hidden_layer_node_max_list = list(build_generator_from_range(hidden_layer_node_max_range, TRAILS,
                                            experiment_count, linspace=True))
                 for i in range(TRAILS):

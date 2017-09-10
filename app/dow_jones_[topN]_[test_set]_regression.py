@@ -78,7 +78,7 @@ model_validation_result_path = os.path.join(parent_folder, 'results', 'model_res
 model_test_range = (0,10)
 RANDOM_STATE_TEST_NUM = 20
 is_plot = False
-RANDOM_SEED = 3
+RANDOM_SEED = 1 #
 week_for_predict = 74  # None
 print ("Build MLP {} for {} test data!".format(model, data_set))
 # ------------------------------------------------------------------------------------------------------------
