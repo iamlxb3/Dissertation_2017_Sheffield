@@ -85,7 +85,7 @@ class RnnTradeRegressor(MlpTrade, MlpRegressor_P):
         super().__init__()
 
     def set_rnn_regressor(self, input_size, hidden_size = 1, num_layers = 1, learning_rate = 0.001, batch_first = True,
-                          max_iter = 1000, tol = 1e-6, random_state = 1, batch_size = None, verbose = False):
+                          max_iter = 2000, tol = 1e-6, random_state = 1, batch_size = None, verbose = False):
         torch.manual_seed(random_state)  # pytorch set random seed
         self.trade_rnn = RNN(input_size, hidden_size = hidden_size, num_layers = num_layers, batch_first = batch_first)
         self.optimizer = torch.optim.Adam(self.trade_rnn.parameters(), lr=learning_rate)  # optimize all cnn parameters
@@ -142,16 +142,13 @@ class RnnTradeRegressor(MlpTrade, MlpRegressor_P):
     def _predict(self):
         x_variable, y_variable = self._process_input_data(self.dev_set, self.dev_value_set, self.dev_stock_id_set)
         prediction, h_state = self.trade_rnn(x_variable, self.h_state)  # rnn output
-        #print ("self.dev_set: ", self.dev_set)
 
         prediction = [x[0][0] for x in prediction.data.numpy()]
         actual = [x[0] for x in y_variable.data.numpy()]
-
-        return prediction, actual, sorted(self.dev_date_set), sorted(self.dev_stock_id_set)
+        return prediction, actual, self.dev_date_set, self.dev_stock_id_set
 
 
     def train_rnn(self):
-
         x_variable, y_variable = self._process_input_data(self.training_set, self.training_value_set,
                                                           self.training_stock_id_set,  is_training=True)
         #print ("x_variable: ", x_variable)

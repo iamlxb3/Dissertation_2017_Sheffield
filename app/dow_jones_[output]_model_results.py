@@ -39,7 +39,7 @@ from stock_box_plot2 import model_result_box_plot
 # read data into dictionary
 # ----------------------------------------------------------------------------------------------------------------------
 data_set = 'dow_jones_index_extended'
-mode = 'reg'
+mode = 'clf'
 classification_list = ['classifier','bagging_classifier','regressor','bagging_regressor','adaboost_regressor',
                        'random_forest_classifier']
 regression_list = ['regressor','bagging_regressor','adaboost_regressor']

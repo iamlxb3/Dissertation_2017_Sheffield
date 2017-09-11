@@ -92,10 +92,21 @@ learning_rate_dict = {'invscaling': 0, 'constant': 1}
 # ==========================================================================================================
 # (1.) [learning rate, pca_n_component, alpha] correlation
 # ==========================================================================================================
-hyper_parameter_list = ['hidden_layer_nodes']
-hyper_parameter_name = 'hidden_layer_nodes'
+hyper_parameter_list = ['hidden_layer_depth']
+hyper_parameter_name = 'hidden_layer_depth'
+#x_label = 'Number of principle component'
+#x_label = 'Activation function'
+#x_label = 'L2 regularisation parameter'
+#x_label = 'Learning method'
+#x_label = 'Adaptive learning rate'
+#x_label = 'Is early stopping applied?'
+#x_label = 'The percentage size of validation set for early stopping'
+#x_label = 'The total number of neurons in hidden layers'
+x_label = 'The depth of hidden layers'
+
+
 title = 'Classification Result'
-mode = 'avg' #best，avg
+mode = 'best' #best，avg
 
 for hyper_parameter in hyper_parameter_list:
 
@@ -205,7 +216,7 @@ for hyper_parameter in hyper_parameter_list:
     #ax2.plot(hyper_parameter_value_list, accuracy_mean_list, 'x', label = 'accuracy_mean')
     ax2.errorbar(hyper_parameter_value_list, accuracy_mean_list, accuracy_std_list, fmt='-o', capsize=5, label = 'accuracy')
     #ax2.set_xlabel('{}'.format(title))
-    ax2.set_xlabel('{}'.format(hyper_parameter_name))
+    ax2.set_xlabel('{}'.format(x_label))
     ax2.legend()
     #
 

@@ -185,9 +185,11 @@ def model_result_box_plot(result_dict, model_list, data_preprocessing_list, metr
 
     show()
 
-def data_preprocessing_result_box_plot(result_dict, model, data_preprocessing_list, metrics_name_list,
-                                       data_preprocessing_show_list,metrics_show_list,title='',
-                          x_label='', xlim_range = (0,15), ylim_range = (0.2, 0.6)):
+def data_preprocessing_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list,
+                                       data_preprocessing_show_list, metrics_show_list, title='',
+                                       x_label='', xlim_range = (0,15), ylim_range = (0.2, 0.6), plot_baseline= True
+                                       ,baseline_value_tuple = None,
+                          baseline_legend_tuple = None, baseline_colour_tuple = None):
     box_widths = 0.3
     box_gap = 0.5
     category_gap = 1.5
@@ -198,12 +200,14 @@ def data_preprocessing_result_box_plot(result_dict, model, data_preprocessing_li
     hold(True)
 
     # Some fake data to plot
-    model_result_dict = result_dict[model]
+    # model_result_dict = result_dict[model_list]
     for data_preprocessing in data_preprocessing_list:
         X = []
         for metric in metrics_name_list:
-            value_list = model_result_dict[data_preprocessing][metric]
-            X.append(value_list)
+            model_metric_list = []
+            for model in model_list:
+                model_metric_list.extend(result_dict[model][data_preprocessing][metric])
+            X.append(model_metric_list)
         # first boxplot pair
         position_now += category_gap
         positions_list, position_now = get_positions(metrics_name_list, position_now, box_gap)
@@ -236,9 +240,21 @@ def data_preprocessing_result_box_plot(result_dict, model, data_preprocessing_li
 
     # hB, = plot([1, 1], 'b-')
     # hR, = plot([1, 1], 'r-')
+
+
+
+    if plot_baseline and baseline_value_tuple:
+        for i, baseline_value in enumerate(baseline_value_tuple):
+            baseline_plot = plt.plot((0, 99), (baseline_value, baseline_value),
+                                     '{}-'.format(baseline_colour_tuple[i]), dashes=[2, 5])[0]
+            h_list.append(baseline_plot)
+            metrics_show_list.append('{}'.format(baseline_legend_tuple[i]))
+
+
     legend(h_list, metrics_show_list)
-    for h in h_list:
-        h.set_visible(False)
-    # hB.set_visible(False)
-    # hR.set_visible(False)
+    for i, h in enumerate(h_list):
+        if i >= len(baseline_legend_tuple):
+            pass
+        else:
+            h.set_visible(False)
     show()

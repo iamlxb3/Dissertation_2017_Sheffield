@@ -136,11 +136,13 @@ if mode =='clf':
                           plot_baseline=True,
                           baseline_value_tuple = (0.479, 0.506),
                           baseline_colour_tuple=('r', 'b'),
-                          baseline_legend_tuple = ('Accuracy Baseline', 'Average F-measure Baseline')
+                          baseline_legend_tuple = ('Baseline Accuracy ', 'Baseline Average F-measure')
     )
 elif mode =='reg':
     metrics_name_list = ['rmse_list']
-    ylim_range = (0.0, 1.3)
+    metrics_print_list = ['rmse']
+    #ylim_range = (0.0, 6.6)
+    ylim_range = (0.0, 0.3)
     xlim_range = (0,7)
     x_label = ["[{}]".format(x) for x in range(1, len(model_list)+1)]
     model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='',
@@ -148,9 +150,11 @@ elif mode =='reg':
                           plot_baseline=True,
                           baseline_value_tuple = (0.03898,),
                           baseline_colour_tuple = ('b',),
-                          baseline_legend_tuple = ('Rmse Baseline',)
+                          baseline_legend_tuple = ('Baseline Rmse',),
+                            metrics_print_list = metrics_print_list
     )
     metrics_name_list = ['avg_pc_list']
+    metrics_print_list = ['Average return']
     ylim_range = (-0.01, 0.02)
     xlim_range = (0,7)
     model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='',
@@ -158,7 +162,8 @@ elif mode =='reg':
                           plot_baseline=True,
                           baseline_value_tuple = (-0.001, ),
                           baseline_colour_tuple=('b',),
-                          baseline_legend_tuple = ('Average price change Baseline',)
+                          baseline_legend_tuple = ('Baseline average return',),
+                         metrics_print_list = metrics_print_list
     )
 # ----------------------------------------------------------------------------------------------------------------------
 

@@ -40,7 +40,7 @@ from stock_box_plot2 import data_preprocessing_result_box_plot
 # ----------------------------------------------------------------------------------------------------------------------
 data_set = 'dow_jones_index_extended'
 mode = 'clf'
-classifier_list = ['classifier','bagging_classifier','random_forest_classifier']
+classifier_list = ['classifier','bagging_classifier']
 regressor_list = ['regressor','bagging_regressor','adaboost_regressor']
 data_preprocessing_list = ['pca','pca_standardization','standardization','origin']
 
@@ -72,6 +72,7 @@ for model, data_preprocessing in list(itertools.product(model_list, data_preproc
     # ----------------------------------------------------------------------------------------------------------------------
     for i, file_path in enumerate(file_path_list):
         with open (file_path, 'r') as f:
+            #print ("file_path: ", file_path)
             file_name = file_name_list[i]
             if file_name == '.gitignore' or  file_name == 'feature_selection.txt':
                 continue
@@ -115,28 +116,66 @@ data_preprocessing_show_list =  ['pca','pca&z-score','z-score','none']
 #data_preprocessing = 'pca_standardization'
 #data_preprocessing_name = 'PCA and standardisation'
 
+ylim_range = (0.0, 0.6)
+xlim_range = (0, 11)
+#reg_metric = 'rmse' # avg_pc
+reg_metric = 'avg_pc' # avg_pc
+
+
 if mode == 'clf':
     metrics_name_list = ['avg_f1_list','accuracy_list']
     metrics_show_list = ['AverageFmeasure', 'Accuracy']
+    model_list = ['classifier', 'bagging_classifier','regressor','bagging_regressor','adaboost_regressor']
+    baseline_colour_tuple = ('r', 'b')
+    baseline_value_tuple = (0.479, 0.506)
+    baseline_legend_tuple = ('Baseline Accuracy ', 'Baseline Average F-measure')
     mode_name = 'Classification'
 elif mode == 'reg':
-    metrics_name_list = ['rmse_list','avg_pc_list','accuracy_list','avg_f1_list']
-    metrics_show_list = ['Rmse', 'AverageReturn', 'Accuracy', 'AverageFmeasure']
+
+    # # rmse
+    if reg_metric == 'rmse':
+        metrics_name_list = ['rmse_list']
+        metrics_show_list = ['Rmse']
+        xlim_range = (0,9)
+        baseline_colour_tuple = ('b',)
+        baseline_value_tuple = (0.03898,)
+        baseline_legend_tuple = ('Baseline rmse',)
+        #
+    elif reg_metric == 'avg_pc':
+        # avg_pc
+        metrics_name_list = ['avg_pc_list']
+        metrics_show_list = ['Average return']
+        xlim_range = (0,9)
+        ylim_range = (-0.01, 0.015)
+        baseline_colour_tuple = ('b',)
+        baseline_value_tuple = (-0.001,)
+        baseline_legend_tuple = ('Baseline average return',)
+    #
+
+
+
+
+    # metrics_name_list = ['avg_pc_list']
+    # metrics_show_list = ['AverageReturn']
+    model_list = ['regressor','bagging_regressor','adaboost_regressor']
     mode_name = 'Regression'
 
 model_name = 'MLP classifier'
-model = 'classifier'
+#model = 'classifier' #
+#model_list = ['bagging_classifier']
+#model_list = ['classifier', 'bagging_classifier']
 
-title = "{} result with {}".format(mode_name, model_name)
+#model = 'regressor' #
+
+title = "{} result of different data pre-processing methods".format(mode_name)
 #title = "{} result on the UCI repository".format(mode_name)
 
-ylim_range = (0.0, 0.6)
-xlim_range = (0, 11)
-
-
-data_preprocessing_result_box_plot(result_dict, model, data_preprocessing_list, metrics_name_list,
+data_preprocessing_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list,
                                    data_preprocessing_show_list,metrics_show_list,
-                                   title =title, x_label = '', ylim_range = ylim_range, xlim_range=xlim_range
+                                   title =title, x_label = '', ylim_range = ylim_range, xlim_range=xlim_range,
+baseline_colour_tuple = baseline_colour_tuple,
+baseline_value_tuple = baseline_value_tuple,
+baseline_legend_tuple = baseline_legend_tuple
 )
 
 

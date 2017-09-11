@@ -45,8 +45,8 @@ if __name__ == '__main__':
     # IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT IMPORT I
     # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     unique_id = 0
-    unique_start = 500
-    unique_end = 768
+    unique_start = 48
+    unique_end = 400
     #
     data_set = 'dow_jones_index_extended'
     input_folder = os.path.join(data_set, 'dow_jones_index_extended_regression')

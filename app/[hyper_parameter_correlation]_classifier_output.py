@@ -43,13 +43,13 @@ unique_id = 0
 unique_start = 0
 
 # CHOSEN_HYPER_PARAMETER
-CHOSEN_HYPER_PARAMETER = 'learning_rate'
+#CHOSEN_HYPER_PARAMETER = 'learning_rate'
 #CHOSEN_HYPER_PARAMETER = 'learning_rate_init_constant'
 #CHOSEN_HYPER_PARAMETER = 'learning_rate_init_invscaling'
 #CHOSEN_HYPER_PARAMETER = 'activation_function'
 #CHOSEN_HYPER_PARAMETER = 'alpha'
 #CHOSEN_HYPER_PARAMETER = 'early_stopping'
-#CHOSEN_HYPER_PARAMETER = 'validation_fraction'
+CHOSEN_HYPER_PARAMETER = 'validation_fraction'
 #CHOSEN_HYPER_PARAMETER = 'pca_n_component'
 
 #CHOSEN_HYPER_PARAMETER = 'hidden_layer_depth'

@@ -34,6 +34,7 @@ sys.path.append(current_folder)
 # local package import
 # ==========================================================================================================
 from mlp_trade_regressor import MlpTradeRegressor
+from mlp_trade_ensemble_regressor import MlpTradeEnsembleRegressor
 from trade_general_funcs import compute_f1_accuracy, compute_trade_weekly_clf_result, get_chosen_stock_return, \
     plot_stock_return, calculate_rmse
 from trade_general_funcs import get_avg_price_change
@@ -68,7 +69,10 @@ test_data_folder = os.path.join(parent_folder, 'data', test_data_folder)
 data_set = 'dow_jones_index_extended'
 mode = 'reg' #'reg'
 model = 'regressor'
-chosen_metric = 'return' #avg_pc, avg_f1, accuracy, rmse, return
+#model = 'bagging_regressor'
+#model = 'adaboost_regressor'
+
+chosen_metric = 'avg_pc' #avg_pc, avg_f1, accuracy, rmse, return
 if chosen_metric == 'return':
     chosen_metric1 = 'avg_pc'
 else:
@@ -76,9 +80,9 @@ else:
 model_validation_result_name = '{}_validation_result_[{}].csv'.format(model, chosen_metric1)
 model_validation_result_path = os.path.join(parent_folder, 'results', 'model_results', model_validation_result_name)
 model_test_range = (0,10)
-RANDOM_STATE_TEST_NUM = 20
+RANDOM_STATE_TEST_NUM = 5
 is_plot = False
-RANDOM_SEED = 1 #
+RANDOM_SEED = 3 #
 week_for_predict = 74  # None
 print ("Build MLP {} for {} test data!".format(model, data_set))
 # ------------------------------------------------------------------------------------------------------------
@@ -215,8 +219,14 @@ for hyper_parameter_dict, rank in hyper_parameter_test_list:
     for random_state in random_state_pool:
 
         # (1.) build classifer
-        mlp1 = MlpTradeRegressor()
-        clsfy_name = 'dow_jones_extened_test_mlp_regressor'
+        if model == 'regressor':
+            mlp1 = MlpTradeRegressor()
+        elif model == 'bagging_regressor':
+            mlp1 = MlpTradeEnsembleRegressor(ensemble_number = 3, mode='bagging')
+        elif model == 'adaboost_regressor':
+            mlp1 = MlpTradeEnsembleRegressor(ensemble_number = 3, mode='adaboost')
+
+        clsfy_name = 'dow_jones_extened_test_{}'.format(model)
         clf_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
         data_per = 1.0 # the percentage of data using for training and testing
         #
@@ -334,8 +344,8 @@ for hyper_parameter_dict, rank in hyper_parameter_test_list:
         if avg_rmse < best_rmse_list[0]:
             best_rmse_list[0] = avg_rmse
             best_rmse_list[1] = avg_price_change
-            best_avg_pc_list[2] = capital
-            best_avg_pc_list[3] = random_state
+            best_rmse_list[2] = capital
+            best_rmse_list[3] = random_state
             if chosen_metric == 'rmse':
                 best_return_list = chosen_stock_return_list
 
@@ -384,11 +394,11 @@ for hyper_parameter_dict, rank in hyper_parameter_test_list:
             f.write('{},{}\n'.format(key, value))
         f.write('feature_switch_tuple:{}\n'.format(feature_switch_tuple))
         if chosen_metric == 'rmse':
-            f.write("best_rmse: {}, avg_pc: {}, capital: {}, random_state: {}".format(*best_rmse_list))
+            f.write("best_rmse,{},avg_pc,{},capital,{},random_state,{}".format(*best_rmse_list))
         elif chosen_metric == 'avg_pc':
-            f.write("best_avg_pc: {}, rmse: {}, capital: {}, random_state: {}".format(*best_avg_pc_list))
+            f.write("best_avg_pc,{},rmse,{},capital,{},random_state,{}".format(*best_avg_pc_list))
         elif chosen_metric == 'return':
-            f.write("capital: {}, rmse: {}, avg_pc: {}, random_state: {}".format(*best_capital_list))
+            f.write("capital,{},rmse,{},avg_pc,{},random_state,{}".format(*best_capital_list))
 
     #
 
