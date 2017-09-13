@@ -121,7 +121,11 @@ def model_result_box_plot(result_dict, model_list, data_preprocessing_list, metr
         for i, metrics_list in enumerate(X):
             if metrics_list:
                 metric = metrics_name_list[i]
-                max_value = sorted(metrics_list, reverse=True)[0]
+                if metric == 'rmse_list':
+                    max_value = sorted(metrics_list)[0]
+                else:
+                    max_value = sorted(metrics_list, reverse=True)[0]
+
                 print ("{}-best {}: {}".format(model, metric, max_value))
         #
 

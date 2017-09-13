@@ -367,19 +367,46 @@ def get_chosen_stock_return(pred_value_list, actual_value_list, date_list,
     return date_actual_avg_priceChange_list
 
 def plot_stock_return(each_week_return_list, date_list, capital = 1, title = '', xlabel = '', save_path = '',
-                      is_plot = False, baseline_each_week_return_list = None):
+                      is_plot = False,
+                      simple_baseline_each_week_return_list = None,
+                      random_baseline_each_week_return_list=None,
+                      highest_profit_baseline_each_week_return_list=None,
+                      highest_profit = None,
+                      model_label = ''
+                      ):
     capital = 1
     return_list = []
-    baseline_return_list = []
+    simple_baseline_return_list = []
+    random_baseline_return_list = []
+    highest_profit_baseline_return_list = []
+
     for each_week_return in each_week_return_list:
         capital += capital*each_week_return
         return_list.append(capital)
 
-    if baseline_each_week_return_list:
+    # simple baseline
+    if simple_baseline_each_week_return_list:
         capital = 1
-        for each_week_return in baseline_each_week_return_list:
+        for each_week_return in simple_baseline_each_week_return_list:
             capital += capital*each_week_return
-            baseline_return_list.append(capital)
+            simple_baseline_return_list.append(capital)
+    #
+
+    # random baseline
+    if random_baseline_each_week_return_list:
+        capital = 1
+        for each_week_return in random_baseline_each_week_return_list:
+            capital += capital*each_week_return
+            random_baseline_return_list.append(capital)
+    #
+
+    # highest profit baseline
+    if highest_profit_baseline_each_week_return_list:
+        capital = 1
+        for each_week_return in highest_profit_baseline_each_week_return_list:
+            capital += capital*each_week_return
+            highest_profit_baseline_return_list.append(capital)
+    #
 
 
     f1, (ax1) = plt.subplots(1, sharex=True, sharey=True)
@@ -393,14 +420,23 @@ def plot_stock_return(each_week_return_list, date_list, capital = 1, title = '',
     x = np.array([x for x in range(0, len(date_list))])
 
     plt.xticks(x, my_xticks)
-    ax1.plot(x, return_list, '-', label='profit')
-    if baseline_each_week_return_list:
-        ax1.plot(x, baseline_return_list, '-', label='Baseline profit')
+    ax1.plot(x, return_list, '-', color = '#005d98', label=model_label)
+    if simple_baseline_each_week_return_list:
+        ax1.plot(x, simple_baseline_return_list, '-',  dashes=[2, 4], color = '#0099cc', label='Simple baseline')
+    if random_baseline_each_week_return_list:
+        ax1.plot(x, random_baseline_return_list, '-', dashes=[1, 1], color = '#0099cc', label='Random baseline')
+    if highest_profit_baseline_each_week_return_list:
+        ax1.plot(x, highest_profit_baseline_return_list, 'k-', label='Highest-profit baseline')
 
     #plt.locator_params(axis='x', nbins=4)
     f1.autofmt_xdate()
     ax1.set_title(title)
     ax1.set_xlabel(xlabel)
+    if highest_profit:
+        highest_profit = float("{:.2f}".format(highest_profit))
+        ax1.set_ylabel('profit (Theoretical highest profit: {})'.format(highest_profit))
+    else:
+        ax1.set_ylabel('profit')
     ax1.legend(loc=2)
     #
     if is_plot:

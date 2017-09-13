@@ -58,6 +58,7 @@ test_data_folder = os.path.join(parent_folder, 'data', test_data_folder)
 
 
 
+
 # ==========================================================================================================
 # Build MLP classifier for a-share data, save the mlp to local
 # ==========================================================================================================
@@ -268,6 +269,6 @@ for i in range(random_state_test_total):
     save_path = os.path.join(parent_folder, 'results', file_name)
     plot_stock_return(best_return_list, best_date_list, capital = capital,
                       title = title, xlabel = xlabel, save_path = save_path, is_plot = False,
-                      baseline_each_week_return_list = baseline_best_return_list)
+                      simple_baseline_each_week_return_list= baseline_best_return_list)
 
     # ----------------------------------------------------------------------------------------------------------------------

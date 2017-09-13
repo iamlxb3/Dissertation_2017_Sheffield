@@ -39,12 +39,13 @@ from stock_box_plot2 import model_result_box_plot
 # read data into dictionary
 # ----------------------------------------------------------------------------------------------------------------------
 data_set = 'dow_jones_index_extended'
+#data_set = 'dow_jones_index'
+
 mode = 'reg'
-classification_list = ['classifier','bagging_classifier','regressor','bagging_regressor','adaboost_regressor',
-                       'random_forest_classifier']
+classification_list = ['classifier','bagging_classifier','regressor','bagging_regressor','adaboost_regressor']
 regression_list = ['regressor','bagging_regressor','adaboost_regressor']
 
-classifier_list = ['classifier','bagging_classifier','random_forest_classifier']
+classifier_list = ['classifier','bagging_classifier']
 regressor_list = ['regressor','bagging_regressor','adaboost_regressor']
 data_preprocessing_list = ['pca','pca_standardization','standardization','origin']
 
@@ -128,7 +129,7 @@ if mode =='clf':
     #['classifier', 'bagging_classifier', 'regressor', 'bagging_regressor', 'adaboost_regressor',
     #  'random_forest_classifier']
     x_label = ["[{}]".format(x) for x in range(1, len(model_list)+1)]
-    xlim_range = (0,16)
+    xlim_range = (0,14)
     title = 'Classification result of different classifiers'
     model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title =title,
                           x_label = x_label, ylim_range = ylim_range, xlim_range = xlim_range,
@@ -141,8 +142,8 @@ if mode =='clf':
 elif mode =='reg':
     metrics_name_list = ['rmse_list']
     metrics_print_list = ['rmse']
-    #ylim_range = (0.0, 6.6)
-    ylim_range = (0.0, 0.3)
+    ylim_range = (0.0, 14)
+    #ylim_range = (0.0, 0.3)
     xlim_range = (0,7)
     x_label = ["[{}]".format(x) for x in range(1, len(model_list)+1)]
     model_result_box_plot(result_dict, model_list, data_preprocessing_list, metrics_name_list, title ='',

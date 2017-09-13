@@ -64,10 +64,12 @@ mode = 'clf' #'reg'
 #model = 'classifier'
 model = 'bagging_classifier'
 
-chosen_metric = 'avg_f1' #avg_pc, avg_f1, accuracy, rmse
+#chosen_metric = 'avg_f1' #avg_pc, avg_f1, accuracy, rmse
+chosen_metric = 'accuracy' #avg_pc, avg_f1, accuracy, rmse
+
 model_validation_result_name = '{}_validation_result_[{}].csv'.format(model, chosen_metric)
 model_validation_result_path = os.path.join(parent_folder, 'results', 'model_results', model_validation_result_name)
-model_test_range = (0,10)
+model_test_range = (0,9)
 RANDOM_STATE_TEST_NUM = 5
 is_plot = False
 RANDOM_SEED = 1

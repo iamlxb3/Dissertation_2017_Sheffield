@@ -72,14 +72,14 @@ model = 'regressor'
 #model = 'bagging_regressor'
 #model = 'adaboost_regressor'
 
-chosen_metric = 'avg_pc' #avg_pc, avg_f1, accuracy, rmse, return
+chosen_metric = 'rmse' #avg_pc, avg_f1, accuracy, rmse, return
 if chosen_metric == 'return':
     chosen_metric1 = 'avg_pc'
 else:
     chosen_metric1 = chosen_metric
 model_validation_result_name = '{}_validation_result_[{}].csv'.format(model, chosen_metric1)
 model_validation_result_path = os.path.join(parent_folder, 'results', 'model_results', model_validation_result_name)
-model_test_range = (0,10)
+model_test_range = (0,9)
 RANDOM_STATE_TEST_NUM = 5
 is_plot = False
 RANDOM_SEED = 3 #
@@ -383,7 +383,7 @@ for hyper_parameter_dict, rank in hyper_parameter_test_list:
     # ----------------------------------------------------------------------------------------------------------------------
     # plot for the stock return
     capital = 1
-    title = 'Stock return for MLP regressor'
+    title = 'Stock return for MLP {} on the 1st test set'.format(model)
     xlabel ='Date'
     # save hyper parameters
     hyper_parameter_file_name = '{}_{}_rank_[{}].csv'.format(unique_id, chosen_metric, rank)
@@ -405,11 +405,26 @@ for hyper_parameter_dict, rank in hyper_parameter_test_list:
     file_name = "{}.png".format(unique_id)
     save_path = os.path.join(parent_folder, 'results', 'test_results_with_plot', "{}".format(model), file_name)
 
-    baseline_each_week_return_list = stock_prediction_baseline_reg(train_folder_name,
-                                                              test_folder_name)
+    simple_baseline_each_week_return_list = stock_prediction_baseline_reg(train_folder_name,
+                                                                          test_folder_name)
+    random_baseline_each_week_return_list = stock_prediction_baseline_reg(train_folder_name,
+                                                                          test_folder_name,
+                                                                          is_random=True, random_seed=1)
+    highest_profit_baseline_each_week_return_list = stock_prediction_baseline_reg(train_folder_name,
+                                                                          test_folder_name, is_highest_profit=True)
+    highest_profit = 1
+    model_label = 'MLP regressor'
+    for profit in highest_profit_baseline_each_week_return_list:
+        highest_profit += highest_profit * profit
+
+    print("Highest possible profit: {}".format(highest_profit))
 
     plot_stock_return(best_return_list, best_date_list, capital = capital,
                       title = title, xlabel = xlabel, save_path = save_path, is_plot = is_plot
-                      ,baseline_each_week_return_list = baseline_each_week_return_list)
+                      , simple_baseline_each_week_return_list= simple_baseline_each_week_return_list,
+                      random_baseline_each_week_return_list = random_baseline_each_week_return_list,
+                      highest_profit = highest_profit,
+                      model_label=model_label
+                      )
 
     # ----------------------------------------------------------------------------------------------------------------------

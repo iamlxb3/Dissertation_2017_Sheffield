@@ -12,6 +12,7 @@ import sys
 import re
 import os
 import collections
+import random
 import numpy as np
 # ==========================================================================================================
 
@@ -38,7 +39,8 @@ from trade_general_funcs import calculate_rmse
 # ==========================================================================================================
 # Build MLP classifier
 # ==========================================================================================================
-def stock_prediction_baseline_reg(train_data_folder_name, test_data_folder_name):
+def stock_prediction_baseline_reg(train_data_folder_name, test_data_folder_name, is_random = False,
+                                  is_highest_profit = False, random_seed = None):
 
     print ("Baseline for regression!")
 
@@ -133,32 +135,51 @@ def stock_prediction_baseline_reg(train_data_folder_name, test_data_folder_name)
 
 
     # get the predicted value
-    predict_stock_list = []
-    predict_pc_list = []
-    rmse_list = []
-    for test_date in sorted(list(test_date_set)):
-        complete_predict_value_list = []
-        complete_actual_value_list = []
-        highest_pc = float('-inf')
-        for stock in list(test_stock_set):
-            predict_value = baseline_dict[test_date][stock]['predict']
-            actual_value = baseline_dict[test_date][stock]['actual']
-            complete_predict_value_list.append(predict_value)
-            complete_actual_value_list.append(actual_value)
-            if predict_value >  highest_pc:
-                highest_pc = predict_value
-                best_stock = stock
-        rmse = calculate_rmse(complete_actual_value_list, complete_predict_value_list)
-        rmse_list.append(rmse)
-        predict_stock_list.append(best_stock)
-        actual_pc = baseline_dict[test_date][best_stock]['actual']
-        predict_pc_list.append(actual_pc)
+    if is_random:
+        predict_pc_list = []
+        for i, test_date in enumerate(sorted(list(test_date_set))):
+            if random_seed:
+                random.seed(i + random_seed)
+            best_stock = random.sample(test_stock_set, 1)[0]
+            actual_pc = baseline_dict[test_date][best_stock]['actual']
+            predict_pc_list.append(actual_pc)
+        print ("predict_pc_list: ", predict_pc_list)
 
+    elif is_highest_profit:
+        predict_pc_list = []
+        for i, test_date in enumerate(sorted(list(test_date_set))):
+            highest_return = float('-inf')
+            for stock in test_stock_set:
+                stock_return = baseline_dict[test_date][stock]['actual']
+                if stock_return > highest_return:
+                    highest_return = stock_return
+            predict_pc_list.append(highest_return)
+        print ("predict_pc_list: ", predict_pc_list)
 
-
-    print ("predict_pc_list: ", predict_pc_list)
-    print ("avg_pc: ", np.average(predict_pc_list))
-    print ("avg_rmse: ", np.average(rmse_list))
+    else:
+        predict_stock_list = []
+        predict_pc_list = []
+        rmse_list = []
+        for test_date in sorted(list(test_date_set)):
+            complete_predict_value_list = []
+            complete_actual_value_list = []
+            highest_pc = float('-inf')
+            for stock in list(test_stock_set):
+                predict_value = baseline_dict[test_date][stock]['predict']
+                actual_value = baseline_dict[test_date][stock]['actual']
+                complete_predict_value_list.append(predict_value)
+                complete_actual_value_list.append(actual_value)
+                if predict_value >  highest_pc:
+                    highest_pc = predict_value
+                    best_stock = stock
+            rmse = calculate_rmse(complete_actual_value_list, complete_predict_value_list)
+            rmse_list.append(rmse)
+            predict_stock_list.append(best_stock)
+            actual_pc = baseline_dict[test_date][best_stock]['actual']
+            predict_pc_list.append(actual_pc)
+            print ("predict_pc_list: ", predict_pc_list)
+            print ("avg_pc: ", np.average(predict_pc_list))
+            print ("avg_rmse: ", np.average(rmse_list))
 
     return predict_pc_list
 

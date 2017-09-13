@@ -10,6 +10,7 @@
 # ==========================================================================================================
 import sys
 import os
+import re
 import random
 import collections
 import numpy as np
@@ -30,6 +31,7 @@ sys.path.append(path2)
 # local package import
 # ==========================================================================================================
 from mlp_trade_regressor import MlpTradeRegressor
+from mlp_trade_ensemble_regressor import MlpTradeEnsembleRegressor
 from trade_general_funcs import compute_f1_accuracy, compute_trade_weekly_clf_result, get_chosen_stock_return, \
     plot_stock_return, calculate_rmse
 from trade_general_funcs import get_avg_price_change
@@ -65,31 +67,103 @@ test_data_folder = os.path.join(parent_folder, 'data', test_data_folder)
 # ==========================================================================================================
 print ("Build MLP regressor for dow_jones extended test data!")
 mode = 'reg' #'reg'
-
-
-# ------------------------------------------------------------------------------------------------------------
-# hyper parameters for DATA
-# ------------------------------------------------------------------------------------------------------------
-is_standardisation = True
-is_PCA = True
-pca_n_component = 18
-# ------------------------------------------------------------------------------------------------------------
+#model = 'regressor'
+#model = 'bagging_regressor'
+model = 'adaboost_regressor'
 
 # ------------------------------------------------------------------------------------------------------------
-# hyper parameters for ANNs
+# hyper parameters
+# ------------------------------------------------------------------------------------------------------------
+true_false_dict = {'True':True,'False':False}
+
+
+is_read_hyper_parameters_from_file = True
+if is_read_hyper_parameters_from_file:
+    hp_file_name = '364_avg_pc_rank_[8].csv'
+    hp_folder_path = os.path.join(parent_folder, 'results', 'test_results_with_plot', model)
+    hp_file_path = os.path.join(hp_folder_path, hp_file_name)
+    hp_dict = collections.defaultdict(lambda :0)
+    hp_skip_list = ['shifting_size', 'unique_id','shift_num',
+                    'experiment','trail','random_state_total']
+    with open (hp_file_path, 'r') as f:
+        for i, line in enumerate(f):
+            if re.findall('feature_switch_tuple', line):
+                print ("line: ", line.strip().split(':'))
+                hp, hp_value = line.split(':')
+                hp_value = line.split(':')[1].strip()
+                if hp_value == 'None':
+                    hp_value = None
+                else:
+                    hp_value = tuple(hp_value[1:-1].split(','))
+                    hp_value = tuple([int(x) for x in hp_value])
+                hp_dict[hp] = hp_value
+            elif re.findall(r'[0-9]+,random_state', line):
+                print ("line: ", line)
+                random_state = int(re.findall(r'random_state,([0-9]+)', line)[0])
+                hp_dict['random_state'] = random_state
+                break
+            else:
+                hp, hp_value = line.split(',')
+                if hp in hp_skip_list:
+                    continue
+                hp_value = hp_value.strip()
+                if hp == 'early_stopping' or hp == 'is_standardisation' or hp == 'is_PCA':
+                    hp_value = true_false_dict[hp_value]
+                if hp == 'validation_fraction' or hp == 'hidden_layer_1' or hp == 'alpha' or hp == 'learning_rate_init':
+                    hp_value = float(hp_value)
+                if hp == 'hidden_layer_1' or hp == 'hidden_layer_2' or hp == 'training_window_size':
+                    hp_value = int(hp_value)
+                if hp == 'pca_n_component':
+                    if hp_value == 'None':
+                        hp_value = None
+                    else:
+                        hp_value = int(hp_value)
+
+                hp_dict[hp] = hp_value
+
+    # print ("hp_dict: ", hp_dict)
+    # sys.exit()
+    # read hp dict
+    is_standardisation = hp_dict['is_standardisation']
+    is_PCA = hp_dict['is_PCA']
+    pca_n_component = hp_dict['pca_n_component']
+    if hp_dict.get('hidden_layer_2'):
+        hidden_layer_sizes = (hp_dict['hidden_layer_1'],hp_dict['hidden_layer_2'])
+    else:
+        hidden_layer_sizes = (hp_dict['hidden_layer_1'],)
+    learning_rate_init = hp_dict['learning_rate_init']
+    learning_rate = hp_dict['learning_rate']
+    early_stopping = hp_dict['early_stopping']
+    activation  = hp_dict['activation_function']
+    week_for_predict = hp_dict['training_window_size']
+    validation_fraction  = hp_dict['validation_fraction']
+    alpha  = hp_dict['alpha']
+    feature_switch_tuple = hp_dict['feature_switch_tuple']
+    random_state = hp_dict['random_state']
+    #
+else:
+    is_standardisation = True
+    is_PCA = False
+    pca_n_component = None
+    hidden_layer_sizes = (245,379)
+    learning_rate_init = 0.044017
+    learning_rate = 'invscaling'
+    early_stopping = False
+    activation  = 'relu'
+    week_for_predict = 74  # None
+    validation_fraction  = 0 # The proportion of training data to set aside as validation set for early stopping.
+                               # Must be between 0 and 1. Only used if early_stopping is True.
+    alpha  = 0.000445
+    feature_switch_tuple = (1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1)
+    random_state = 77678
+    random_state_ensemble = 2
+# ------------------------------------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------------------------------------
+# other parameters
 # ------------------------------------------------------------------------------------------------------------
 verbose = False
-hidden_layer_sizes = (362,)
 tol = 1e-8
-learning_rate_init = 0.066902
-learning_rate = 'constant'
-early_stopping = True
-activation  = 'logistic'
-week_for_predict = 74  # None
-validation_fraction  = 0.233738 # The proportion of training data to set aside as validation set for early stopping.
-                           # Must be between 0 and 1. Only used if early_stopping is True.
-alpha  = 0.000672
-random_state = 77678
 # ------------------------------------------------------------------------------------------------------------
 best_f1_list = [0,0,0] # f1, accuracy, random_state
 best_accuracy_list = [0,0,0] # accuracy, f1, random_state
@@ -104,8 +178,15 @@ best_date_list = []
 
 
 # (1.) build classifer
-mlp1 = MlpTradeRegressor()
-clsfy_name = 'dow_jones_extened_test_mlp_regressor'
+# (1.) build classifer
+if model == 'regressor':
+    mlp1 = MlpTradeRegressor()
+elif model == 'bagging_regressor':
+    mlp1 = MlpTradeEnsembleRegressor(ensemble_number=3, mode='bagging')
+elif model == 'adaboost_regressor':
+    mlp1 = MlpTradeEnsembleRegressor(ensemble_number=3, mode='adaboost')
+
+clsfy_name = 'regression_test_{}'.format(model)
 clf_path = os.path.join(parent_folder, 'trained_classifiers', clsfy_name)
 data_per = 1.0 # the percentage of data using for training and testing
 #
@@ -154,12 +235,15 @@ for window_index in range(window_index_start, max_window_index):
                                                , is_standardisation = is_standardisation, is_PCA = is_PCA,
                                                is_moving_window = is_moving_window, window_size = window_size,
                                                window_index = window_index, week_for_predict = week_for_predict,
-                                               test1_data_folder = test1_data_folder)
+                                               test1_data_folder = test1_data_folder,
+                                               feature_switch_tuple = feature_switch_tuple)
 
     # (3.) load hyper parameters and training
+    random_state = 1
     mlp1.set_regressor(hidden_layer_sizes, tol=tol, learning_rate_init=learning_rate_init, random_state=random_state,
                                verbose = verbose, learning_rate = learning_rate, early_stopping =early_stopping,
-                                activation  = activation, validation_fraction  = validation_fraction, alpha  = alpha)
+                                activation  = activation, validation_fraction  = validation_fraction, alpha  = alpha,
+                       random_state_ensemble = random_state_ensemble)
     mlp1.regressor_train(save_clsfy_path= clf_path)
     pred_value_list, actual_value_list, date_list, stock_id_list = mlp1.reg_dev_for_moving_window_test(save_clsfy_path= clf_path)
     #
@@ -189,7 +273,12 @@ for window_index in range(window_index_start, max_window_index):
     date_set = set(date_list)
     sorted_date_list = sorted(list(date_set))
     plot_date_list.extend(sorted_date_list)
+
+    print ("pred_value_list: ", pred_value_list)
+    print ("actual_value_list: ", actual_value_list)
+    print("avg_price_change_1: ", avg_price_change_1)
     print("plot_date_list: ", plot_date_list)
+    sys.exit()
 
     #
 
@@ -241,17 +330,30 @@ print ("+++++++++++++++++++++++++++++++++++++++++++")
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-baseline_best_return_list = stock_prediction_baseline_reg(test1_folder_name, test2_folder_name)
+simple_baseline_best_return_list = stock_prediction_baseline_reg(test1_folder_name, test2_folder_name)
+random_baseline_each_week_return_list = stock_prediction_baseline_reg(test1_folder_name, test2_folder_name,
+                                                                      is_random=True, random_seed = 1)
+highest_profit_baseline_each_week_return_list = stock_prediction_baseline_reg(test1_folder_name, test2_folder_name,
+                                                                         is_highest_profit=True)
 
+highest_profit = 1
+for profit in highest_profit_baseline_each_week_return_list:
+    highest_profit += highest_profit*profit
+print ("Highest possible profit: {}".format(highest_profit))
 
 # plot for the stock return
 capital = 1
-title = 'Stock return for MLP regressor on the 2nd test set'
-xlabel ='Date'
-file_name = "{}.png".format('Regressor_stock_return')
+model_label = 'MLP'
+title = 'Stock return for ada-boosting ensemble on the 2nd test set'
+xlabel = 'Date'
+file_name = "{}_{}.png".format('Regressor_stock_return',model)
 save_path = os.path.join(parent_folder, 'results', file_name)
 plot_stock_return(best_return_list, best_date_list, capital = capital,
                   title = title, xlabel = xlabel, save_path = save_path, is_plot = True,
-                  baseline_each_week_return_list = baseline_best_return_list)
+                  simple_baseline_each_week_return_list= simple_baseline_best_return_list,
+                  random_baseline_each_week_return_list = random_baseline_each_week_return_list,
+                  highest_profit=highest_profit,
+                  model_label = model_label
+                  )
 
 # ----------------------------------------------------------------------------------------------------------------------

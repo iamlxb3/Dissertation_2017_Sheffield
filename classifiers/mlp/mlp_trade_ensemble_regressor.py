@@ -56,7 +56,7 @@ class MlpTradeEnsembleRegressor(MlpTradeRegressor):
 
     def set_regressor(self, hidden_layer_sizes, tol=1e-8, learning_rate_init=0.001, random_state = 1,
                            verbose = False, learning_rate = 'constant', early_stopping =False, activation  = 'relu',
-                           validation_fraction  = 0.1, alpha  = 0.0001):
+                           validation_fraction  = 0.1, alpha  = 0.0001, random_state_ensemble = 1):
         self.hidden_size_list.append(hidden_layer_sizes)
         self.mlp_hidden_layer_sizes_list.append(hidden_layer_sizes)
         temp_regressor = MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
@@ -67,10 +67,12 @@ class MlpTradeEnsembleRegressor(MlpTradeRegressor):
                                           alpha = alpha)
         if self.mode == 'bagging':
             print ("Set bagging EnsembleRegressor!")
-            self.mlp_regressor = BaggingRegressor(base_estimator=temp_regressor, n_estimators=self.ensemble_number, n_jobs=-1)
+            self.mlp_regressor = BaggingRegressor(base_estimator=temp_regressor, n_estimators=self.ensemble_number,
+                                                  random_state = random_state_ensemble)
         elif self.mode == 'adaboost':
             print("Set adaboost EnsembleRegressor!")
-            self.mlp_regressor = AdaBoostRegressor(base_estimator=temp_regressor, n_estimators=self.ensemble_number)
+            self.mlp_regressor = AdaBoostRegressor(base_estimator=temp_regressor, n_estimators=self.ensemble_number,
+                                                   random_state = random_state_ensemble)
         else:
             print ("Please type the right mode!!!")
             sys.exit()
